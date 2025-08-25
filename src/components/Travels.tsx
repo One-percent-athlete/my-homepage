@@ -150,17 +150,18 @@ export default function Travels() {
     <section
       id="travels"
       className="relative py-20 px-4 overflow-hidden"
-      style={{
-        backgroundImage: `url('/your-background.jpg')`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
+      
     >
       {/* Animated gradient overlay */}
       <motion.div
-        className="absolute inset-0 bg-gradient-to-tr from-yellow-200 via-pink-300 to-purple-400 opacity-20"
+        className="absolute inset-0 opacity-40"
         animate={{ rotate: 360 }}
         transition={{ repeat: Infinity, duration: 60, ease: "linear" }}
+        style={{
+        backgroundImage: `url('/images/moon.jpg')`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
       />
 
       {/* Floating circles */}

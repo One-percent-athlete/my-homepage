@@ -16,8 +16,12 @@ import { usePathname } from "next/navigation";
 export default function Contact() {
   const pathname = usePathname();
   const locale = pathname?.split("/")[1] || "en";
-  const localeKey = (["en", "ja", "zh"] as const).includes(locale as any)
-    ? (locale as "en" | "ja" | "zh")
+
+  const supportedLocales = ["en", "ja", "zh"] as const;
+  type Locale = (typeof supportedLocales)[number];
+
+  const localeKey: Locale = supportedLocales.includes(locale as Locale)
+    ? (locale as Locale)
     : "en";
 
   // Translations
@@ -75,20 +79,20 @@ export default function Contact() {
     },
   })[localeKey], [localeKey]);
 
-  // Particles state (client-only)
-
+  // Particle type
   type Particle = {
-  startX: number;
-  startY: number;
-  endX: number;
-  endY: number;
-  duration: number;
-  trailLength: number;
-};
+    startX: number;
+    startY: number;
+    endX: number;
+    endY: number;
+    duration: number;
+    trailLength: number;
+  };
 
-const [particles, setParticles] = useState<Particle[]>([]);
+  const [particles, setParticles] = useState<Particle[]>([]);
+
   useEffect(() => {
-    const particleData = Array.from({ length: 20 }).map(() => ({
+    const particleData: Particle[] = Array.from({ length: 20 }).map(() => ({
       startX: Math.random() * 1200 - 600,
       startY: Math.random() * 800 - 400,
       endX: Math.random() * 1200 - 600,
@@ -106,7 +110,9 @@ const [particles, setParticles] = useState<Particle[]>([]);
     >
       {/* Floating particles */}
       {particles.map((p, i) => (
-        <motion.div key={i} className="absolute w-2 h-2 bg-yellow-400 rounded-full opacity-70"
+        <motion.div
+          key={i}
+          className="absolute w-2 h-2 bg-yellow-400 rounded-full opacity-70"
           initial={{ x: p.startX, y: p.startY, opacity: 0.5, scale: 1 }}
           animate={{
             x: p.endX,
@@ -128,18 +134,36 @@ const [particles, setParticles] = useState<Particle[]>([]);
       <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-pink-500 rounded-full opacity-10 animate-pulse blur-3xl"></div>
 
       {/* Title & subtitle */}
-      <motion.h2 initial={{ opacity: 0, y: -40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="text-5xl font-extrabold mb-6 relative z-10">
+      <motion.h2
+        initial={{ opacity: 0, y: -40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        className="text-5xl font-extrabold mb-6 relative z-10"
+      >
         {t.title}
       </motion.h2>
-      <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.8 }} className="text-lg mb-12 text-gray-300 max-w-xl mx-auto relative z-10">
+      <motion.p
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3, duration: 0.8 }}
+        className="text-lg mb-12 text-gray-300 max-w-xl mx-auto relative z-10"
+      >
         {t.subtitle}
       </motion.p>
 
       {/* Contact list */}
-      <motion.ul initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6, duration: 0.8 }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-4xl mx-auto mb-12 relative z-10">
+      <motion.ul
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.6, duration: 0.8 }}
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-4xl mx-auto mb-12 relative z-10"
+      >
         {t.contacts.map((contact, index) => (
-          <motion.li key={index} whileHover={{ scale: 1.05, y: -5 }}
-            className="flex flex-col items-center bg-gray-800/80 hover:bg-gray-700/80 rounded-3xl p-6 shadow-2xl backdrop-blur-lg transition-all duration-300 cursor-pointer hover:ring-4 hover:ring-yellow-400 hover:ring-opacity-50">
+          <motion.li
+            key={index}
+            whileHover={{ scale: 1.05, y: -5 }}
+            className="flex flex-col items-center bg-gray-800/80 hover:bg-gray-700/80 rounded-3xl p-6 shadow-2xl backdrop-blur-lg transition-all duration-300 cursor-pointer hover:ring-4 hover:ring-yellow-400 hover:ring-opacity-50"
+          >
             <span className="text-4xl mb-4 text-yellow-400">{contact.icon}</span>
             <h3 className="font-bold text-xl mb-2">{contact.label}</h3>
             <a href={contact.link} className="text-gray-300 hover:text-yellow-400 transition-colors break-words">{contact.value}</a>
@@ -148,10 +172,18 @@ const [particles, setParticles] = useState<Particle[]>([]);
       </motion.ul>
 
       {/* QR Codes */}
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.0, duration: 0.8 }} className="flex flex-wrap justify-center gap-10 relative z-10">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.0, duration: 0.8 }}
+        className="flex flex-wrap justify-center gap-10 relative z-10"
+      >
         {t.qrcodes.map((qr, index) => (
-          <motion.div key={index} whileHover={{ scale: 1.1 }}
-            className="flex flex-col items-center bg-gray-800/80 rounded-3xl p-4 shadow-2xl backdrop-blur-lg cursor-pointer hover:ring-4 hover:ring-yellow-400 hover:ring-opacity-50">
+          <motion.div
+            key={index}
+            whileHover={{ scale: 1.1 }}
+            className="flex flex-col items-center bg-gray-800/80 rounded-3xl p-4 shadow-2xl backdrop-blur-lg cursor-pointer hover:ring-4 hover:ring-yellow-400 hover:ring-opacity-50"
+          >
             <Image src={qr.src} alt={qr.label} className="mb-2 object-cover" width={128} height={128} />
             <span className="text-gray-300">{qr.label}</span>
           </motion.div>
@@ -160,3 +192,5 @@ const [particles, setParticles] = useState<Particle[]>([]);
     </section>
   );
 }
+
+    

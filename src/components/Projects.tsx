@@ -22,8 +22,10 @@ type Dot = {
 export default function Projects() {
   const pathname = usePathname();
   const locale = pathname?.split("/")[1] || "en";
-  const localeKey = (["en", "ja", "zh"] as const).includes(locale as any)
-    ? (locale as "en" | "ja" | "zh")
+  const supportedLocales = ["en", "ja", "zh"] as const;
+  type Locale = (typeof supportedLocales)[number];
+  const localeKey: Locale = supportedLocales.includes(locale as Locale)
+    ? (locale as Locale)
     : "en";
 
   // Translations
@@ -66,23 +68,26 @@ export default function Projects() {
     [localeKey]
   );
 
-  // Add icons to projects
-  // Define icons **once** outside the map
-const iconComponents: React.FC[] = [
-  () => <FaReact size={28} className="text-cyan-400" />,
-  () => <FaNodeJs size={28} className="text-green-400" />,
-  () => <FaJsSquare size={28} className="text-yellow-400" />,
-  () => <FaReact size={28} className="text-cyan-400" />,
-  () => <FaStripe size={28} className="text-blue-400" />,
-  () => <FaMobileAlt size={28} className="text-purple-400" />,
-];
+  // Icons
+  const iconComponents: React.FC[] = useMemo(
+    () => [
+      () => <FaReact size={28} className="text-cyan-400" />,
+      () => <FaNodeJs size={28} className="text-green-400" />,
+      () => <FaJsSquare size={28} className="text-yellow-400" />,
+      () => <FaReact size={28} className="text-cyan-400" />,
+      () => <FaStripe size={28} className="text-blue-400" />,
+      () => <FaMobileAlt size={28} className="text-purple-400" />,
+    ],
+    []
+  );
 
-const projectsWithIcons: ProjectType[] = useMemo(() => {
-  return t.projects.map((proj, idx) => ({
-    ...proj,
-    Icon: iconComponents[idx] || (() => <FaReact size={28} />),
-  }));
-}, [t]);
+  const projectsWithIcons: ProjectType[] = useMemo(
+    () => t.projects.map((proj, idx) => ({
+      ...proj,
+      Icon: iconComponents[idx] || (() => <FaReact size={28} />),
+    })),
+    [t, iconComponents] // ✅ include iconComponents
+  );
 
   // Background dots
   const [dots, setDots] = useState<Dot[]>([]);
@@ -110,11 +115,13 @@ const projectsWithIcons: ProjectType[] = useMemo(() => {
     const interval = setInterval(() => {
       setDots(prevDots =>
         prevDots.map(d => {
-          let nx = d.x + d.dx;
-          let ny = d.y + d.dy;
-          if (nx > 100 || nx < 0) d.dx *= -1;
-          if (ny > 100 || ny < 0) d.dy *= -1;
-          return { ...d, x: nx, y: ny };
+          const nx = d.x + d.dx; // ✅ use const
+          const ny = d.y + d.dy; // ✅ use const
+          let newDx = d.dx;
+          let newDy = d.dy;
+          if (nx > 100 || nx < 0) newDx *= -1;
+          if (ny > 100 || ny < 0) newDy *= -1;
+          return { ...d, x: nx, y: ny, dx: newDx, dy: newDy };
         })
       );
     }, 30);

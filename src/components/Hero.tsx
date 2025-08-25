@@ -11,7 +11,21 @@ const videos = [
   "/videos/vid3.mp4",
 ];
 
-const textContent: Record<string, any> = {
+type HeroContent = {
+  title: string;
+  subtitle: string;
+  description: string;
+  button: string;
+};
+
+type HeroTextContent = {
+  en: HeroContent;
+  ja: HeroContent;
+  zh: HeroContent;
+};
+
+
+const textContent: HeroTextContent = {
   en: {
     title: "Ryu — Adventurer & Engineer",
     subtitle: "Freelance Web Developer | Global Explorer | Ski Instructor",
@@ -35,10 +49,19 @@ const textContent: Record<string, any> = {
   },
 };
 
+
 export default function Hero() {
-  const pathname = usePathname(); // e.g., /en, /ja, /zh
+  const pathname = usePathname(); // e.g., "/en", "/ja", "/zh"
   const locale = pathname?.split("/")[1] || "en"; // default to English
-  const content = textContent[locale] || textContent.en;
+
+  const supportedLocales = ["en", "ja", "zh"] as const;
+  type Locale = (typeof supportedLocales)[number];
+
+  const localeKey: Locale = supportedLocales.includes(locale as Locale)
+    ? (locale as Locale)
+    : "en";
+
+  const content = textContent[localeKey];
 
   const [currentVideo, setCurrentVideo] = useState(0);
 

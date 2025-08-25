@@ -4,14 +4,15 @@ import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
 
+type Locale = "en" | "ja" | "zh";
+const supportedLocales: Locale[] = ["en", "ja", "zh"];
+
 export default function Skills() {
   const pathname = usePathname();
-  const locale = pathname?.split("/")[1] || "en";
+  const locale = pathname?.split("/")[1] as Locale | undefined;
 
   // Safe locale key
-  const localeKey = (["en", "ja", "zh"] as const).includes(locale as any)
-    ? (locale as "en" | "ja" | "zh")
-    : "en";
+  const localeKey: Locale = supportedLocales.includes(locale!) ? locale! : "en";
 
   // Translation for UI
   const translations = useMemo(
@@ -35,13 +36,12 @@ export default function Skills() {
   const t = translations[localeKey];
 
   // Category keys (always English, used for filtering)
-  const categoryKeys = ["All", "Professional", "Technical", "Certifications", "Languages", "Experience"];
+  const categoryKeys: string[] = ["All", "Professional", "Technical", "Certifications", "Languages", "Experience"];
   const [selectedCategory, setSelectedCategory] = useState("All");
 
   // Skills data
   const skills = useMemo(
     () => [
-      // Professional
       { name: { en: "Project Management", ja: "プロジェクト管理", zh: "项目管理" }, category: "Professional", icon: "📊", level: 90 },
       { name: { en: "Teamwork", ja: "チームワーク", zh: "团队合作" }, category: "Professional", icon: "🤝", level: 95 },
       { name: { en: "Time Management", ja: "時間管理", zh: "时间管理" }, category: "Professional", icon: "⏱️", level: 85 },
@@ -91,10 +91,7 @@ export default function Skills() {
       : skills.filter((skill) => skill.category === selectedCategory);
 
   return (
-    <section
-      id="skills"
-      className="py-20 px-4 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 relative overflow-hidden text-center"
-    >
+    <section id="skills" className="py-20 px-4 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 relative overflow-hidden text-center">
       <h2 className="text-4xl font-bold mb-8 text-white">{t.title}</h2>
 
       {/* Category Filter */}
