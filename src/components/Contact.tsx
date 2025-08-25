@@ -2,46 +2,54 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { FaGithub, FaLinkedin, FaTwitter, FaPhoneAlt, FaEnvelope } from "react-icons/fa";
+import { FaInstagram, FaFacebook, FaLine, FaWeixin, FaGithub, FaLinkedin, FaTwitter, FaPhoneAlt, FaEnvelope } from "react-icons/fa";
+
 
 export default function Contact() {
   const contacts = [
     {
       icon: <FaEnvelope />,
       label: "Email",
-      value: "ryu@example.com",
-      link: "mailto:ryu@example.com",
+      value: "one.percent.athlete@gmail.com",
+      link: "mailto:one.percent.athlete@gmail.com",
     },
     {
       icon: <FaPhoneAlt />,
       label: "Phone",
-      value: "+81 90-xxxx-xxxx",
-      link: "tel:+8190xxxxxxx",
+      value: "+81 07-4561-8976",
+      link: "tel:+810745618976",
     },
     {
       icon: <FaGithub />,
       label: "Github",
-      value: "github.com/ryu",
-      link: "https://github.com/ryu",
+      value: "github.com/One-percent-athlete",
+      link: "https://github.com/One-percent-athlete",
     },
     {
       icon: <FaLinkedin />,
       label: "LinkedIn",
       value: "linkedin.com/in/ryu",
-      link: "https://linkedin.com/in/ryu",
+      link: "https://www.linkedin.com/in/ryu-suzuki-7613a8299/",
     },
     {
-      icon: <FaTwitter />,
-      label: "Twitter",
-      value: "@ryu",
-      link: "https://twitter.com/ryu",
+      icon: <FaInstagram />,
+      label: "Instagram",
+      value: "@ryu.free.spirit",
+      link: "https://www.instagram.com/ryu.free.spirit/",
+    },
+    {
+      icon: <FaFacebook />,
+      label: "Facebook",
+      value: "@ryu.suzuki.super",
+      link: "https://www.facebook.com/ryu.suzuki.super/",
     },
   ];
 
   const qrCodes = [
-    { label: "Email QR", src: "/qr-email.png" },
-    { label: "LinkedIn QR", src: "/qr-linkedin.png" },
-  ];
+    { label: "Line QR", src: "/qrcodes/line-qr.png" },
+    { label: "Wechat QR", src: "/qrcodes/wechat-qr.png" },
+    { label: "Whatsapp QR", src: "/qrcodes/whatsapp-qr.png" },
+];
 
   // Generate floating particles
   const particles = Array.from({ length: 15 });
@@ -136,7 +144,7 @@ export default function Contact() {
             whileHover={{ scale: 1.1 }}
             className="flex flex-col items-center bg-gray-800/80 rounded-3xl p-4 shadow-2xl backdrop-blur-lg cursor-pointer"
           >
-            <Image src={qr.src} alt={qr.label} className="mb-2" width={32} height={32} />
+            <Image src={qr.src} alt={qr.label} className="mb-2" width={128} height={128} />
             <span className="text-gray-300">{qr.label}</span>
           </motion.div>
         ))}

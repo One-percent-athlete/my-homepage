@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { FaGithub, FaLinkedin, FaTwitter, FaTimes, FaBars } from "react-icons/fa";
+import { FaGithub, FaLinkedin, FaInstagram, FaFacebook, FaLine, FaWeixin, FaTimes, FaBars } from "react-icons/fa";
 import { motion, AnimatePresence, Variants, useMotionValue, useTransform } from "framer-motion";
 
 export default function Navbar() {
@@ -26,9 +26,12 @@ export default function Navbar() {
   ];
 
   const socialIcons = [
-    { href: "https://github.com/yourusername", icon: FaGithub },
-    { href: "https://linkedin.com/in/yourusername", icon: FaLinkedin },
-    { href: "https://twitter.com/yourusername", icon: FaTwitter },
+    { href: "https://github.com/One-percent-athlete", icon: FaGithub },
+    { href: "https://www.linkedin.com/in/ryu-suzuki-7613a8299/", icon: FaLinkedin },
+    { href: "https://www.instagram.com/ryu.free.spirit/", icon: FaInstagram },
+    { href: "https://www.facebook.com/ryu.suzuki.super/", icon: FaFacebook },
+    { href: "https://line.me/ti/p/hkL8_yg15L", icon: FaLine },
+    { href: "https://wechat/", icon: FaWeixin },
   ];
 
   const mobileMenuVariants: Variants = {

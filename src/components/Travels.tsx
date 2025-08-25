@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion, Variants } from "framer-motion";
 
 const countries = [
@@ -68,6 +69,7 @@ const countries = [
   { code: "bd", name: "Bangladesh" },
 ];
 
+// sort alphabetically
 countries.sort((a, b) => a.name.localeCompare(b.name));
 
 const container: Variants = {
@@ -81,12 +83,23 @@ const item: Variants = {
 };
 
 export default function Travels() {
+  const [circles, setCircles] = useState<{ top: number; left: number; size: number }[]>([]);
+
+  useEffect(() => {
+    const generated = Array.from({ length: 12 }).map(() => ({
+      top: Math.random() * 80,
+      left: Math.random() * 90,
+      size: 10 + Math.random() * 20,
+    }));
+    setCircles(generated);
+  }, []);
+
   return (
     <section
       id="travels"
       className="relative py-20 px-4 overflow-hidden"
       style={{
-        backgroundImage: `url('/your-background.jpg')`, // your background image here
+        backgroundImage: `url('/your-background.jpg')`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
@@ -99,34 +112,20 @@ export default function Travels() {
       />
 
       {/* Floating background circles */}
-      {[...Array(12)].map((_, i) => {
-        const top = Math.random() * 80; // in %
-        const left = Math.random() * 90; // in %
-        const size = 10 + Math.random() * 20; // px
-
-        return (
-          <motion.div
-            key={i}
-            className="absolute rounded-full opacity-20 bg-yellow-500"
-            style={{
-              top: `${top}%`,
-              left: `${left}%`,
-              width: `${size}px`,
-              height: `${size}px`,
-            }}
-            animate={{
-              y: [0, 20 + Math.random() * 20, 0],
-              x: [0, 10 + Math.random() * 20, 0],
-              rotate: [0, 180, 0],
-            }}
-            transition={{
-              duration: 6 + Math.random() * 6,
-              repeat: Infinity,
-              repeatType: "mirror",
-            }}
-          />
-        );
-      })}
+      {circles.map((c, i) => (
+        <motion.div
+          key={i}
+          className="absolute rounded-full opacity-20 bg-yellow-500"
+          style={{
+            top: `${c.top}%`,
+            left: `${c.left}%`,
+            width: `${c.size}px`,
+            height: `${c.size}px`,
+          }}
+          animate={{ y: [0, 20, 0], x: [0, 10, 0], rotate: [0, 180, 0] }}
+          transition={{ duration: 6 + i, repeat: Infinity, repeatType: "mirror" }}
+        />
+      ))}
 
       <h2 className="text-4xl font-bold mb-6 text-white text-center relative z-10">
         My Travels

@@ -1,6 +1,6 @@
 "use client";
 
-import { FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa";
+import { FaGithub, FaLinkedin, FaInstagram, FaFacebook, FaLine, FaWeixin, FaTimes, FaBars } from "react-icons/fa";
 
 export default function Footer() {
   return (
@@ -43,19 +43,28 @@ export default function Footer() {
             Contact
           </h3>
           <div className="flex justify-center md:justify-end gap-6 text-sm">
-            <a href="mailto:ryu@example.com" className="hover:text-yellow-300 transition">Email</a>
-            <a href="tel:+1234567890" className="hover:text-yellow-300 transition">Phone</a>
+            <a href="mailto:one.percent.athlete@gmail.com" className="hover:text-yellow-300 transition">Email</a>
+            <a href="tel:+8107045618976" className="hover:text-yellow-300 transition">Phone</a>
           </div>
           <div className="flex justify-center md:justify-end gap-5 mt-3">
-            <a href="https://github.com/yourusername" target="_blank" className="p-2 rounded-full bg-gray-800 hover:bg-yellow-400 hover:text-gray-900 transition transform hover:scale-110">
+            <a href="https://github.com/One-percent-athlete" target="_blank" className="p-2 rounded-full bg-gray-800 hover:bg-yellow-400 hover:text-gray-900 transition transform hover:scale-110">
               <FaGithub size={18} />
             </a>
-            <a href="https://linkedin.com/in/yourusername" target="_blank" className="p-2 rounded-full bg-gray-800 hover:bg-yellow-400 hover:text-gray-900 transition transform hover:scale-110">
+            <a href="https://www.linkedin.com/in/ryu-suzuki-7613a8299/" target="_blank" className="p-2 rounded-full bg-gray-800 hover:bg-yellow-400 hover:text-gray-900 transition transform hover:scale-110">
               <FaLinkedin size={18} />
             </a>
-            <a href="https://twitter.com/yourusername" target="_blank" className="p-2 rounded-full bg-gray-800 hover:bg-yellow-400 hover:text-gray-900 transition transform hover:scale-110">
-              <FaTwitter size={18} />
+            <a href="https://www.instagram.com/ryu.free.spirit/" target="_blank" className="p-2 rounded-full bg-gray-800 hover:bg-yellow-400 hover:text-gray-900 transition transform hover:scale-110">
+              <FaInstagram size={18} />
             </a>
+            <a href="https://www.facebook.com/ryu.suzuki.super/" target="_blank" className="p-2 rounded-full bg-gray-800 hover:bg-yellow-400 hover:text-gray-900 transition transform hover:scale-110">
+              <FaFacebook size={18} />
+            </a>
+            <a href="https://line.me/ti/p/hkL8_yg15L" target="_blank" className="p-2 rounded-full bg-gray-800 hover:bg-yellow-400 hover:text-gray-900 transition transform hover:scale-110">
+              <FaLine size={18} />
+            </a>
+            <a href="https://wechat/" target="_blank" className="p-2 rounded-full bg-gray-800 hover:bg-yellow-400 hover:text-gray-900 transition transform hover:scale-110">
+              <FaWeixin size={18} />
+            </a>            
           </div>
         </div>
       </div>
