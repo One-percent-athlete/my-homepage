@@ -2,8 +2,17 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { FaInstagram, FaFacebook, FaLine, FaWeixin, FaGithub, FaLinkedin, FaTwitter, FaPhoneAlt, FaEnvelope } from "react-icons/fa";
-
+import {
+  FaInstagram,
+  FaFacebook,
+  FaLine,
+  FaWeixin,
+  FaGithub,
+  FaLinkedin,
+  FaTwitter,
+  FaPhoneAlt,
+  FaEnvelope,
+} from "react-icons/fa";
 
 export default function Contact() {
   const contacts = [
@@ -49,10 +58,16 @@ export default function Contact() {
     { label: "Line QR", src: "/qrcodes/line-qr.png" },
     { label: "Wechat QR", src: "/qrcodes/wechat-qr.png" },
     { label: "Whatsapp QR", src: "/qrcodes/whatsapp-qr.png" },
-];
+  ];
 
-  // Generate floating particles
-  const particles = Array.from({ length: 15 });
+  // Precompute floating particle data
+  const particles = Array.from({ length: 15 }).map(() => ({
+    startX: Math.random() * 1200 - 600,
+    startY: Math.random() * 800 - 400,
+    endX: Math.random() * 1200 - 600,
+    endY: Math.random() * 800 - 400,
+    duration: 10 + Math.random() * 10,
+  }));
 
   return (
     <section
@@ -60,24 +75,23 @@ export default function Contact() {
       className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 py-24 px-6 text-center overflow-hidden text-white"
     >
       {/* Floating glowing particles */}
-      {particles.map((_, i) => (
+      {particles.map((p, i) => (
         <motion.div
           key={i}
           className="absolute w-2 h-2 bg-yellow-400 rounded-full opacity-70"
-          initial={{
-            x: Math.random() * 1200 - 600,
-            y: Math.random() * 800 - 400,
-          }}
+          initial={{ x: p.startX, y: p.startY, opacity: 0.5, scale: 1 }}
           animate={{
-            x: Math.random() * 1200 - 600,
-            y: Math.random() * 800 - 400,
+            x: p.endX,
+            y: p.endY,
             opacity: [0.3, 1, 0.3],
             scale: [0.8, 1.2, 0.8],
+            rotate: [0, 360],
           }}
           transition={{
-            duration: 10 + Math.random() * 10,
+            duration: p.duration,
             repeat: Infinity,
             repeatType: "mirror",
+            ease: "easeInOut",
           }}
         />
       ))}
@@ -117,7 +131,7 @@ export default function Contact() {
           <motion.li
             key={index}
             whileHover={{ scale: 1.05, y: -5 }}
-            className="flex flex-col items-center bg-gray-800/80 hover:bg-gray-700/80 rounded-3xl p-6 shadow-2xl backdrop-blur-lg transition-all duration-300 cursor-pointer"
+            className="flex flex-col items-center bg-gray-800/80 hover:bg-gray-700/80 rounded-3xl p-6 shadow-2xl backdrop-blur-lg transition-all duration-300 cursor-pointer hover:ring-4 hover:ring-yellow-400 hover:ring-opacity-50"
           >
             <span className="text-4xl mb-4 text-yellow-400">{contact.icon}</span>
             <h3 className="font-bold text-xl mb-2">{contact.label}</h3>
@@ -142,9 +156,15 @@ export default function Contact() {
           <motion.div
             key={index}
             whileHover={{ scale: 1.1 }}
-            className="flex flex-col items-center bg-gray-800/80 rounded-3xl p-4 shadow-2xl backdrop-blur-lg cursor-pointer"
+            className="flex flex-col items-center bg-gray-800/80 rounded-3xl p-4 shadow-2xl backdrop-blur-lg cursor-pointer hover:ring-4 hover:ring-yellow-400 hover:ring-opacity-50"
           >
-            <Image src={qr.src} alt={qr.label} className="mb-2" width={128} height={128} />
+            <Image
+              src={qr.src}
+              alt={qr.label}
+              className="mb-2 object-cover"
+              width={128}
+              height={128}
+            />
             <span className="text-gray-300">{qr.label}</span>
           </motion.div>
         ))}

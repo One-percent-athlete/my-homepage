@@ -110,7 +110,7 @@ export default function Hero() {
             ease: "easeInOut",
           }}
         >
-          <Image src="/images/main.jpg" alt="Description" width={300} height={300} />
+          <Image src="/images/dot-image.jpg" alt="Description" width={300} height={300} />
         </motion.div>
 
         {/* Floating Dot 2 */}
