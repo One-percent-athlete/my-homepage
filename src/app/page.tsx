@@ -19,7 +19,8 @@ export default function HomePage() {
 
   useEffect(() => {
     setDimensions({ width: window.innerWidth, height: window.innerHeight });
-    const handleResize = () => setDimensions({ width: window.innerWidth, height: window.innerHeight });
+    const handleResize = () =>
+      setDimensions({ width: window.innerWidth, height: window.innerHeight });
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -31,62 +32,40 @@ export default function HomePage() {
     setRipple({ x, y, href });
   };
 
-  // Random gold/amber/orange color for fireflies
-  const randomGoldColor = () => {
-    const colors = ["rgba(255,223,128,0.9)", "rgba(255,200,50,0.85)", "rgba(255,180,50,0.8)"];
-    return colors[Math.floor(Math.random() * colors.length)];
-  };
+  const starColors = ["#FFD700", "#FFC107", "#FFB300", "#7EC8E3", "#FFFFFF"];
 
   return (
     <div className="relative flex flex-col items-center justify-center min-h-screen overflow-hidden px-4">
-      {/* Animated Gradient Background */}
-      <motion.div
-        className="absolute inset-0 z-[-2] bg-gradient-to-b from-emerald-700 via-amber-500 to-orange-600"
-        animate={{ backgroundPosition: ["0% 0%", "50% 50%", "0% 0%"] }}
-        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+      {/* Background Image */}
+      <div
+        className="absolute inset-0 z-[-3] bg-cover bg-center"
+        style={{ backgroundImage: "url('/images/astro.jpg')" }}
       />
 
-      {/* Golden Firefly Sparks ✨ */}
-      <div className="absolute inset-0 z-[-1] pointer-events-none">
+      {/* Twinkling Stars */}
+      <div className="absolute inset-0 z-[-2] pointer-events-none">
         {dimensions.width > 0 &&
-          [...Array(100)].map((_, i) => {
-            const size = Math.random() * 4 + 3;
-            const blur = Math.random() * 4;
-            const duration = 6 + Math.random() * 10;
-            const amplitudeX = Math.random() * 100 - 50;
-            const amplitudeY = Math.random() * 50 - 25;
+          [...Array(250)].map((_, i) => {
+            const size = Math.random() * 2 + Math.random() * 6;
             const startX = Math.random() * dimensions.width;
             const startY = Math.random() * dimensions.height;
-            const color = randomGoldColor();
-            const delay = Math.random() * duration;
+            const color = starColors[Math.floor(Math.random() * starColors.length)];
+            const duration = 1 + Math.random() * 2.5;
+            const delay = Math.random() * 2;
 
             return (
               <motion.div
-                key={i}
+                key={`star-${i}`}
                 className="absolute rounded-full"
                 style={{
                   width: `${size}px`,
                   height: `${size}px`,
-                  background: `radial-gradient(circle, ${color} 0%, ${color} 60%, transparent 100%)`,
-                  filter: `blur(${blur}px)`,
+                  background: color,
                 }}
-                initial={{ x: startX, y: startY, opacity: 0 }}
+                initial={{ x: startX, y: startY, opacity: 0.3, scale: 1 }}
                 animate={{
-                  x: [
-                    startX,
-                    startX + amplitudeX / 2,
-                    startX + amplitudeX,
-                    startX + amplitudeX / 2,
-                    startX,
-                  ],
-                  y: [
-                    startY,
-                    startY + amplitudeY / 2,
-                    startY + amplitudeY,
-                    startY + amplitudeY / 2,
-                    startY,
-                  ],
-                  opacity: [0.1, 1, 0.5, 1, 0.1],
+                  opacity: [0.3, 1, 0.3],
+                  scale: [1, 1.3 + Math.random() * 0.3, 1],
                 }}
                 transition={{
                   duration: duration,
@@ -100,13 +79,16 @@ export default function HomePage() {
           })}
       </div>
 
-      {/* Heading */}
-      {/* Main Heading */}
+      {/* Main Heading with Shimmer */}
       <motion.h1
         initial={{ opacity: 0, y: -40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}
-        className="text-5xl md:text-6xl font-extrabold mb-6 text-center tracking-wide"
+        className="text-6xl md:text-7xl font-extrabold mb-3 pb-3 text-center tracking-wide text-transparent bg-gradient-to-r
+                   from-yellow-400 via-yellow-300 to-white bg-clip-text animate-[shimmer_3s_linear_infinite]"
+        style={{
+          textShadow: "0 0 15px rgba(255,215,0,0.8)",
+        }}
       >
         Hi, I’m Ryu
       </motion.h1>
@@ -116,9 +98,9 @@ export default function HomePage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, delay: 0.3 }}
-        className="text-xl md:text-2xl text-center max-w-3xl mb-12"
+        className="text-xl md:text-2xl text-center max-w-3xl mb-12 text-white drop-shadow-lg"
       >
-        Freelance Engineer | Web App Developer | Ski Instructor | Traveled 80+ Countries
+        Web App Developer | Ski Instructor | Traveled 60+ Countries
       </motion.p>
 
       {/* Buttons */}
@@ -135,9 +117,11 @@ export default function HomePage() {
             whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.96 }}
             transition={{ duration: 0.2 }}
-            className="relative flex-1 py-6 bg-black text-white font-semibold rounded-2xl shadow-xl
+            className="relative flex-1 py-6 bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-500
+                       text-black font-bold rounded-3xl shadow-[0_0_20px_rgba(255,215,0,0.7)]
                        border-2 border-transparent bg-clip-padding overflow-hidden
-                       hover:border-amber-400 transition-all duration-300 text-xl tracking-wider uppercase"
+                       hover:shadow-[0_0_35px_rgba(255,215,0,0.9)] hover:scale-105 transition-all duration-300
+                       text-xl tracking-wider uppercase"
           >
             {lang.name}
             {/* Shimmer effect */}
@@ -155,9 +139,24 @@ export default function HomePage() {
         <RippleTransition
           x={ripple.x}
           y={ripple.y}
+          colorClass="bg-yellow-500"
+          borderClass="border-black"
+          duration={0.4}
           onComplete={() => router.push(ripple.href)}
         />
       )}
+
+      {/* Custom shimmer animation keyframes */}
+      <style jsx>{`
+        @keyframes shimmer {
+          0% { background-position: -500px 0; }
+          100% { background-position: 500px 0; }
+        }
+        .animate-[shimmer_3s_linear_infinite] {
+          background-size: 1000px 100%;
+          background-repeat: repeat;
+        }
+      `}</style>
     </div>
   );
 }
