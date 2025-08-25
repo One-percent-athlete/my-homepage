@@ -26,12 +26,12 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Ryu" }],
   creator: "Ryu",
-  metadataBase: new URL("https://yourdomain.com"),
+  metadataBase: new URL("https://www.one-percent-journey.com/"),
   openGraph: {
     title: "Ryu — Adventurer & Engineer",
     description:
       "Freelance engineer, web app developer, and adventurer. Building modern apps while exploring 80+ countries.",
-    url: "https://yourdomain.com",
+    url: "https://www.one-percent-journey.com/",
     siteName: "Ryu Portfolio",
     images: [
       {
@@ -53,11 +53,11 @@ export const metadata: Metadata = {
     creator: "@yourtwitterhandle",
   },
   alternates: {
-    canonical: "https://yourdomain.com",
+    canonical: "https://www.one-percent-journey.com/",
   },
   icons: {
-    icon: "/favicon.ico",
-    apple: "/apple-touch-icon.png",
+    icon: "/images/favicon.ico",
+    apple: "/images/apple-touch-icon.png",
   },
 };
 
@@ -74,8 +74,8 @@ export default function RootLayout({
           "@context": "https://schema.org",
           "@type": "Person",
           name: "Ryu",
-          url: "https://yourdomain.com",
-          image: "https://yourdomain.com/images/main.jpg",
+          url: "https://www.one-percent-journey.com/",
+          image: "https://www.one-percent-journey.com/images/main.jpg",
           sameAs: [
             "https://twitter.com/yourhandle",
             "https://www.linkedin.com/in/yourhandle",
