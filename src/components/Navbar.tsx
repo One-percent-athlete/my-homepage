@@ -86,7 +86,7 @@ export default function Navbar() {
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="font-bold text-xl text-white"
+          className="font-bold text-2xl tracking-wide"
         >
           One Percent Journey
         </motion.h1>

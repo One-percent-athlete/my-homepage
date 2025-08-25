@@ -83,6 +83,7 @@ const item: Variants = {
 export default function Travels() {
   return (
     <section
+      id="travels"
       className="relative py-20 px-4 overflow-hidden"
       style={{
         backgroundImage: `url('/your-background.jpg')`, // your background image here
