@@ -1,7 +1,6 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect } from "react";
 
 type RippleProps = {
   x: number;
@@ -19,11 +18,12 @@ export default function RippleTransition({ x, y, onComplete }: RippleProps) {
           height: 2000,
           x: x - 1000,
           y: y - 1000,
-          opacity: 1,
+          opacity: 0.8,
         }}
         exit={{ opacity: 0 }}
-        transition={{ duration: 0.6, ease: "easeInOut" }}
-        className="bg-blue-500 fixed top-0 left-0 z-50 pointer-events-none"
+        transition={{ duration: 0.8, ease: "easeInOut" }}
+        className="fixed top-0 left-0 z-50 pointer-events-none
+                  bg-black"
         onAnimationComplete={onComplete}
       />
     </AnimatePresence>
