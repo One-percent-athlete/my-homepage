@@ -68,6 +68,27 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Person",
+          name: "Ryu",
+          url: "https://yourdomain.com",
+          image: "https://yourdomain.com/images/main.jpg",
+          sameAs: [
+            "https://twitter.com/yourhandle",
+            "https://www.linkedin.com/in/yourhandle",
+            "https://github.com/yourhandle"
+          ],
+          jobTitle: "Freelance Engineer & Web Developer",
+          worksFor: {
+            "@type": "Organization",
+            name: "Self-Employed"
+          }
+        })
+      }} />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
