@@ -76,7 +76,17 @@ export default function Contact() {
   })[localeKey], [localeKey]);
 
   // Particles state (client-only)
-  const [particles, setParticles] = useState<any[]>([]);
+
+  type Particle = {
+  startX: number;
+  startY: number;
+  endX: number;
+  endY: number;
+  duration: number;
+  trailLength: number;
+};
+
+const [particles, setParticles] = useState<Particle[]>([]);
   useEffect(() => {
     const particleData = Array.from({ length: 20 }).map(() => ({
       startX: Math.random() * 1200 - 600,

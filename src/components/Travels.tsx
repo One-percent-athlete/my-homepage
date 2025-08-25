@@ -54,6 +54,8 @@ const countries = [
   { code: "jp", name: "Japan" },
   { code: "jo", name: "Jordan" },
   { code: "ke", name: "Kenya" },
+  { code: "kg", name: "Kyrgyzstan" },       // added
+  { code: "kz", name: "Kazakhstan" },      // added
   { code: "li", name: "Liechtenstein" },
   { code: "lk", name: "Sri Lanka" },
   { code: "my", name: "Malaysia" },
@@ -64,10 +66,12 @@ const countries = [
   { code: "nz", name: "New Zealand" },
   { code: "ni", name: "Nicaragua" },
   { code: "np", name: "Nepal" },
+  { code: "om", name: "Oman" },            // added
   { code: "pa", name: "Panama" },
   { code: "py", name: "Paraguay" },
   { code: "pe", name: "Peru" },
   { code: "pt", name: "Portugal" },
+  { code: "sa", name: "Saudi Arabia" },    // added
   { code: "sg", name: "Singapore" },
   { code: "sk", name: "Slovakia" },
   { code: "si", name: "Slovenia" },
@@ -77,6 +81,7 @@ const countries = [
   { code: "tw", name: "Taiwan" },
   { code: "th", name: "Thailand" },
   { code: "tr", name: "Turkey" },
+  { code: "ae", name: "United Arab Emirates" }, // added
   { code: "gb", name: "United Kingdom" },
   { code: "us", name: "United States" },
   { code: "uy", name: "Uruguay" },
@@ -91,6 +96,7 @@ const countries = [
   { code: "la", name: "Laos" },
   { code: "bd", name: "Bangladesh" },
 ].sort((a, b) => a.name.localeCompare(b.name));
+
 
 // --- Motion variants ---
 const container: Variants = {
