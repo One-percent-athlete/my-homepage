@@ -103,7 +103,7 @@ export default function Quote() {
         }}
         className="relative text-xl md:text-3xl italic font-semibold text-yellow-400 max-w-3xl mx-auto px-2 md:px-0 before:content-['“'] before:text-6xl before:text-yellow-300 before:absolute before:-top-8 before:-left-6 after:content-['”'] after:text-6xl after:text-yellow-300 after:absolute after:-bottom-8 after:-right-6 drop-shadow-2xl"
       >
-        If you can get 1 percent better each day for one year, you'll end up thirty-seven times better by the time you're done.
+        If you can get 1 percent better each day for one year, you’ll end up thirty-seven times better by the time you’re done.
         <footer className="mt-6 text-base md:text-lg font-normal text-gray-300">— James Clear</footer>
       </motion.blockquote>
     </section>

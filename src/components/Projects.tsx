@@ -73,8 +73,8 @@ export default function Projects() {
     const interval = setInterval(() => {
       setDots((prevDots) =>
         prevDots.map((d) => {
-          let nx = d.x + d.dx;
-          let ny = d.y + d.dy;
+          const nx = d.x + d.dx;
+          const ny = d.y + d.dy;
           if (nx > 100 || nx < 0) d.dx *= -1;
           if (ny > 100 || ny < 0) d.dy *= -1;
           return { ...d, x: nx, y: ny };

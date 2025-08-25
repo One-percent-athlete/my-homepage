@@ -1,48 +1,25 @@
 "use client";
 
-import Image from "next/image";
-import { useState } from "react";
 import { motion } from "framer-motion";
-import {
-  FaGithub,
-  FaLinkedin,
-  FaTwitter,
-  FaPhoneAlt,
-  FaEnvelope,
-  FaClipboard,
-} from "react-icons/fa";
-import toast, { Toaster } from "react-hot-toast";
+import { FaGithub, FaLinkedin, FaTwitter, FaPhoneAlt, FaEnvelope } from "react-icons/fa";
 
 export default function Contact() {
-  const [copied, setCopied] = useState("");
-
-  const handleCopy = (text: string, label: string) => {
-    navigator.clipboard.writeText(text);
-    setCopied(label);
-    toast.success(`${label} copied!`);
-  };
-
-  const personalContacts = [
+  const contacts = [
     {
       icon: <FaEnvelope />,
       label: "Email",
       value: "ryu@example.com",
       link: "mailto:ryu@example.com",
-      copyable: true,
     },
     {
       icon: <FaPhoneAlt />,
       label: "Phone",
       value: "+81 90-xxxx-xxxx",
       link: "tel:+8190xxxxxxx",
-      copyable: true,
     },
-  ];
-
-  const socialContacts = [
     {
       icon: <FaGithub />,
-      label: "GitHub",
+      label: "Github",
       value: "github.com/ryu",
       link: "https://github.com/ryu",
     },
@@ -65,22 +42,47 @@ export default function Contact() {
     { label: "LinkedIn QR", src: "/qr-linkedin.png" },
   ];
 
+  // Generate floating particles
+  const particles = Array.from({ length: 15 });
+
   return (
     <section
       id="contact"
       className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 py-24 px-6 text-center overflow-hidden text-white"
     >
-      <Toaster position="top-right" />
+      {/* Floating glowing particles */}
+      {particles.map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute w-2 h-2 bg-yellow-400 rounded-full opacity-70"
+          initial={{
+            x: Math.random() * 1200 - 600,
+            y: Math.random() * 800 - 400,
+          }}
+          animate={{
+            x: Math.random() * 1200 - 600,
+            y: Math.random() * 800 - 400,
+            opacity: [0.3, 1, 0.3],
+            scale: [0.8, 1.2, 0.8],
+          }}
+          transition={{
+            duration: 10 + Math.random() * 10,
+            repeat: Infinity,
+            repeatType: "mirror",
+          }}
+        />
+      ))}
 
-      {/* Background floating circles */}
+      {/* Background gradient circles */}
       <div className="absolute top-0 left-1/3 w-72 h-72 bg-yellow-400 rounded-full opacity-20 animate-pulse blur-3xl"></div>
       <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-pink-500 rounded-full opacity-10 animate-pulse blur-3xl"></div>
 
+      {/* Section Title */}
       <motion.h2
         initial={{ opacity: 0, y: -40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
-        className="text-5xl font-extrabold mb-6"
+        className="text-5xl font-extrabold mb-6 relative z-10"
       >
         Get in Touch
       </motion.h2>
@@ -89,88 +91,30 @@ export default function Contact() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3, duration: 0.8 }}
-        className="text-lg mb-12 text-gray-300 max-w-xl mx-auto"
+        className="text-lg mb-12 text-gray-300 max-w-xl mx-auto relative z-10"
       >
         Open for freelance projects, collaborations, or just a chat about your
         next big idea. Reach me via any method below.
       </motion.p>
 
-      {/* Personal Contacts */}
+      {/* Contact list */}
       <motion.ul
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.6, duration: 0.8 }}
-        className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-12"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-4xl mx-auto mb-12 relative z-10"
       >
-        {personalContacts.map((contact, index) => (
+        {contacts.map((contact, index) => (
           <motion.li
             key={index}
-            whileHover={{
-              scale: 1.05,
-              y: -5,
-              boxShadow: "0 0 25px rgba(255, 255, 0, 0.4)",
-            }}
-            className="flex flex-col items-center bg-gray-800 hover:bg-gray-700 rounded-3xl p-6 shadow-2xl transition-all duration-300 cursor-pointer"
+            whileHover={{ scale: 1.05, y: -5 }}
+            className="flex flex-col items-center bg-gray-800/80 hover:bg-gray-700/80 rounded-3xl p-6 shadow-2xl backdrop-blur-lg transition-all duration-300 cursor-pointer"
           >
-            <span
-              className="text-4xl mb-4 text-yellow-400"
-              aria-hidden="true"
-            >
-              {contact.icon}
-            </span>
-            <h3 className="font-bold text-xl mb-2">{contact.label}</h3>
-            <div className="flex items-center gap-2">
-              <a
-                href={contact.link}
-                className="text-gray-300 hover:text-yellow-400 transition-colors break-words"
-                aria-label={`Contact via ${contact.label}`}
-              >
-                {contact.value}
-              </a>
-              {contact.copyable && (
-                <button
-                  onClick={() => handleCopy(contact.value, contact.label)}
-                  className="text-gray-400 hover:text-yellow-400"
-                  aria-label={`Copy ${contact.label}`}
-                >
-                  <FaClipboard />
-                </button>
-              )}
-            </div>
-          </motion.li>
-        ))}
-      </motion.ul>
-
-      {/* Social Contacts */}
-      <motion.ul
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.8, duration: 0.8 }}
-        className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto mb-12"
-      >
-        {socialContacts.map((contact, index) => (
-          <motion.li
-            key={index}
-            whileHover={{
-              scale: 1.05,
-              y: -5,
-              boxShadow: "0 0 25px rgba(255, 255, 0, 0.4)",
-            }}
-            className="flex flex-col items-center bg-gray-800 hover:bg-gray-700 rounded-3xl p-6 shadow-2xl transition-all duration-300 cursor-pointer"
-          >
-            <span
-              className="text-4xl mb-4 text-yellow-400"
-              aria-hidden="true"
-            >
-              {contact.icon}
-            </span>
+            <span className="text-4xl mb-4 text-yellow-400">{contact.icon}</span>
             <h3 className="font-bold text-xl mb-2">{contact.label}</h3>
             <a
               href={contact.link}
               className="text-gray-300 hover:text-yellow-400 transition-colors break-words"
-              aria-label={`Visit ${contact.label}`}
-              target="_blank"
-              rel="noopener noreferrer"
             >
               {contact.value}
             </a>
@@ -183,20 +127,16 @@ export default function Contact() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.0, duration: 0.8 }}
-        className="flex flex-wrap justify-center gap-10 overflow-x-auto py-4"
+        className="flex flex-wrap justify-center gap-10 relative z-10"
       >
         {qrCodes.map((qr, index) => (
           <motion.div
             key={index}
-            whileHover={{ scale: 1.1, rotate: 2 }}
-            className="flex flex-col items-center bg-gray-800 rounded-3xl p-4 shadow-2xl cursor-pointer relative"
+            whileHover={{ scale: 1.1 }}
+            className="flex flex-col items-center bg-gray-800/80 rounded-3xl p-4 shadow-2xl backdrop-blur-lg cursor-pointer"
           >
-
-            <Image src={qr.src} alt={qr.label} width={128} height={128} />
+            <img src={qr.src} alt={qr.label} className="w-32 h-32 mb-2" />
             <span className="text-gray-300">{qr.label}</span>
-            <span className="absolute -top-6 text-sm text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">
-              Scan me!
-            </span>
           </motion.div>
         ))}
       </motion.div>
