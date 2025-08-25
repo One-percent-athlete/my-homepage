@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { FaGithub, FaLinkedin, FaTwitter, FaPhoneAlt, FaEnvelope } from "react-icons/fa";
 
@@ -135,7 +136,7 @@ export default function Contact() {
             whileHover={{ scale: 1.1 }}
             className="flex flex-col items-center bg-gray-800/80 rounded-3xl p-4 shadow-2xl backdrop-blur-lg cursor-pointer"
           >
-            <img src={qr.src} alt={qr.label} className="w-32 h-32 mb-2" />
+            <Image src={qr.src} alt={qr.label} className="mb-2" width={32} height={32} />
             <span className="text-gray-300">{qr.label}</span>
           </motion.div>
         ))}
