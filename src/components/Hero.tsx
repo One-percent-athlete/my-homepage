@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
 const videos = [
   "/videos/vid1.mp4",
@@ -62,14 +63,19 @@ export default function Hero() {
         <h1 className="text-5xl md:text-6xl font-extrabold mb-4 text-white">
           Ryu — Adventurer & Engineer
         </h1>
-        <p className="text-lg md:text-xl mb-6 text-white">
-          Freelance Engineer | Web App Developer | Ski Instructor | Visited 80+ Countries
+        <h2 className="text-xl md:text-2xl font-semibold mb-2 text-yellow-300">
+          Freelance Web Developer | Global Explorer | Ski Instructor
+        </h2>
+        <p className="text-lg md:text-xl mb-6 text-white max-w-xl">
+          Building modern web apps and engineering solutions while exploring the world.
+          With experience across 60+ countries, I bring a unique global perspective to
+          problem-solving.
         </p>
         <a
           href="#contact"
           className="inline-block mt-4 px-8 py-4 bg-gradient-to-r from-yellow-400 to-yellow-300 text-gray-900 font-bold rounded-2xl shadow-xl hover:scale-105 transition-transform"
         >
-          Contact Me
+          Let’s Build Something Together
         </a>
       </motion.div>
 
@@ -86,11 +92,7 @@ export default function Hero() {
           whileHover={{ scale: 1.05 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
-          <img
-            src="/images/main.jpg"
-            alt="Ryu"
-            className="object-cover w-full h-full"
-          />
+          <Image src="/images/main.jpg" alt="Description" width={300} height={300} />
         </motion.div>
 
         {/* Floating Image Dot 1 */}
@@ -108,11 +110,7 @@ export default function Hero() {
             ease: "easeInOut",
           }}
         >
-          <img
-            src="/images/main.jpg"
-            alt="Travel Icon"
-            className="w-full h-full object-cover"
-          />
+          <Image src="/images/main.jpg" alt="Description" width={300} height={300} />
         </motion.div>
 
         {/* Floating Dot 2 */}
