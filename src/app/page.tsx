@@ -38,7 +38,7 @@ export default function HomePage() {
     <div className="relative flex flex-col items-center justify-center min-h-screen overflow-hidden px-4">
       {/* Background Image */}
       <div
-        className="absolute inset-0 z-[-3] bg-cover bg-center"
+        className="absolute inset-0 z-[-3] bg-cover bg-center" id="top"
         style={{ backgroundImage: "url('/images/astro.jpg')" }}
       />
 

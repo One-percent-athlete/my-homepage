@@ -12,7 +12,7 @@ export default function Footer() {
             One Percent Journey
           </h3>
           <p className="text-sm text-gray-400">
-            © 2025 Ryu. All rights reserved.
+            © 2025 All rights reserved.
           </p>
         </div>
 

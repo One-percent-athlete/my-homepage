@@ -1,8 +1,31 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion, Variants } from "framer-motion";
+import { usePathname } from "next/navigation";
 
+// --- Translations ---
+const locales = {
+  en: {
+    title: "My Travels",
+    description: (count: number) =>
+      `I’ve visited over ${count} countries around the world, exploring cultures and adventures.`,
+  },
+  ja: {
+    title: "私の旅行",
+    description: (count: number) =>
+      `私は世界中で${count}か国以上を訪れ、文化と冒険を体験しました。`,
+  },
+  zh: {
+    title: "我的旅行",
+    description: (count: number) =>
+      `我已经访问了超过${count}个国家，探索各种文化和冒险。`,
+  },
+} as const;
+
+type LocaleKey = keyof typeof locales;
+
+// --- Countries list ---
 const countries = [
   { code: "ar", name: "Argentina" },
   { code: "au", name: "Australia" },
@@ -67,11 +90,9 @@ const countries = [
   { code: "kh", name: "Cambodia" },
   { code: "la", name: "Laos" },
   { code: "bd", name: "Bangladesh" },
-];
+].sort((a, b) => a.name.localeCompare(b.name));
 
-// sort alphabetically
-countries.sort((a, b) => a.name.localeCompare(b.name));
-
+// --- Motion variants ---
 const container: Variants = {
   hidden: { opacity: 0 },
   show: { opacity: 1, transition: { staggerChildren: 0.03 } },
@@ -82,9 +103,16 @@ const item: Variants = {
   show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100 } },
 };
 
+// --- Component ---
 export default function Travels() {
+  const pathname = usePathname();
+  const langRaw = pathname?.split("/")[1];
+  const lang: LocaleKey = (langRaw && locales[langRaw as LocaleKey] ? langRaw : "en") as LocaleKey;
+  const t = locales[lang];
+
   const [circles, setCircles] = useState<{ top: number; left: number; size: number }[]>([]);
 
+  // Generate floating circles once
   useEffect(() => {
     const generated = Array.from({ length: 12 }).map(() => ({
       top: Math.random() * 80,
@@ -93,6 +121,24 @@ export default function Travels() {
     }));
     setCircles(generated);
   }, []);
+
+  // Memoized countries grid
+  const countryGrid = useMemo(
+    () =>
+      countries.map((country, i) => (
+        <motion.div
+          key={i}
+          variants={item}
+          className="flex flex-col items-center cursor-pointer hover:scale-125 hover:rotate-3 transition-transform duration-300"
+          animate={{ y: [0, -5, 0] }}
+          transition={{ repeat: Infinity, repeatType: "mirror", duration: 4 + i * 0.05 }}
+        >
+          <span className={`fi fi-${country.code} text-4xl`}></span>
+          <span className="text-sm text-gray-300 mt-1">{country.code.toUpperCase()}</span>
+        </motion.div>
+      )),
+    []
+  );
 
   return (
     <section
@@ -111,7 +157,7 @@ export default function Travels() {
         transition={{ repeat: Infinity, duration: 60, ease: "linear" }}
       />
 
-      {/* Floating background circles */}
+      {/* Floating circles */}
       {circles.map((c, i) => (
         <motion.div
           key={i}
@@ -127,11 +173,9 @@ export default function Travels() {
         />
       ))}
 
-      <h2 className="text-4xl font-bold mb-6 text-white text-center relative z-10">
-        My Travels
-      </h2>
+      <h2 className="text-4xl font-bold mb-6 text-white text-center relative z-10">{t.title}</h2>
       <p className="text-lg mb-12 text-gray-300 max-w-2xl mx-auto text-center relative z-10">
-        I’ve visited over {countries.length} countries around the world, exploring cultures and adventures.
+        {t.description(countries.length)}
       </p>
 
       <motion.div
@@ -141,18 +185,7 @@ export default function Travels() {
         whileInView="show"
         viewport={{ once: true, amount: 0.2 }}
       >
-        {countries.map((country, i) => (
-          <motion.div
-            key={i}
-            variants={item}
-            className="flex flex-col items-center cursor-pointer hover:scale-125 hover:rotate-3 transition-transform duration-300"
-            animate={{ y: [0, -5, 0] }}
-            transition={{ repeat: Infinity, repeatType: "mirror", duration: 4 + i * 0.05 }}
-          >
-            <span className={`fi fi-${country.code} text-4xl`}></span>
-            <span className="text-sm text-gray-300 mt-1">{country.code.toUpperCase()}</span>
-          </motion.div>
-        ))}
+        {countryGrid}
       </motion.div>
     </section>
   );

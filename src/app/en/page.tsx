@@ -10,6 +10,7 @@ import Skills from "@/components/Skills";
 import Projects from "@/components/Projects";
 import Contact from "@/components/Contact";
 import { FaArrowUp } from "react-icons/fa";
+import ScrollIndicator from "@/components/ScrollIndicator";
 
 export default function HomePage() {
   const [showTop, setShowTop] = useState(false);
@@ -24,6 +25,7 @@ export default function HomePage() {
   return (
     <div className="bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-white transition-colors duration-500 scroll-smooth">
       <Navbar />
+      <ScrollIndicator />
       <Hero />
       <Quote />
       <Travels />
