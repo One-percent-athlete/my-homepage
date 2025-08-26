@@ -1,4 +1,4 @@
-import { getTranslation } from "../i18n";
+// src/app/[lang]/page.tsx
 import Contact from "@/components/Contact";
 import Projects from "@/components/Projects";
 import Hero from "@/components/Hero";
@@ -8,22 +8,24 @@ import Quote from "@/components/Quote";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollIndicator from "@/components/ScrollIndicator";
+import { getTranslation } from "../i18n";
 
 interface PageProps {
-  params: { lang: string };
+  params: { lang: string }; // sync page
 }
 
 const supportedLocales = ["en", "ja", "zh"] as const;
 type Locale = (typeof supportedLocales)[number];
 
 export default function Page({ params }: PageProps) {
-  const { lang } = params; // <-- remove 'await'
+  const { lang } = params; // safe for sync pages
 
-  // Type guard to ensure lang is a valid Locale
+  // Validate locale
   const locale: Locale = supportedLocales.includes(lang as Locale)
     ? (lang as Locale)
-    : "en";
+    : "en"; // fallback
 
+  // Translation data
   const t = getTranslation(locale);
 
   return (
@@ -31,10 +33,10 @@ export default function Page({ params }: PageProps) {
       <ScrollIndicator />
       <Navbar />
       <Hero data={t.hero} />
-      <Travels data={t.travels} />
       <Quote data={t.quote} />
       <Skills data={t.skills} />
       <Projects data={t.projects} />
+      <Travels data={t.travels} />
       <Contact data={t.contact} />
       <Footer />
     </main>
