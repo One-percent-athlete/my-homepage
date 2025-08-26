@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { FaGithub, FaLinkedin, FaInstagram, FaFacebook, FaLine, FaWeixin } from "react-icons/fa";
 
 export default function Footer() {
@@ -34,9 +35,9 @@ export default function Footer() {
             <a href="#contact" className="hover:text-yellow-300 hover:translate-x-1 transition transform duration-300">
               Contact
             </a>
-            <a href="/gallery" className="hover:text-yellow-300 hover:translate-x-1 transition transform duration-300">
+            <Link href="/gallery" className="hover:text-yellow-300 hover:translate-x-1 transition transform duration-300">
               Gallery
-            </a>
+            </Link>
           </div>
         </div>
 

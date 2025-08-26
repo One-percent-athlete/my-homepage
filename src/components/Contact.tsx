@@ -12,7 +12,7 @@ import {
   FaEnvelope,
 } from "react-icons/fa";
 
-import { ContactData, ContactEntry, QRCodeEntry } from "../app/i18n";
+import { ContactData, ContactEntry } from "../app/i18n";
 
 interface ContactProps {
   data: ContactData;

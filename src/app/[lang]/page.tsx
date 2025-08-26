@@ -7,6 +7,7 @@ import Skills from "@/components/Skills";
 import Quote from "@/components/Quote";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import ScrollIndicator from "@/components/ScrollIndicator";
 
 interface PageProps {
   params: { lang: string };
@@ -27,6 +28,7 @@ export default async function Page({ params }: PageProps) {
 
   return (
     <main>
+      <ScrollIndicator />
       <Navbar />
       <Hero data={t.hero} />
       <Travels data={t.travels} />
