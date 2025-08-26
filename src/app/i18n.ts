@@ -282,7 +282,7 @@ export const translations = {
         { label: "Wechat QR", src: "/qrcodes/wechat-qr.png" },
         { label: "Whatsapp QR", src: "/qrcodes/whatsapp-qr.png" },
       ],
-    } as any,
+    } as ContactData
   },
   zh: {
     hero: {
@@ -395,7 +395,7 @@ export const translations = {
         { label: "Wechat 二维码", src: "/qrcodes/wechat-qr.png" },
         { label: "Whatsapp 二维码", src: "/qrcodes/whatsapp-qr.png" },
       ],
-    } as any
+    } as ContactData
   },
 };
 

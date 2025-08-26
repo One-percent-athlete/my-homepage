@@ -46,7 +46,7 @@ export default function Projects({ data }: ProjectsProps) {
   const [connections, setConnections] = useState<[number, number][]>([]);
 
   useEffect(() => {
-    const newDots = Array.from({ length: 8 }, () => ({
+    const newDots = Array.from({ length: 12 }, () => ({
       x: Math.random() * 100,
       y: Math.random() * 100,
       dx: (Math.random() - 0.5) * 0.2,
