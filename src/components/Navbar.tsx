@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { FaGithub, FaLinkedin, FaInstagram, FaFacebook, FaLine, FaWeixin, FaTimes, FaBars } from "react-icons/fa";
+import { FaGithub, FaLinkedin, FaInstagram, FaFacebook, FaLine, FaWeixin, FaTimes, FaBars, FaGlobe } from "react-icons/fa";
 import { motion, AnimatePresence, Variants, useMotionValue, useTransform } from "framer-motion";
 
 export default function Navbar() {
@@ -20,7 +20,7 @@ export default function Navbar() {
     { name: "Travels", href: "#travels" },
     { name: "Skills", href: "#skills" },
     { name: "Projects", href: "#projects" },
-    { name: "Contact", href: "#contact" },
+    { name: "Contact", href: "#contact" }, // we'll make this stand out on mobile
   ];
 
   const socialIcons = [
@@ -77,36 +77,32 @@ export default function Navbar() {
         >
           One Percent Journey
         </motion.h1>
-        {/* Language Button (Desktop Only) */}
-        <motion.a
-          href="/"
-          whileHover={{ scale: 1.1 }}
-          className="hidden md:inline-flex ml-4 px-3 py-1 rounded-md bg-yellow-500 text-black font-semibold hover:bg-yellow-400 transition"
-        >
-          Language
-        </motion.a>
-        {/* Desktop Social Icons */}
+
+
         <div className="hidden md:flex items-center space-x-6">
           {socialIcons.map(({ href, icon: Icon }, index) => (
             <motion.a
-              key={href}
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.3 }}
-              animate={{
-                y: [0, -4, 0], // subtle floating animation
-              }}
-              transition={{
-                duration: 2 + index * 0.2, // stagger duration slightly per icon
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-              className="text-yellow-400 transition"
+            key={href}
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            whileHover={{ scale: 1.3 }}
+            animate={{ y: [0, -4, 0] }}
+            transition={{ duration: 2 + index * 0.2, repeat: Infinity, ease: "easeInOut" }}
+            className="text-yellow-400 transition"
             >
               <Icon size={28} />
             </motion.a>
           ))}
+          {/* Language Icon (Desktop Only) */}
+          <motion.a
+            href="/"
+            whileHover={{ scale: 1.2, rotate: 10 }}
+            className="hidden md:inline-flex ml-4 p-2 rounded-full bg-yellow-500 text-black hover:bg-yellow-400 transition"
+            >
+            <FaGlobe size={20} />
+          </motion.a>
+          {/* Desktop Social Icons */}
         </div>
 
         {/* Mobile Menu Button */}
@@ -127,16 +123,21 @@ export default function Navbar() {
               <motion.div style={{ y: glow2Y }} className="absolute top-1/2 left-1/2 w-80 h-80 bg-yellow-400/10 rounded-full blur-2xl" variants={glowVariants} />
             </motion.div>
 
-            <motion.nav initial="hidden" animate="visible" exit="exit" variants={mobileMenuVariants} className="md:hidden fixed top-0 left-0 w-full h-screen bg-gray-900/70 backdrop-blur-xl text-white flex flex-col justify-center py-24 px-6 z-40">
+            <motion.nav
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              variants={mobileMenuVariants}
+              className="md:hidden fixed top-0 left-0 w-full h-screen bg-gray-900/70 backdrop-blur-xl text-white flex flex-col justify-center py-24 px-6 z-40"
+            >
               {/* Close button */}
               <motion.button onClick={() => setMobileOpen(false)} variants={closeButtonVariants} className="absolute top-6 right-6 text-white hover:text-yellow-400">
                 <FaTimes size={24} />
               </motion.button>
 
-              {/* Links */}
+              {/* Mobile Links */}
               <div className="flex flex-col space-y-6 flex-1 justify-center">
-
-                 {/* Mobile Language Button */}
+                {/* Mobile Language Button */}
                 <motion.a
                   href="/"
                   variants={linkVariants}
@@ -145,9 +146,19 @@ export default function Navbar() {
                 >
                   Language
                 </motion.a>
+
                 {navLinks.map((link) => (
-                  <motion.a key={link.href} href={link.href} variants={linkVariants} className="relative text-lg font-semibold py-2 px-4 rounded-md bg-white/10 backdrop-blur-md shadow-lg hover:bg-white/20 hover:shadow-inner transition-all overflow-hidden" onClick={() => setMobileOpen(false)}>
-                    <span className="absolute inset-0 bg-yellow-400 opacity-0 rounded-md hover:opacity-10 transition-all pointer-events-none"></span>
+                  <motion.a
+                    key={link.href}
+                    href={link.href}
+                    variants={linkVariants}
+                    className={`relative text-lg font-semibold py-2 px-4 rounded-md transition-all overflow-hidden ${
+                      link.name === "Contact"
+                        ? "bg-yellow-500 text-black hover:bg-yellow-400 shadow-lg" // standout contact
+                        : "bg-white/10 backdrop-blur-md shadow-lg hover:bg-white/20"
+                    }`}
+                    onClick={() => setMobileOpen(false)}
+                  >
                     {link.name}
                   </motion.a>
                 ))}

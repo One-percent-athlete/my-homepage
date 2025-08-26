@@ -34,6 +34,9 @@ export default function Footer() {
             <a href="#contact" className="hover:text-yellow-300 hover:translate-x-1 transition transform duration-300">
               Contact
             </a>
+            <a href="/gallery" className="hover:text-yellow-300 hover:translate-x-1 transition transform duration-300">
+              Gallery
+            </a>
           </div>
         </div>
 

@@ -2,28 +2,6 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { motion, Variants } from "framer-motion";
-import { usePathname } from "next/navigation";
-
-// --- Translations ---
-const locales = {
-  en: {
-    title: "My Travels",
-    description: (count: number) =>
-      `I’ve visited over ${count} countries around the world, exploring cultures and adventures.`,
-  },
-  ja: {
-    title: "私の旅行",
-    description: (count: number) =>
-      `私は世界中で${count}か国以上を訪れ、文化と冒険を体験しました。`,
-  },
-  zh: {
-    title: "我的旅行",
-    description: (count: number) =>
-      `我已经访问了超过${count}个国家，探索各种文化和冒险。`,
-  },
-} as const;
-
-type LocaleKey = keyof typeof locales;
 
 // --- Countries list ---
 const countries = [
@@ -54,8 +32,8 @@ const countries = [
   { code: "jp", name: "Japan" },
   { code: "jo", name: "Jordan" },
   { code: "ke", name: "Kenya" },
-  { code: "kg", name: "Kyrgyzstan" },       // added
-  { code: "kz", name: "Kazakhstan" },      // added
+  { code: "kg", name: "Kyrgyzstan" },
+  { code: "kz", name: "Kazakhstan" },
   { code: "li", name: "Liechtenstein" },
   { code: "lk", name: "Sri Lanka" },
   { code: "my", name: "Malaysia" },
@@ -66,12 +44,12 @@ const countries = [
   { code: "nz", name: "New Zealand" },
   { code: "ni", name: "Nicaragua" },
   { code: "np", name: "Nepal" },
-  { code: "om", name: "Oman" },            // added
+  { code: "om", name: "Oman" },
   { code: "pa", name: "Panama" },
   { code: "py", name: "Paraguay" },
   { code: "pe", name: "Peru" },
   { code: "pt", name: "Portugal" },
-  { code: "sa", name: "Saudi Arabia" },    // added
+  { code: "sa", name: "Saudi Arabia" },
   { code: "sg", name: "Singapore" },
   { code: "sk", name: "Slovakia" },
   { code: "si", name: "Slovenia" },
@@ -81,7 +59,7 @@ const countries = [
   { code: "tw", name: "Taiwan" },
   { code: "th", name: "Thailand" },
   { code: "tr", name: "Turkey" },
-  { code: "ae", name: "United Arab Emirates" }, // added
+  { code: "ae", name: "United Arab Emirates" },
   { code: "gb", name: "United Kingdom" },
   { code: "us", name: "United States" },
   { code: "uy", name: "Uruguay" },
@@ -98,27 +76,27 @@ const countries = [
 ].sort((a, b) => a.name.localeCompare(b.name));
 
 
+interface TravelsProps {
+  data: {
+    title: string;
+    description: string;
+  };
+}
 // --- Motion variants ---
 const container: Variants = {
   hidden: { opacity: 0 },
   show: { opacity: 1, transition: { staggerChildren: 0.03 } },
 };
-
 const item: Variants = {
   hidden: { opacity: 0, y: 20 },
   show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100 } },
 };
 
 // --- Component ---
-export default function Travels() {
-  const pathname = usePathname();
-  const langRaw = pathname?.split("/")[1];
-  const lang: LocaleKey = (langRaw && locales[langRaw as LocaleKey] ? langRaw : "en") as LocaleKey;
-  const t = locales[lang];
+export default function Travels({ data }: TravelsProps) {
 
   const [circles, setCircles] = useState<{ top: number; left: number; size: number }[]>([]);
 
-  // Generate floating circles once
   useEffect(() => {
     const generated = Array.from({ length: 12 }).map(() => ({
       top: Math.random() * 80,
@@ -128,7 +106,6 @@ export default function Travels() {
     setCircles(generated);
   }, []);
 
-  // Memoized countries grid
   const countryGrid = useMemo(
     () =>
       countries.map((country, i) => (
@@ -147,21 +124,17 @@ export default function Travels() {
   );
 
   return (
-    <section
-      id="travels"
-      className="relative py-20 px-4 overflow-hidden"
-      
-    >
+    <section id="travels" className="relative py-20 px-4 overflow-hidden">
       {/* Animated gradient overlay */}
       <motion.div
         className="absolute inset-0 opacity-40"
         animate={{ rotate: 360 }}
         transition={{ repeat: Infinity, duration: 60, ease: "linear" }}
         style={{
-        backgroundImage: `url('/images/moon.jpg')`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
+          backgroundImage: `url('/images/moon.jpg')`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
       />
 
       {/* Floating circles */}
@@ -180,9 +153,9 @@ export default function Travels() {
         />
       ))}
 
-      <h2 className="text-4xl font-bold mb-6 text-white text-center relative z-10">{t.title}</h2>
+      <h2 className="text-4xl font-bold mb-6 text-white text-center relative z-10">{data.title}</h2>
       <p className="text-lg mb-12 text-gray-300 max-w-2xl mx-auto text-center relative z-10">
-        {t.description(countries.length)}
+        {data.description}
       </p>
 
       <motion.div

@@ -3,7 +3,6 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
 
 const videos = [
   "/videos/vid1.mp4",
@@ -11,57 +10,17 @@ const videos = [
   "/videos/vid3.mp4",
 ];
 
-type HeroContent = {
-  title: string;
-  subtitle: string;
-  description: string;
-  button: string;
-};
-
-type HeroTextContent = {
-  en: HeroContent;
-  ja: HeroContent;
-  zh: HeroContent;
-};
+interface HeroProps {
+  data: {
+    title: string;
+    subtitle: string;
+    description: string;
+    button: string;
+  };
+}
 
 
-const textContent: HeroTextContent = {
-  en: {
-    title: "Ryu — Adventurer & Engineer",
-    subtitle: "Freelance Web Developer | Global Explorer | Ski Instructor",
-    description:
-      "Building modern web apps and engineering solutions while exploring the world. With experience across 60+ countries, I bring a unique global perspective to problem-solving.",
-    button: "Let’s Build Something Together",
-  },
-  ja: {
-    title: "リュウ — 冒険者＆エンジニア",
-    subtitle: "フリーランスWeb開発者 | 世界を旅する探検家 | スキーインストラクター",
-    description:
-      "世界を旅しながらモダンなWebアプリやエンジニアリングソリューションを構築。60カ国以上の経験を活かし、ユニークなグローバルな視点で問題解決に取り組みます。",
-    button: "一緒に何かを作りましょう",
-  },
-  zh: {
-    title: "Ryu — 冒险家 & 工程师",
-    subtitle: "自由职业网页开发者 | 全球探险者 | 滑雪教练",
-    description:
-      "在探索世界的同时构建现代网页应用和工程解决方案。拥有60多个国家的经验，为问题解决带来独特的全球视角。",
-    button: "让我们一起创造点什么",
-  },
-};
-
-
-export default function Hero() {
-  const pathname = usePathname(); // e.g., "/en", "/ja", "/zh"
-  const locale = pathname?.split("/")[1] || "en"; // default to English
-
-  const supportedLocales = ["en", "ja", "zh"] as const;
-  type Locale = (typeof supportedLocales)[number];
-
-  const localeKey: Locale = supportedLocales.includes(locale as Locale)
-    ? (locale as Locale)
-    : "en";
-
-  const content = textContent[localeKey];
+export default function Hero({ data }: HeroProps) {
 
   const [currentVideo, setCurrentVideo] = useState(0);
 
@@ -111,19 +70,19 @@ export default function Hero() {
         transition={{ type: "tween", duration: 1, ease: "easeOut" }}
       >
         <h1 className="text-5xl md:text-6xl font-extrabold mb-4 text-white">
-          {content.title}
+          {data.title}
         </h1>
         <h2 className="text-xl md:text-2xl font-semibold mb-2 text-yellow-300">
-          {content.subtitle}
+          {data.subtitle}
         </h2>
         <p className="text-lg md:text-xl mb-6 text-white max-w-xl">
-          {content.description}
+          {data.description}
         </p>
         <a
           href="#contact"
           className="inline-block mt-4 px-8 py-4 bg-gradient-to-r from-yellow-400 to-yellow-300 text-gray-900 font-bold rounded-2xl shadow-xl hover:scale-105 transition-transform"
         >
-          {content.button}
+          {data.button}
         </a>
       </motion.div>
 
@@ -139,7 +98,7 @@ export default function Hero() {
           whileHover={{ scale: 1.05 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
-          <Image src="/images/main.jpg" alt="Description" width={300} height={300} />
+          <Image src="/images/main.jpg" alt="Hero Image" width={300} height={300} />
         </motion.div>
 
         {/* Floating dots */}
@@ -151,9 +110,7 @@ export default function Hero() {
             x: [0, 20 * parallax[0].x, 0],
           }}
           transition={{ type: "tween", duration: 4, repeat: Infinity, ease: "easeInOut" }}
-        >
-          <Image src="/images/dot-image.jpg" alt="Description" width={300} height={300} />
-        </motion.div>
+        />
 
         <motion.div
           className="hidden md:block absolute w-12 h-12 bg-white rounded-full top-20 left-20 opacity-80"

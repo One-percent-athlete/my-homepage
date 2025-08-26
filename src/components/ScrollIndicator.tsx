@@ -2,6 +2,7 @@
 
 import { FC, useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 type NavItem = {
   href: string;
@@ -14,10 +15,12 @@ const navItems: NavItem[] = [
   { href: "#skills", label: "Skills" },
   { href: "#projects", label: "Projects" },
   { href: "#contact", label: "Contact" },
+  { href: "/gallery", label: "Gallery" },
 ];
 
 const ScrollIndicator: FC = () => {
   const [active, setActive] = useState<string>("#top");
+  const router = useRouter();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,12 +32,15 @@ const ScrollIndicator: FC = () => {
       }
 
       navItems.forEach((item) => {
-        if (item.href === "#top") return;
+        if (!item.href.startsWith("#")) return; // only check sections
         const section = document.querySelector(item.href) as HTMLElement;
         if (section) {
           const offsetTop = section.offsetTop;
           const offsetBottom = offsetTop + section.offsetHeight;
-          if (scrollTop >= offsetTop - 100 && scrollTop < offsetBottom - 100) {
+          if (
+            scrollTop >= offsetTop - 100 &&
+            scrollTop < offsetBottom - 100
+          ) {
             setActive(item.href);
           }
         }
@@ -42,7 +48,6 @@ const ScrollIndicator: FC = () => {
     };
 
     handleScroll(); // initial check
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -57,13 +62,19 @@ const ScrollIndicator: FC = () => {
             key={i}
             href={item.href}
             onClick={(e) => {
-              e.preventDefault();
-              if (item.href === "#top") {
-                window.scrollTo({ top: 0, behavior: "smooth" });
+              if (item.href.startsWith("#")) {
+                e.preventDefault();
+                if (item.href === "#top") {
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                } else {
+                  document
+                    .querySelector(item.href)
+                    ?.scrollIntoView({ behavior: "smooth" });
+                }
               } else {
-                document
-                  .querySelector(item.href)
-                  ?.scrollIntoView({ behavior: "smooth" });
+                // internal route like /gallery
+                e.preventDefault();
+                router.push(item.href);
               }
             }}
             initial={{ opacity: 0, x: 30 }}
@@ -95,7 +106,7 @@ const ScrollIndicator: FC = () => {
             ></motion.span>
 
             {/* Tooltip */}
-            <span className="absolute right-10 opacity-0 group-hover:opacity-100 transition-all duration-300 px-4 py-2 rounded-lg text-sm font-medium shadow-lg whitespace-nowrap
+            <span className="absolute right-10 opacity-0 group-hover:opacity-100 transition-all duration-300 px-4 py-2 rounded-lg text-base font-semibold shadow-lg whitespace-nowrap
               bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 text-white">
               {item.label}
               <span className="absolute top-1/2 -right-3 transform -translate-y-1/2 w-0 h-0 border-y-4 border-y-transparent border-l-4 border-l-yellow-400"></span>
