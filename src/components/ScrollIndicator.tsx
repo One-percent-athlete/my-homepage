@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 
@@ -20,6 +20,7 @@ const navItems: NavItem[] = [
 const ScrollIndicator: FC = () => {
   const [active, setActive] = useState<string>("#top");
   const router = useRouter();
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -48,16 +49,31 @@ const ScrollIndicator: FC = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Determine the index of the active dot
+  const activeIndex = navItems.findIndex((item) => item.href === active);
+
   return (
     <div className="hidden md:flex fixed top-0 right-6 h-screen items-center z-50">
-      <div className="relative flex flex-col justify-between items-center mt-16 mb-16 h-full w-6">
-        {/* Vertical Line */}
+      <div
+        ref={containerRef}
+        className="relative flex flex-col justify-between items-center py-24 h-full w-6"
+      >
+        {/* Background line */}
         <div className="absolute top-0 bottom-0 left-1/2 w-0.5 bg-gray-300 transform -translate-x-1/2"></div>
+
+        {/* Highlight line */}
+        <motion.div
+          className="absolute left-1/2 w-0.5 bg-yellow-400 transform -translate-x-1/2 origin-top"
+          initial={{ height: 0 }}
+          animate={{
+            height: `${(activeIndex / (navItems.length - 1)) * 100}%`,
+          }}
+          transition={{ type: "tween", duration: 0.4 }}
+        />
 
         {/* Dots */}
         {navItems.map((item, i) => {
           const isActive = active === item.href;
-
           return (
             <motion.a
               key={i}
@@ -82,7 +98,6 @@ const ScrollIndicator: FC = () => {
               transition={{ delay: i * 0.1, duration: 0.4, ease: "easeOut" }}
               className="relative group flex items-center justify-center"
             >
-              {/* Dot */}
               <motion.span
                 animate={{
                   scale: isActive ? [1.3, 1.6, 1.3] : 1,
