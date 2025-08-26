@@ -21,32 +21,36 @@ interface ContactProps {
 export default function Contact({ data }: ContactProps) {
   // Map icon strings to React components
   const iconMap: Record<ContactEntry["icon"], JSX.Element> = {
-    email: <FaEnvelope />,
-    phone: <FaPhoneAlt />,
-    github: <FaGithub />,
-    linkedin: <FaLinkedin />,
-    instagram: <FaInstagram />,
-    facebook: <FaFacebook />,
+    envelope: <FaEnvelope aria-label="Email" />,
+    phone: <FaPhoneAlt aria-label="Phone" />,
+    github: <FaGithub aria-label="GitHub" />,
+    linkedin: <FaLinkedin aria-label="LinkedIn" />,
+    instagram: <FaInstagram aria-label="Instagram" />,
+    facebook: <FaFacebook aria-label="Facebook" />,
   };
 
   // Particle effect
-  type Particle = { startX: number; startY: number; endX: number; endY: number; duration: number; trailLength: number; };
+  type Particle = { startX: number; startY: number; endX: number; endY: number; duration: number; };
   const [particles, setParticles] = useState<Particle[]>([]);
 
   useEffect(() => {
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
     const particleData: Particle[] = Array.from({ length: 20 }).map(() => ({
-      startX: Math.random() * 1200 - 600,
-      startY: Math.random() * 800 - 400,
-      endX: Math.random() * 1200 - 600,
-      endY: Math.random() * 800 - 400,
+      startX: Math.random() * vw,
+      startY: Math.random() * vh,
+      endX: Math.random() * vw,
+      endY: Math.random() * vh,
       duration: 10 + Math.random() * 10,
-      trailLength: 20 + Math.random() * 30,
     }));
     setParticles(particleData);
   }, []);
 
   return (
-    <section className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 py-24 px-6 text-center overflow-hidden text-white" id="contact">
+    <section
+      id="contact"
+      className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 py-24 px-6 text-center overflow-hidden text-white"
+    >
       {/* Particles */}
       {particles.map((p, i) => (
         <motion.div
@@ -59,25 +63,68 @@ export default function Contact({ data }: ContactProps) {
       ))}
 
       {/* Title & Subtitle */}
-      <motion.h2 initial={{ opacity: 0, y: -40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="text-5xl font-extrabold mb-6 relative z-10">{data.title}</motion.h2>
-      <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.8 }} className="text-lg mb-12 text-gray-300 max-w-xl mx-auto relative z-10">{data.subtitle}</motion.p>
+      <motion.h2
+        initial={{ opacity: 0, y: -40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        className="text-5xl font-extrabold mb-6 relative z-10"
+      >
+        {data.title}
+      </motion.h2>
+      <motion.p
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3, duration: 0.8 }}
+        className="text-lg mb-12 text-gray-300 max-w-xl mx-auto relative z-10"
+      >
+        {data.subtitle}
+      </motion.p>
 
       {/* Contacts */}
-      <motion.ul initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6, duration: 0.8 }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-4xl mx-auto mb-12 relative z-10">
+      <motion.ul
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.6, duration: 0.8 }}
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-4xl mx-auto mb-12 relative z-10"
+      >
         {data.contacts.map((contact) => (
-          <motion.li key={contact.label} whileHover={{ scale: 1.05, y: -5 }} className="flex flex-col items-center bg-gray-800/80 hover:bg-gray-700/80 rounded-3xl p-6 shadow-2xl backdrop-blur-lg transition-all duration-300 cursor-pointer hover:ring-4 hover:ring-yellow-400 hover:ring-opacity-50">
+          <motion.li
+            key={contact.label}
+            whileHover={{ scale: 1.05, y: -5 }}
+            className="flex flex-col items-center bg-gray-800/80 hover:bg-gray-700/80 rounded-3xl p-6 shadow-2xl backdrop-blur-lg transition-all duration-300 cursor-pointer hover:ring-4 hover:ring-yellow-400 hover:ring-opacity-50"
+          >
             <span className="text-4xl mb-4 text-yellow-400">{iconMap[contact.icon]}</span>
             <h3 className="font-bold text-xl mb-2">{contact.label}</h3>
-            <a href={contact.link} className="text-gray-300 hover:text-yellow-400 transition-colors break-words">{contact.value}</a>
+            <a
+              href={contact.link}
+              className="text-gray-300 hover:text-yellow-400 transition-colors break-words"
+            >
+              {contact.value}
+            </a>
           </motion.li>
         ))}
       </motion.ul>
 
       {/* QR Codes */}
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.0, duration: 0.8 }} className="flex flex-wrap justify-center gap-10 relative z-10">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.0, duration: 0.8 }}
+        className="flex flex-wrap justify-center gap-10 relative z-10"
+      >
         {data.qrcodes.map((qr) => (
-          <motion.div key={qr.label} whileHover={{ scale: 1.1 }} className="flex flex-col items-center bg-gray-800/80 rounded-3xl p-4 shadow-2xl backdrop-blur-lg cursor-pointer hover:ring-4 hover:ring-yellow-400 hover:ring-opacity-50">
-            <Image src={qr.src} alt={qr.label} className="mb-2 object-cover" width={128} height={128} />
+          <motion.div
+            key={qr.label}
+            whileHover={{ scale: 1.1 }}
+            className="flex flex-col items-center bg-gray-800/80 rounded-3xl p-4 shadow-2xl backdrop-blur-lg cursor-pointer hover:ring-4 hover:ring-yellow-400 hover:ring-opacity-50"
+          >
+            <Image
+              src={qr.src}
+              alt={`${qr.label} QR code`}
+              className="mb-2 object-cover"
+              width={128}
+              height={128}
+            />
             <span className="text-gray-300">{qr.label}</span>
           </motion.div>
         ))}
