@@ -20,14 +20,14 @@ interface ContactProps {
 
 export default function Contact({ data }: ContactProps) {
   // Map icon strings to React components
-  const iconMap: Record<ContactEntry["icon"], JSX.Element> = {
-    envelope: <FaEnvelope aria-label="Email" />,
-    phone: <FaPhoneAlt aria-label="Phone" />,
-    github: <FaGithub aria-label="GitHub" />,
-    linkedin: <FaLinkedin aria-label="LinkedIn" />,
-    instagram: <FaInstagram aria-label="Instagram" />,
-    facebook: <FaFacebook aria-label="Facebook" />,
-  };
+  const iconMap: Record<ContactEntry["icon"], React.ReactElement> = {
+  envelope: <FaEnvelope aria-label="Email" />,
+  phone: <FaPhoneAlt aria-label="Phone" />,
+  github: <FaGithub aria-label="GitHub" />,
+  linkedin: <FaLinkedin aria-label="LinkedIn" />,
+  instagram: <FaInstagram aria-label="Instagram" />,
+  facebook: <FaFacebook aria-label="Facebook" />,
+};
 
   // Particle effect
   type Particle = { startX: number; startY: number; endX: number; endY: number; duration: number; };

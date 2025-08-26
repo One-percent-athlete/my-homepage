@@ -9,17 +9,25 @@ import RippleTransition from "../components/RippleTransition";
 const supportedLocales = ["en", "ja", "zh"] as const;
 type Locale = (typeof supportedLocales)[number];
 
+// Map locale codes to display names
+const languageNames: Record<Locale, string> = {
+  en: "English",
+  ja: "日本語",
+  zh: "中文",
+};
+
+// Generate languages array dynamically
+const languages = supportedLocales.map((code) => ({
+  code,
+  name: languageNames[code],
+}));
+
 export default function HomePage() {
   const router = useRouter();
   const [ripple, setRipple] = useState<{ x: number; y: number; lang: Locale } | null>(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
-  // Available languages
-  const languages: { name: string; code: Locale }[] = [
-    { name: "English", code: "en" },
-    { name: "日本語", code: "ja" },
-    { name: "中文", code: "zh" },
-  ];
+  const starColors = ["#FFD700", "#FFC107", "#FFB300", "#7EC8E3", "#FFFFFF"];
 
   // Update window dimensions
   useEffect(() => {
@@ -38,8 +46,6 @@ export default function HomePage() {
     const y = rect.top + rect.height / 2;
     setRipple({ x, y, lang });
   };
-
-  const starColors = ["#FFD700", "#FFC107", "#FFB300", "#7EC8E3", "#FFFFFF"];
 
   return (
     <div className="relative flex flex-col items-center justify-center min-h-screen overflow-hidden px-4">

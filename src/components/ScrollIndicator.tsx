@@ -11,9 +11,9 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   { href: "#top", label: "Top" },
+  { href: "#travels", label: "Travels" },
   { href: "#skills", label: "Skills" },
   { href: "#projects", label: "Projects" },
-  { href: "#travels", label: "Travels" },
   { href: "#contact", label: "Contact" },
 ];
 
@@ -50,10 +50,11 @@ const ScrollIndicator: FC = () => {
 
   return (
     <div className="hidden md:flex fixed top-0 right-6 h-screen items-center z-50">
-      {/* Line */}
-      <div className="relative h-full flex flex-col justify-between items-center">
-        <div className="absolute top-16 bottom-16 left-1/2 w-0.5 bg-gray-300 transform -translate-x-1/2"></div>
+      <div className="relative flex flex-col justify-between items-center mt-16 mb-16 h-full w-6">
+        {/* Vertical Line */}
+        <div className="absolute top-0 bottom-0 left-1/2 w-0.5 bg-gray-300 transform -translate-x-1/2"></div>
 
+        {/* Dots */}
         {navItems.map((item, i) => {
           const isActive = active === item.href;
 
