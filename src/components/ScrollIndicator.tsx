@@ -15,7 +15,6 @@ const navItems: NavItem[] = [
   { href: "#skills", label: "Skills" },
   { href: "#projects", label: "Projects" },
   { href: "#contact", label: "Contact" },
-  { href: "/gallery", label: "Gallery" },
 ];
 
 const ScrollIndicator: FC = () => {
@@ -32,28 +31,28 @@ const ScrollIndicator: FC = () => {
       }
 
       navItems.forEach((item) => {
-        if (!item.href.startsWith("#")) return; // only check sections
+        if (!item.href.startsWith("#")) return;
         const section = document.querySelector(item.href) as HTMLElement;
         if (section) {
           const offsetTop = section.offsetTop;
           const offsetBottom = offsetTop + section.offsetHeight;
-          if (
-            scrollTop >= offsetTop - 100 &&
-            scrollTop < offsetBottom - 100
-          ) {
+          if (scrollTop >= offsetTop - 100 && scrollTop < offsetBottom - 100) {
             setActive(item.href);
           }
         }
       });
     };
 
-    handleScroll(); // initial check
+    handleScroll();
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
-    <div className="hidden md:flex fixed top-6 right-6 flex-col items-end space-y-4 z-50">
+    <div className="hidden md:flex fixed top-0 right-6 h-screen flex-col items-center justify-between py-12 z-50">
+      {/* Vertical Line */}
+      <div className="absolute top-12 bottom-12 w-0.5 bg-gray-300"></div>
+
       {navItems.map((item, i) => {
         const isActive = active === item.href;
 
@@ -72,7 +71,6 @@ const ScrollIndicator: FC = () => {
                     ?.scrollIntoView({ behavior: "smooth" });
                 }
               } else {
-                // internal route like /gallery
                 e.preventDefault();
                 router.push(item.href);
               }

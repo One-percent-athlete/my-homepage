@@ -16,8 +16,8 @@ interface PageProps {
 const supportedLocales = ["en", "ja", "zh"] as const;
 type Locale = (typeof supportedLocales)[number];
 
-export default async function Page({ params }: PageProps) {
-  const { lang } = await params;
+export default function Page({ params }: PageProps) {
+  const { lang } = params; // <-- remove 'await'
 
   // Type guard to ensure lang is a valid Locale
   const locale: Locale = supportedLocales.includes(lang as Locale)
