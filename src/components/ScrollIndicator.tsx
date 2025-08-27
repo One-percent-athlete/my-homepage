@@ -26,7 +26,7 @@ const ScrollIndicator: FC = () => {
     const handleScroll = () => {
       const scrollTop = window.scrollY + window.innerHeight / 2;
 
-      for (let item of navItems) {
+      for (const item of navItems) {
         if (!item.href.startsWith("#")) continue;
         const section = document.querySelector(item.href) as HTMLElement;
         if (section) {
@@ -45,8 +45,6 @@ const ScrollIndicator: FC = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  const activeIndex = navItems.findIndex((item) => item.href === active);
 
   return (
     <div className="hidden md:flex fixed top-0 right-6 h-screen items-center z-50">

@@ -17,11 +17,6 @@ interface HeroProps {
 
 export default function Hero({ data }: HeroProps) {
   const [currentVideo, setCurrentVideo] = useState(0);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const mousePos = useRef({ x: 0, y: 0 });
-  const auroraParticles = useRef<
-    { x: number; y: number; vx: number; vy: number; alpha: number; color: string }[]
-  >([]);
 
   // Cycle through videos every 5 seconds
   useEffect(() => {
