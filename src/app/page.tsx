@@ -23,17 +23,26 @@ const languages = supportedLocales.map((code) => ({
 }));
 
 export default function HomePage() {
+  const router = useRouter();
+
+  // State & refs
   const [isHoveringButton, setIsHoveringButton] = useState(false);
+  const isHoveringButtonRef = useRef(isHoveringButton);
+  const [ripple, setRipple] = useState<{ x: number; y: number; lang: Locale } | null>(null);
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const mousePos = useRef({ x: 0, y: 0 });
   const auroraParticles = useRef<
     { x: number; y: number; vx: number; vy: number; alpha: number; color: string }[]
   >([]);
-  const router = useRouter();
-  const [ripple, setRipple] = useState<{ x: number; y: number; lang: Locale } | null>(null);
-  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+  const cursorRef = useRef<HTMLDivElement>(null);
 
   const starColors = ["#FFD700", "#FFC107", "#FFB300", "#7EC8E3", "#FFFFFF"];
+
+  // Sync ref with state
+  useEffect(() => {
+    isHoveringButtonRef.current = isHoveringButton;
+  }, [isHoveringButton]);
 
   // Update window dimensions
   useEffect(() => {
@@ -46,12 +55,9 @@ export default function HomePage() {
   }, []);
 
   // Track mouse for aurora + custom cursor
-  const cursorRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     const updateCursor = (e: MouseEvent) => {
       mousePos.current = { x: e.clientX, y: e.clientY };
-
       if (cursorRef.current) {
         cursorRef.current.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
       }
@@ -61,8 +67,7 @@ export default function HomePage() {
     return () => window.removeEventListener("mousemove", updateCursor);
   }, []);
 
-  
-  // Aurora effect
+  // Aurora + particles animation
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -76,14 +81,18 @@ export default function HomePage() {
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
 
-    const colors = ["rgba(255,255,255,0.2)", "rgba(173,216,230,0.3)", "rgba(144,238,144,0.3)", "rgba(255,255,0,0.2)"];
+    const colors = [
+      "rgba(255,255,255,0.2)",
+      "rgba(173,216,230,0.3)",
+      "rgba(144,238,144,0.3)",
+      "rgba(255,255,0,0.2)",
+    ];
 
     const animate = () => {
-      if (!ctx) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       // Add new particles only if not hovering a button
-      if (!isHoveringButton) {
+      if (!isHoveringButtonRef.current) {
         auroraParticles.current.push({
           x: mousePos.current.x,
           y: mousePos.current.y,
@@ -93,6 +102,7 @@ export default function HomePage() {
           color: colors[Math.floor(Math.random() * colors.length)],
         });
       }
+
       // Draw particles
       auroraParticles.current.forEach((p, i) => {
         ctx.beginPath();
@@ -105,9 +115,7 @@ export default function HomePage() {
         p.y += p.vy;
         p.alpha -= 0.01;
 
-        if (p.alpha <= 0) {
-          auroraParticles.current.splice(i, 1);
-        }
+        if (p.alpha <= 0) auroraParticles.current.splice(i, 1);
       });
 
       requestAnimationFrame(animate);
@@ -115,16 +123,10 @@ export default function HomePage() {
 
     animate();
 
-    const handleMouseMove = (e: MouseEvent) => {
-      mousePos.current = { x: e.clientX, y: e.clientY };
-    };
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("resize", resizeCanvas);
-    };
+    return () => window.removeEventListener("resize", resizeCanvas);
   }, []);
 
-  // Handle button click
+  // Handle ripple click
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>, lang: Locale) => {
     const rect = event.currentTarget.getBoundingClientRect();
     const x = rect.left + rect.width / 2;
@@ -133,22 +135,20 @@ export default function HomePage() {
   };
 
   return (
-    <div className="relative flex flex-col items-center justify-center min-h-screen overflow-hidden px-4" style={{ cursor: "none" }}>
-      {/* Background Image */}
-      <div
-        className="absolute inset-0 z-[-3] bg-cover bg-center"
-        style={{ backgroundImage: "url('/images/astro.jpg')" }}
-      />
+    <div
+      className="relative flex flex-col items-center justify-center min-h-screen overflow-hidden px-4"
+      style={{ cursor: "none" }}
+    >
+      {/* Background */}
+      <div className="absolute inset-0 z-[-3] bg-cover bg-center" style={{ backgroundImage: "url('/images/astro.jpg')" }} />
 
       {/* Aurora Canvas */}
       <canvas ref={canvasRef} className="absolute inset-0 z-10 pointer-events-none" />
 
-      {/* Custom Green Cursor */}
+      {/* Custom Cursor */}
       <div
         ref={cursorRef}
-        className={`fixed top-0 left-0 z-[9999] w-6 h-6 rounded-full pointer-events-none
-                  bg-green-400 shadow-[0_0_20px_rgba(0,255,128,0.8)]
-                  mix-blend-difference transition-transform duration-75 ease-out`}
+        className="fixed top-0 left-0 z-[9999] w-6 h-6 rounded-full pointer-events-none bg-green-400 shadow-[0_0_20px_rgba(0,255,128,0.8)] mix-blend-difference transition-transform duration-75 ease-out"
       />
 
       {/* Twinkling Stars */}
@@ -166,29 +166,16 @@ export default function HomePage() {
               <motion.div
                 key={`star-${i}`}
                 className="absolute rounded-full"
-                style={{
-                  width: `${size}px`,
-                  height: `${size}px`,
-                  background: color,
-                }}
+                style={{ width: `${size}px`, height: `${size}px`, background: color }}
                 initial={{ x: startX, y: startY, opacity: 0.3, scale: 1 }}
-                animate={{
-                  opacity: [0.3, 1, 0.3],
-                  scale: [1, 1.3 + Math.random() * 0.3, 1],
-                }}
-                transition={{
-                  duration,
-                  repeat: Infinity,
-                  repeatType: "mirror",
-                  ease: "easeInOut",
-                  delay,
-                }}
+                animate={{ opacity: [0.3, 1, 0.3], scale: [1, 1.3 + Math.random() * 0.3, 1] }}
+                transition={{ duration, repeat: Infinity, repeatType: "mirror", ease: "easeInOut", delay }}
               />
             );
           })}
       </div>
 
-      {/* Main Heading */}
+      {/* Heading */}
       <motion.h1
         initial={{ opacity: 0, y: -40 }}
         animate={{ opacity: 1, y: 0 }}
@@ -217,39 +204,27 @@ export default function HomePage() {
         className="flex flex-col md:flex-row gap-6 w-full max-w-2xl"
       >
         {languages.map((lang) => (
-        <motion.button
-          onMouseEnter={() => setIsHoveringButton(true)}
-          onMouseLeave={() => setIsHoveringButton(false)}
-          key={lang.code}
-          onClick={(e) => handleClick(e, lang.code)}
-          whileHover={{ scale: 1.08 }}
-          whileTap={{ scale: 0.96 }}
-          className="relative flex-1 py-6 bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-500
-                    text-black font-bold rounded-3xl shadow-[0_0_20px_rgba(255,215,0,0.7)]
-                    border-2 border-transparent bg-clip-padding overflow-hidden
-                    text-xl tracking-wider uppercase transition-all duration-300 cursor-none"
-        >
-          {/* Button content */}
-          <span className="relative z-10 flex items-center justify-center transition-colors duration-300 hover:text-black hover:after:text-yellow-300">
-            {lang.name}
-          </span>
-
-          {/* Hover gradient overlay */}
-          <span
-            className={`
-            absolute inset-0
-            bg-gradient-to-r from-yellow-500 to-yellow-200
-            scale-x-0 origin-left
-            transition-transform duration-500 ease-out
-            hover:scale-x-100 rounded-3xl
-            pointer-events-none
-          `}
-          />
-        </motion.button>
-      ))}
+          <motion.button
+            key={lang.code}
+            onMouseEnter={() => setIsHoveringButton(true)}
+            onMouseLeave={() => setIsHoveringButton(false)}
+            onClick={(e) => handleClick(e, lang.code)}
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.96 }}
+            className="relative flex-1 py-6 bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-500
+                       text-black font-bold rounded-3xl shadow-[0_0_20px_rgba(255,215,0,0.7)]
+                       border-2 border-transparent bg-clip-padding overflow-hidden
+                       text-xl tracking-wider uppercase transition-all duration-300 cursor-none"
+          >
+            <span className="relative z-10 flex items-center justify-center">{lang.name}</span>
+            <span
+              className="absolute inset-0 bg-gradient-to-r from-yellow-500 to-yellow-200 scale-x-0 origin-left transition-transform duration-500 ease-out hover:scale-x-100 rounded-3xl pointer-events-none"
+            />
+          </motion.button>
+        ))}
       </motion.div>
 
-      {/* Ripple Transition */}
+      {/* Ripple */}
       {ripple && (
         <RippleTransition
           x={ripple.x}
@@ -258,6 +233,7 @@ export default function HomePage() {
           borderClass="border-black"
           duration={0.4}
           onComplete={() => router.push(`/${ripple.lang}`)}
+
         />
       )}
 
