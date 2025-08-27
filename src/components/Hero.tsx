@@ -1,14 +1,10 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 
-const videos = [
-  "/videos/vid1.mp4",
-  "/videos/vid2.mp4",
-  "/videos/vid3.mp4",
-];
+const videos = ["/videos/vid1.mp4", "/videos/vid2.mp4", "/videos/vid3.mp4"];
 
 interface HeroProps {
   data: {
@@ -19,10 +15,13 @@ interface HeroProps {
   };
 }
 
-
 export default function Hero({ data }: HeroProps) {
-
   const [currentVideo, setCurrentVideo] = useState(0);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const mousePos = useRef({ x: 0, y: 0 });
+  const auroraParticles = useRef<
+    { x: number; y: number; vx: number; vy: number; alpha: number; color: string }[]
+  >([]);
 
   // Cycle through videos every 5 seconds
   useEffect(() => {
@@ -64,20 +63,14 @@ export default function Hero({ data }: HeroProps) {
 
       {/* Left Text Section */}
       <motion.div
-        className="md:w-1/2 mb-12 md:mb-0 text-center md:text-left z-10 order-2 md:order-1"
+        className="md:w-1/2 mb-12 md:mb-0 text-center md:text-left z-20 order-2 md:order-1"
         initial={{ opacity: 0, x: -50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ type: "tween", duration: 1, ease: "easeOut" }}
       >
-        <h1 className="text-5xl md:text-6xl font-extrabold mb-4 text-white">
-          {data.title}
-        </h1>
-        <h2 className="text-xl md:text-2xl font-semibold mb-2 text-yellow-300">
-          {data.subtitle}
-        </h2>
-        <p className="text-lg md:text-xl mb-6 text-white max-w-xl">
-          {data.description}
-        </p>
+        <h1 className="text-5xl md:text-6xl font-extrabold mb-4 text-white">{data.title}</h1>
+        <h2 className="text-xl md:text-2xl font-semibold mb-2 text-yellow-300">{data.subtitle}</h2>
+        <p className="text-lg md:text-xl mb-6 text-white max-w-xl">{data.description}</p>
         <a
           href="#contact"
           className="inline-block mt-4 px-8 py-4 bg-gradient-to-r from-yellow-400 to-yellow-300 text-gray-900 font-bold rounded-2xl shadow-xl hover:scale-105 transition-transform"
@@ -88,7 +81,7 @@ export default function Hero({ data }: HeroProps) {
 
       {/* Right Image Section */}
       <motion.div
-        className="md:w-1/2 flex justify-center relative z-10 order-1 md:order-2 mb-12 md:mb-0"
+        className="md:w-1/2 flex justify-center relative z-20 order-1 md:order-2 mb-12 md:mb-0"
         initial={{ opacity: 0, x: 50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ type: "tween", duration: 1, ease: "easeOut" }}
@@ -98,7 +91,7 @@ export default function Hero({ data }: HeroProps) {
           whileHover={{ scale: 1.05 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
-          <Image src="/images/main.jpg" alt="Hero Image" width={300} height={300} />
+          <Image src="/images/main.jpg" alt="Hero Image" width={300} height={300} priority />
         </motion.div>
 
         {/* Floating dots */}
@@ -111,7 +104,6 @@ export default function Hero({ data }: HeroProps) {
           }}
           transition={{ type: "tween", duration: 4, repeat: Infinity, ease: "easeInOut" }}
         />
-
         <motion.div
           className="hidden md:block absolute w-12 h-12 bg-white rounded-full top-20 left-20 opacity-80"
           animate={{
@@ -120,7 +112,6 @@ export default function Hero({ data }: HeroProps) {
           }}
           transition={{ type: "tween", duration: 3, repeat: Infinity, ease: "easeInOut" }}
         />
-
         <motion.div
           className="absolute w-8 h-8 bg-yellow-300 rounded-full opacity-70"
           style={{ top: "30%", left: "10%" }}
@@ -130,7 +121,6 @@ export default function Hero({ data }: HeroProps) {
           }}
           transition={{ type: "tween", duration: 5, repeat: Infinity, ease: "easeInOut" }}
         />
-
         <motion.div
           className="absolute w-6 h-6 bg-white rounded-full opacity-50"
           style={{ bottom: "20%", right: "25%" }}

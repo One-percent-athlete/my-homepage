@@ -11,9 +11,9 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   { href: "#top", label: "Top" },
-  { href: "#travels", label: "Travels" },
   { href: "#skills", label: "Skills" },
   { href: "#projects", label: "Projects" },
+  { href: "#travels", label: "Travels" },
   { href: "#contact", label: "Contact" },
 ];
 
@@ -24,24 +24,21 @@ const ScrollIndicator: FC = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      const scrollTop = window.scrollY;
+      const scrollTop = window.scrollY + window.innerHeight / 2;
 
-      if (scrollTop < 100) {
-        setActive("#top");
-        return;
-      }
-
-      navItems.forEach((item) => {
-        if (!item.href.startsWith("#")) return;
+      for (let item of navItems) {
+        if (!item.href.startsWith("#")) continue;
         const section = document.querySelector(item.href) as HTMLElement;
         if (section) {
-          const offsetTop = section.offsetTop;
-          const offsetBottom = offsetTop + section.offsetHeight;
-          if (scrollTop >= offsetTop - 100 && scrollTop < offsetBottom - 100) {
+          const rect = section.getBoundingClientRect();
+          const sectionTop = window.scrollY + rect.top;
+          const sectionBottom = sectionTop + rect.height;
+          if (scrollTop >= sectionTop && scrollTop < sectionBottom) {
             setActive(item.href);
+            break;
           }
         }
-      });
+      }
     };
 
     handleScroll();
@@ -49,27 +46,11 @@ const ScrollIndicator: FC = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Determine the index of the active dot
   const activeIndex = navItems.findIndex((item) => item.href === active);
 
   return (
     <div className="hidden md:flex fixed top-0 right-6 h-screen items-center z-50">
-      <div
-        ref={containerRef}
-        className="relative flex flex-col justify-between items-center py-24 h-full w-6"
-      >
-        {/* Background line */}
-        <div className="absolute top-0 bottom-0 left-1/2 w-0.5 bg-gray-300 transform -translate-x-1/2"></div>
-
-        {/* Highlight line */}
-        <motion.div
-          className="absolute left-1/2 w-0.5 bg-yellow-400 transform -translate-x-1/2 origin-top"
-          initial={{ height: 0 }}
-          animate={{
-            height: `${(activeIndex / (navItems.length - 1)) * 100}%`,
-          }}
-          transition={{ type: "tween", duration: 0.4 }}
-        />
+      <div ref={containerRef} className="relative flex flex-col justify-between items-center py-24 h-full w-6">
 
         {/* Dots */}
         {navItems.map((item, i) => {
@@ -79,50 +60,39 @@ const ScrollIndicator: FC = () => {
               key={i}
               href={item.href}
               onClick={(e) => {
+                e.preventDefault();
                 if (item.href.startsWith("#")) {
-                  e.preventDefault();
-                  if (item.href === "#top") {
-                    window.scrollTo({ top: 0, behavior: "smooth" });
-                  } else {
-                    document
-                      .querySelector(item.href)
-                      ?.scrollIntoView({ behavior: "smooth" });
-                  }
+                  if (item.href === "#top") window.scrollTo({ top: 0, behavior: "smooth" });
+                  else document.querySelector(item.href)?.scrollIntoView({ behavior: "smooth" });
                 } else {
-                  e.preventDefault();
                   router.push(item.href);
                 }
               }}
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: i * 0.1, duration: 0.4, ease: "easeOut" }}
-              className="relative group flex items-center justify-center"
+              className="relative group flex items-center justify-center my-2"
             >
               <motion.span
                 animate={{
-                  scale: isActive ? [1.3, 1.6, 1.3] : 1,
+                  scale: isActive ? 1.6 : 1,
                   boxShadow: isActive
-                    ? [
-                        "0 0 10px rgba(250,204,21,0.6), 0 0 20px rgba(250,204,21,0.3)",
-                        "0 0 15px rgba(250,204,21,0.8), 0 0 30px rgba(250,204,21,0.4)",
-                        "0 0 10px rgba(250,204,21,0.6), 0 0 20px rgba(250,204,21,0.3)",
-                      ]
+                    ? "0 0 10px rgba(250,204,21,0.6), 0 0 20px rgba(250,204,21,0.3)"
                     : "0 0 4px rgba(0,0,0,0.2)",
                   background: isActive
                     ? "radial-gradient(circle at 30% 30%, #facc15, #eab308)"
                     : "radial-gradient(circle at 30% 30%, #ffffff, #f3f4f6)",
                 }}
                 transition={{
-                  duration: 1.2,
+                  duration: 1,
                   repeat: isActive ? Infinity : 0,
                   ease: "easeInOut",
                 }}
                 className="w-5 h-5 rounded-full border-2 border-yellow-400 z-10"
-              ></motion.span>
+              />
 
               {/* Tooltip */}
-              <span className="absolute right-10 opacity-0 group-hover:opacity-100 transition-all duration-300 px-4 py-2 rounded-lg text-base font-semibold shadow-lg whitespace-nowrap
-                bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 text-white">
+              <span className="absolute right-10 opacity-0 group-hover:opacity-100 transition-all duration-300 px-4 py-2 rounded-lg text-base font-semibold shadow-lg whitespace-nowrap bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 text-white">
                 {item.label}
                 <span className="absolute top-1/2 -right-3 transform -translate-y-1/2 w-0 h-0 border-y-4 border-y-transparent border-l-4 border-l-yellow-400"></span>
               </span>

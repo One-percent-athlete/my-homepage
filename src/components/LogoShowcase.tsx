@@ -1,6 +1,6 @@
 "use client";
 
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import {
   SiPython,
   SiDjango,
@@ -38,10 +38,40 @@ const coloredLogos = [
 
 
 
+
+
 const LogoShowcase: FC = () => {
+
+  const [particles, setParticles] = useState<{ x: number; y: number; size: number; delay: number }[]>([]);
+
+  useEffect(() => {
+    const particleCount = 25;
+    const newParticles = Array.from({ length: particleCount }).map(() => ({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * 400 + 50,
+      size: Math.random() * 3 + 2,
+      delay: Math.random() * 5,
+    }));
+    setParticles(newParticles);
+  }, []);
+  
   return (
-    <div className="overflow-hidden w-full bg-transparent pt-12 space-y-4">
-      {/* Top row */}
+    <div className="overflow-hidden w-full bg-transparent py-2">
+
+       {/* Floating particles, very subtle */}
+      {particles.map((p, i) => (
+        <div
+          key={i}
+          className="absolute rounded-full bg-yellow-400 opacity-10 blur-sm"
+          style={{
+            width: p.size,
+            height: p.size,
+            top: p.y,
+            left: p.x,
+            animation: `floatParticle 8s ease-in-out ${p.delay}s infinite alternate`,
+          }}
+        ></div>
+      ))}
       {/* Top row */}
         <div className="flex animate-marquee gap-8 sm:gap-12 md:gap-16">
         {Array(4) // repeat logos 4 times for smooth infinite scroll
@@ -101,7 +131,7 @@ const LogoShowcase: FC = () => {
             .animate-marquee {
             display: flex;
             width: max-content;
-            animation: marquee 105s linear infinite;
+            animation: marquee 120s linear infinite;
             }
 
             .animate-marquee-reverse {

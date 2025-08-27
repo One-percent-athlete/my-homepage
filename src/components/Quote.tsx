@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { motion, useTransform, useScroll } from "framer-motion";
-import LogoShowcase from "./LogoShowcase";
 
 interface QuoteProps {
   data: {
@@ -119,7 +118,6 @@ export default function Quote({ data }: QuoteProps) {
         {data.text}
         <footer className="mt-6 text-base md:text-lg font-normal text-gray-300">{data.author}</footer>
       </motion.blockquote>
-      <LogoShowcase />
     </section>
   );
 }

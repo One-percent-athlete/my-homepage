@@ -21,13 +21,13 @@ interface ContactProps {
 export default function Contact({ data }: ContactProps) {
   // Map icon strings to React components
   const iconMap: Record<ContactEntry["icon"], React.ReactElement> = {
-  envelope: <FaEnvelope aria-label="Email" />,
-  phone: <FaPhoneAlt aria-label="Phone" />,
-  github: <FaGithub aria-label="GitHub" />,
-  linkedin: <FaLinkedin aria-label="LinkedIn" />,
-  instagram: <FaInstagram aria-label="Instagram" />,
-  facebook: <FaFacebook aria-label="Facebook" />,
-};
+    envelope: <FaEnvelope aria-label="Email" />,
+    phone: <FaPhoneAlt aria-label="Phone" />,
+    github: <FaGithub aria-label="GitHub" />,
+    linkedin: <FaLinkedin aria-label="LinkedIn" />,
+    instagram: <FaInstagram aria-label="Instagram" />,
+    facebook: <FaFacebook aria-label="Facebook" />,
+  };
 
   // Particle effect
   type Particle = { startX: number; startY: number; endX: number; endY: number; duration: number; };
@@ -91,7 +91,9 @@ export default function Contact({ data }: ContactProps) {
           <motion.li
             key={contact.label}
             whileHover={{ scale: 1.05, y: -5 }}
-            className="flex flex-col items-center bg-gray-800/80 hover:bg-gray-700/80 rounded-3xl p-6 shadow-2xl backdrop-blur-lg transition-all duration-300 cursor-pointer hover:ring-4 hover:ring-yellow-400 hover:ring-opacity-50"
+            className="flex flex-col items-center bg-gray-800/80 hover:bg-gray-700/80 rounded-3xl p-6 backdrop-blur-lg transition-all duration-300 cursor-pointer hover:ring-4 hover:ring-yellow-400 hover:ring-opacity-50 hover:shadow-[0_0_40px_cyan] sm:hover:scale-105
+              md:border-yellow-400 md:hover:border-yellow-400 md:hover:shadow-[0_0_40px_orange]
+              shadow-[0_0_30px_orange] md:shadow-none border-1 border-yellow-400"
           >
             <span className="text-4xl mb-4 text-yellow-400">{iconMap[contact.icon]}</span>
             <h3 className="font-bold text-xl mb-2">{contact.label}</h3>
@@ -116,7 +118,9 @@ export default function Contact({ data }: ContactProps) {
           <motion.div
             key={qr.label}
             whileHover={{ scale: 1.1 }}
-            className="flex flex-col items-center bg-gray-800/80 rounded-3xl p-4 shadow-2xl backdrop-blur-lg cursor-pointer hover:ring-4 hover:ring-yellow-400 hover:ring-opacity-50"
+            className="flex flex-col items-center bg-gray-800/80 rounded-3xl p-4 backdrop-blur-lg cursor-pointer hover:ring-4 hover:ring-yellow-400 hover:ring-opacity-50 hover:shadow-[0_0_40px_cyan] sm:hover:scale-105
+              md:border-yellow-400 md:hover:border-yellow-400 md:hover:shadow-[0_0_40px_orange]
+              shadow-[0_0_30px_orange] md:shadow-none border-1 border-yellow-400"
           >
             <Image
               src={qr.src}
