@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
-import { motion } from "framer-motion";
+import { useRef, useMemo } from "react";
+import { motion, useInView, Variants } from "framer-motion";
 import { FaReact, FaNodeJs, FaJsSquare, FaStripe, FaMobileAlt } from "react-icons/fa";
 
 interface ProjectItem {
@@ -17,21 +17,12 @@ interface ProjectsProps {
   };
 }
 
-type Dot = {
-  x: number;
-  y: number;
-  dx: number;
-  dy: number;
-};
-
 export default function Projects({ data }: ProjectsProps) {
-  // Icons array to cycle through
   const iconComponents = useMemo(
     () => [FaReact, FaNodeJs, FaJsSquare, FaStripe, FaMobileAlt],
     []
   );
 
-  // Projects with assigned icons
   const projectsWithIcons = useMemo(
     () =>
       data.items.map((proj, idx) => ({
@@ -41,84 +32,41 @@ export default function Projects({ data }: ProjectsProps) {
     [data.items, iconComponents]
   );
 
-  // Background dots
-  const [dots, setDots] = useState<Dot[]>([]);
-  const [connections, setConnections] = useState<[number, number][]>([]);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(sectionRef, { margin: "-100px" }); // trigger slightly before fully visible
 
-  useEffect(() => {
-    const newDots = Array.from({ length: 12 }, () => ({
-      x: Math.random() * 100,
-      y: Math.random() * 100,
-      dx: (Math.random() - 0.5) * 0.2,
-      dy: (Math.random() - 0.5) * 0.2,
-    }));
-    setDots(newDots);
-
-    const newConnections: [number, number][] = [];
-    for (let i = 0; i < newDots.length; i++) {
-      for (let j = i + 1; j < newDots.length; j++) {
-        if (Math.random() < 0.4) newConnections.push([i, j]);
-      }
-    }
-    setConnections(newConnections);
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setDots((prevDots) =>
-        prevDots.map((d) => {
-          const nx = d.x + d.dx;
-          const ny = d.y + d.dy;
-          let newDx = d.dx;
-          let newDy = d.dy;
-          if (nx > 100 || nx < 0) newDx *= -1;
-          if (ny > 100 || ny < 0) newDy *= -1;
-          return { ...d, x: nx, y: ny, dx: newDx, dy: newDy };
-        })
-      );
-    }, 30);
-    return () => clearInterval(interval);
-  }, []);
+  // Variants for fly in/out animation
+  const cardVariants: Variants = {
+    hidden: { x: "-150vw", opacity: 0 }, // start far left offscreen
+    visible: { x: 0, opacity: 1, transition: { type: "spring", stiffness: 70, damping: 15 } },
+    exit: { x: "150vw", opacity: 0, transition: { type: "spring", stiffness: 70, damping: 15 } }, // fly out right
+  };
 
   return (
     <section
       id="projects"
+      ref={sectionRef}
       className="relative text-white py-20 px-4 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-center overflow-hidden"
     >
-      {/* Background Dots & Lines */}
-      <svg className="absolute w-full h-full top-0 left-0 pointer-events-none z-0">
-        {connections.map(([i, j], idx) => (
-          <line
-            key={idx}
-            x1={`${dots[i]?.x ?? 0}%`}
-            y1={`${dots[i]?.y ?? 0}%`}
-            x2={`${dots[j]?.x ?? 0}%`}
-            y2={`${dots[j]?.y ?? 0}%`}
-            stroke="cyan"
-            strokeOpacity={0.2}
-            strokeWidth={1}
-          />
-        ))}
-        {dots.map((dot, i) => (
-          <circle key={i} cx={`${dot.x}%`} cy={`${dot.y}%`} r={4} fill="cyan" opacity={0.5} />
-        ))}
-      </svg>
-
-      {/* Title */}
       <h2 className="text-4xl font-bold mb-12 relative z-10">{data.title}</h2>
 
-      {/* Projects Grid */}
       <div className="flex flex-wrap justify-center gap-8 relative z-10">
         {projectsWithIcons.map((proj, idx) => {
           const Icon = proj.Icon;
+
           return (
             <motion.div
               key={idx}
               className="bg-gradient-to-br from-gray-800 to-gray-700 p-6 rounded-3xl w-72 border border-gray-600
-              transition-transform duration-300 cursor-pointer
+              transition-transform duration-300
               hover:shadow-[0_0_40px_cyan] sm:hover:scale-105
               md:border-gray-600 md:hover:border-cyan-400 md:hover:shadow-[0_0_40px_cyan]
               shadow-[0_0_30px_cyan] md:shadow-none"
+              variants={cardVariants}
+              initial="hidden"
+              animate={isInView ? "visible" : "hidden"}
+              exit="exit"
+              transition={{ delay: idx * 0.1 }}
               whileHover={{ y: -5 }}
             >
               <div className="flex justify-center mb-3">

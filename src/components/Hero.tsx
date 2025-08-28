@@ -1,7 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useEffect, useState, useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 
 const videos = ["/videos/vid1.mp4", "/videos/vid2.mp4", "/videos/vid3.mp4"];
@@ -18,7 +18,6 @@ interface HeroProps {
 export default function Hero({ data }: HeroProps) {
   const [currentVideo, setCurrentVideo] = useState(0);
 
-  // Cycle through videos every 5 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentVideo((prev) => (prev + 1) % videos.length);
@@ -33,8 +32,16 @@ export default function Hero({ data }: HeroProps) {
     { x: 0.7, y: 0.7 },
   ];
 
+  // Scroll fade & slide effect
+  const { scrollY } = useScroll();
+  const fadeOut = useTransform(scrollY, [0, 300], [1, 0]);
+  const slideUp = useTransform(scrollY, [0, 300], [0, -100]); // slides up 100px
+
   return (
-    <section className="min-h-screen flex flex-col md:flex-row items-center justify-center px-6 py-24 relative overflow-hidden">
+    <motion.section
+      className="min-h-screen flex flex-col md:flex-row items-center justify-center px-6 sm:pt-32 pt-12 relative overflow-hidden"
+      style={{ opacity: fadeOut, y: slideUp }}
+    >
       {/* Background Video Layer */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         {videos.map((src, index) => (
@@ -58,7 +65,7 @@ export default function Hero({ data }: HeroProps) {
 
       {/* Left Text Section */}
       <motion.div
-        className="md:w-1/2 mb-12 md:mb-0 text-center md:text-left z-20 order-2 md:order-1"
+        className="md:w-1/2 mb-0 text-center md:text-left z-20 order-2 md:order-1"
         initial={{ opacity: 0, x: -50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ type: "tween", duration: 1, ease: "easeOut" }}
@@ -76,7 +83,7 @@ export default function Hero({ data }: HeroProps) {
 
       {/* Right Image Section */}
       <motion.div
-        className="md:w-1/2 flex justify-center relative z-20 order-1 md:order-2 mb-12 md:mb-0"
+        className="md:w-1/2 flex justify-center relative z-20 order-1 md:order-2 md:mb-0"
         initial={{ opacity: 0, x: 50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ type: "tween", duration: 1, ease: "easeOut" }}
@@ -126,6 +133,6 @@ export default function Hero({ data }: HeroProps) {
           transition={{ type: "tween", duration: 6, repeat: Infinity, ease: "easeInOut" }}
         />
       </motion.div>
-    </section>
+    </motion.section>
   );
 }

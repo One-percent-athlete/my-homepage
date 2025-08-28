@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import RippleTransition from "../components/RippleTransition";
 
 // Supported locales
@@ -25,24 +25,11 @@ const languages = supportedLocales.map((code) => ({
 export default function HomePage() {
   const router = useRouter();
 
-  // State & refs
   const [isHoveringButton, setIsHoveringButton] = useState(false);
-  const isHoveringButtonRef = useRef(isHoveringButton);
   const [ripple, setRipple] = useState<{ x: number; y: number; lang: Locale } | null>(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const mousePos = useRef({ x: 0, y: 0 });
-  const auroraParticles = useRef<
-    { x: number; y: number; vx: number; vy: number; alpha: number; color: string }[]
-  >([]);
-  const cursorRef = useRef<HTMLDivElement>(null);
 
   const starColors = ["#FFD700", "#FFC107", "#FFB300", "#7EC8E3", "#FFFFFF"];
-
-  // Sync ref with state
-  useEffect(() => {
-    isHoveringButtonRef.current = isHoveringButton;
-  }, [isHoveringButton]);
 
   // Update window dimensions
   useEffect(() => {
@@ -52,78 +39,6 @@ export default function HomePage() {
     updateDimensions();
     window.addEventListener("resize", updateDimensions);
     return () => window.removeEventListener("resize", updateDimensions);
-  }, []);
-
-  // Track mouse for aurora + custom cursor
-  useEffect(() => {
-    const updateCursor = (e: MouseEvent) => {
-      mousePos.current = { x: e.clientX, y: e.clientY };
-      if (cursorRef.current) {
-        cursorRef.current.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
-      }
-    };
-
-    window.addEventListener("mousemove", updateCursor);
-    return () => window.removeEventListener("mousemove", updateCursor);
-  }, []);
-
-  // Aurora + particles animation
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-    resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
-
-    const colors = [
-      "rgba(255,255,255,0.2)",
-      "rgba(173,216,230,0.3)",
-      "rgba(144,238,144,0.3)",
-      "rgba(255,255,0,0.2)",
-    ];
-
-    const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // Add new particles only if not hovering a button
-      if (!isHoveringButtonRef.current) {
-        auroraParticles.current.push({
-          x: mousePos.current.x,
-          y: mousePos.current.y,
-          vx: (Math.random() - 0.5) * 2,
-          vy: Math.random() * -1.5 - 0.5,
-          alpha: 1,
-          color: colors[Math.floor(Math.random() * colors.length)],
-        });
-      }
-
-      // Draw particles
-      auroraParticles.current.forEach((p, i) => {
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, 6, 0, Math.PI * 2);
-        ctx.fillStyle = p.color.replace("0.2", p.alpha.toString()).replace("0.3", p.alpha.toString());
-        ctx.fill();
-
-        // Update positions
-        p.x += p.vx;
-        p.y += p.vy;
-        p.alpha -= 0.01;
-
-        if (p.alpha <= 0) auroraParticles.current.splice(i, 1);
-      });
-
-      requestAnimationFrame(animate);
-    };
-
-    animate();
-
-    return () => window.removeEventListener("resize", resizeCanvas);
   }, []);
 
   // Handle ripple click
@@ -137,18 +52,12 @@ export default function HomePage() {
   return (
     <div
       className="relative flex flex-col items-center justify-center min-h-screen overflow-hidden px-4"
-      style={{ cursor: "none" }}
+      style={{ cursor: "none" }} // hide default cursor
     >
       {/* Background */}
-      <div className="absolute inset-0 z-[-3] bg-cover bg-center" style={{ backgroundImage: "url('/images/astro.jpg')" }} />
-
-      {/* Aurora Canvas */}
-      <canvas ref={canvasRef} className="absolute inset-0 z-10 pointer-events-none" />
-
-      {/* Custom Cursor */}
       <div
-        ref={cursorRef}
-        className="fixed top-0 left-0 z-[9999] w-6 h-6 rounded-full pointer-events-none bg-green-400 shadow-[0_0_20px_rgba(0,255,128,0.8)] mix-blend-difference transition-transform duration-75 ease-out"
+        className="absolute inset-0 z-[-3] bg-cover bg-center"
+        style={{ backgroundImage: "url('/images/astro.jpg')" }}
       />
 
       {/* Twinkling Stars */}
@@ -233,7 +142,6 @@ export default function HomePage() {
           borderClass="border-black"
           duration={0.4}
           onComplete={() => router.push(`/${ripple.lang}`)}
-
         />
       )}
 
