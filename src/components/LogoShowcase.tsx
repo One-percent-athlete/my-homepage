@@ -56,7 +56,7 @@ const LogoShowcase: FC = () => {
   }, []);
   
   return (
-    <div className="overflow-hidden w-full bg-transparent py-2">
+    <div className="overflow-hidden w-full py-2 pt-12">
 
        {/* Floating particles, very subtle */}
       {particles.map((p, i) => (

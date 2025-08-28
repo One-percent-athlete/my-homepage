@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, useTransform, useScroll } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import { motion, useTransform, useScroll, useAnimation } from "framer-motion";
+import { useInView } from "framer-motion";
 
 interface QuoteProps {
   data: {
@@ -11,8 +12,11 @@ interface QuoteProps {
 }
 
 export default function Quote({ data }: QuoteProps) {
-  const { scrollY } = useScroll();
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(sectionRef, { margin: "-100px" });
+  const controls = useAnimation();
 
+  const { scrollY } = useScroll();
   const yParallax1 = useTransform(scrollY, [0, 500], [0, -50]);
   const yParallax2 = useTransform(scrollY, [0, 500], [0, 50]);
   const scaleQuote = useTransform(scrollY, [0, 300], [1, 1.05]);
@@ -21,23 +25,41 @@ export default function Quote({ data }: QuoteProps) {
   const [isMobile, setIsMobile] = useState(false);
   const [particles, setParticles] = useState<{ x: number; y: number }[]>([]);
 
+  // Typing effect
+  const [typedText, setTypedText] = useState("");
+  useEffect(() => {
+    let index = 0;
+    const interval = setInterval(() => {
+      setTypedText(data.text.slice(0, index + 1));
+      index++;
+      if (index === data.text.length) clearInterval(interval);
+    }, 50);
+    return () => clearInterval(interval);
+  }, [data.text]);
+
   useEffect(() => {
     setIsMobile(window.innerWidth < 768);
     const handleResize = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener("resize", handleResize);
 
-    // Particle initialization
-    requestAnimationFrame(() => {
-      const particleCount = window.innerWidth < 768 ? 8 : 20;
-      const newParticles = Array.from({ length: particleCount }).map(() => ({
-        x: Math.random() * window.innerWidth,
-        y: Math.random() * 800,
-      }));
-      setParticles(newParticles);
-    });
+    const particleCount = window.innerWidth < 768 ? 8 : 20;
+    const newParticles = Array.from({ length: particleCount }).map(() => ({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * 800,
+    }));
+    setParticles(newParticles);
 
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  // Fade in + slide up 100px when in view
+  useEffect(() => {
+    if (isInView) {
+      controls.start({ opacity: 1, y: 0, transition: { duration: 1 } });
+    } else {
+      controls.start({ opacity: 0, y: 100, transition: { duration: 1 } });
+    }
+  }, [isInView, controls]);
 
   const handleMouseMove = (e: React.MouseEvent) => {
     const centerX = window.innerWidth / 2;
@@ -49,10 +71,12 @@ export default function Quote({ data }: QuoteProps) {
   };
 
   return (
-
-    <section
-    className="relative py-24 px-6 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-center overflow-hidden"
-    onMouseMove={handleMouseMove}
+    <motion.section
+      ref={sectionRef}
+      animate={controls}
+      initial={{ opacity: 0, y: 100 }}
+      className="relative py-24 px-6 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-center overflow-hidden"
+      onMouseMove={handleMouseMove}
     >
       {/* Animated gradient overlay */}
       <motion.div
@@ -115,9 +139,9 @@ export default function Quote({ data }: QuoteProps) {
         }}
         className="relative text-xl md:text-3xl italic font-semibold text-yellow-400 max-w-3xl mx-auto px-2 md:px-0 before:content-['“'] before:text-6xl before:text-yellow-300 before:absolute before:-top-8 before:-left-6 after:content-['”'] after:text-6xl after:text-yellow-300 after:absolute after:-bottom-8 after:-right-6 drop-shadow-2xl"
       >
-        {data.text}
+        {typedText}
         <footer className="mt-6 text-base md:text-lg font-normal text-gray-300">{data.author}</footer>
       </motion.blockquote>
-    </section>
+    </motion.section>
   );
 }

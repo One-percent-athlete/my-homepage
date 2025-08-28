@@ -122,6 +122,7 @@ export default function Travels({ data }: TravelsProps) {
       )),
     []
   );
+  
 
   return (
     <section id="travels" className="relative py-20 px-4 overflow-hidden">

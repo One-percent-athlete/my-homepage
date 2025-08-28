@@ -66,7 +66,7 @@ export default function Navbar() {
   const glow2Y = useTransform(scrollY, [0, 500], [0, 15]);
 
   return (
-    <header className="fixed top-0 left-0 w-full z-50">
+    <header className="fixed top-0 left-0 w-full z-50 bg-gray-800 border-b-4 border-yellow-400">
       <div className="max-w-6xl mx-auto flex justify-between items-center py-4 px-6">
         {/* Logo */}
         <motion.h1

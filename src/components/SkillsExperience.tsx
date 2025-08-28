@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import LogoShowcase from "./LogoShowcase";
 
 interface Skill {
   name: string;
@@ -60,16 +59,15 @@ export default function SkillsExperience({ data }: SkillsProps) {
   };
 
   return (
-    <section className="relative w-full">
+    <section className="relative w-full" id="skills">
       {/* Sticky header below navbar */}
       <motion.div
-        className="sticky z-40 text-center py-8"
+        className="sticky z-40 text-center pt-12 pb-2"
         style={{ top: `${navbarHeight}px` }}
         animate={{ background: getHeaderBackground() }}
         transition={{ duration: 1 }}
       >
         <h2 className="text-4xl font-bold text-white">Skills & Experience</h2>
-        <LogoShowcase />
       </motion.div>
 
       {/* Full-screen sections for each category */}

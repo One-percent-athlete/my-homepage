@@ -13,6 +13,7 @@ import {
 } from "react-icons/fa";
 
 import { ContactData, ContactEntry } from "../app/i18n";
+import LogoShowcase from "./LogoShowcase";
 
 interface ContactProps {
   data: ContactData;
@@ -49,7 +50,7 @@ export default function Contact({ data }: ContactProps) {
   return (
     <section
       id="contact"
-      className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 py-24 px-6 text-center overflow-hidden text-white"
+      className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 pt-24 pb-12 px-6 text-center overflow-hidden text-white"
     >
       {/* Particles */}
       {particles.map((p, i) => (
@@ -133,6 +134,7 @@ export default function Contact({ data }: ContactProps) {
           </motion.div>
         ))}
       </motion.div>
+      <LogoShowcase />
     </section>
   );
 }

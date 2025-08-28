@@ -9,7 +9,6 @@ import Footer from "@/components/Footer";
 import ScrollIndicator from "@/components/ScrollIndicator";
 import SkillsExperience from "@/components/SkillsExperience";
 import { getTranslation } from "../i18n";
-
 const supportedLocales = ["en", "ja", "zh"] as const;
 type Locale = (typeof supportedLocales)[number];
 
@@ -33,7 +32,7 @@ export default async function Page({ params }: PageProps) {
 
 
   return (
-    <main>
+    <main style={{ cursor: "none" }}>
       <ScrollIndicator />
       <Navbar />
       <Hero data={t.hero} />
