@@ -92,7 +92,7 @@ export default function Contact({ data }: ContactProps) {
           <motion.li
             key={contact.label}
             whileHover={{ scale: 1.05, y: -5 }}
-            className="flex flex-col items-center bg-gray-800/80 hover:bg-gray-700/80 rounded-3xl p-6 backdrop-blur-lg transition-all duration-300 cursor-pointer hover:ring-4 hover:ring-yellow-400 hover:ring-opacity-50 hover:shadow-[0_0_40px_cyan] sm:hover:scale-105
+            className="flex flex-col items-center bg-gray-800/80 hover:bg-gray-700/80 rounded-3xl p-6 backdrop-blur-lg transition-all duration-300 hover:ring-4 hover:ring-yellow-400 hover:ring-opacity-50 hover:shadow-[0_0_40px_cyan] sm:hover:scale-105
               md:border-yellow-400 md:hover:border-yellow-400 md:hover:shadow-[0_0_40px_orange]
               shadow-[0_0_30px_orange] md:shadow-none border-1 border-yellow-400"
           >
@@ -119,7 +119,7 @@ export default function Contact({ data }: ContactProps) {
           <motion.div
             key={qr.label}
             whileHover={{ scale: 1.1 }}
-            className="flex flex-col items-center bg-gray-800/80 rounded-3xl p-4 backdrop-blur-lg cursor-pointer hover:ring-4 hover:ring-yellow-400 hover:ring-opacity-50 hover:shadow-[0_0_40px_cyan] sm:hover:scale-105
+            className="flex flex-col items-center bg-gray-800/80 rounded-3xl p-4 backdrop-blur-lg hover:ring-4 hover:ring-yellow-400 hover:ring-opacity-50 hover:shadow-[0_0_40px_cyan] sm:hover:scale-105
               md:border-yellow-400 md:hover:border-yellow-400 md:hover:shadow-[0_0_40px_orange]
               shadow-[0_0_30px_orange] md:shadow-none border-1 border-yellow-400"
           >

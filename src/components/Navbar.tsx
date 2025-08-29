@@ -89,7 +89,7 @@ export default function Navbar() {
             whileHover={{ scale: 1.3 }}
             animate={{ y: [0, -4, 0] }}
             transition={{ duration: 2 + index * 0.2, repeat: Infinity, ease: "easeInOut" }}
-            className="text-yellow-400 transition"
+            className="text-yellow-400 transition cursor-none"
             >
               <Icon size={28} />
             </motion.a>
@@ -98,7 +98,7 @@ export default function Navbar() {
           <motion.a
             href="/"
             whileHover={{ scale: 1.2, rotate: 10 }}
-            className="hidden md:inline-flex ml-4 p-2 rounded-full bg-yellow-500 text-black hover:bg-yellow-400 transition"
+            className="hidden md:inline-flex ml-4 p-2 rounded-full bg-yellow-500 text-black hover:bg-yellow-400 transition cursor-none"
             >
             <FaGlobe size={20} />
           </motion.a>

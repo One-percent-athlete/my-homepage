@@ -25,8 +25,8 @@ export default function CustomCursor() {
     const animateCircle = () => {
       const { x: mouseX, y: mouseY } = mousePos.current;
 
-      circleX += (mouseX - circleX) * 0.15;
-      circleY += (mouseY - circleY) * 0.15;
+      circleX += (mouseX - circleX) * 0.2;
+      circleY += (mouseY - circleY) * 0.2;
 
       if (circleRef.current) {
         const circleSize = circleRef.current.offsetWidth;

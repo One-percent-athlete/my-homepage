@@ -22,12 +22,30 @@ export default function RippleTransition({
 }: RippleProps) {
   const [size, setSize] = useState(0);
   const [showSolid, setShowSolid] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   // Calculate ripple size to cover viewport
   useEffect(() => {
     const diagonal = Math.sqrt(window.innerWidth ** 2 + window.innerHeight ** 2);
     setSize(diagonal * 2);
   }, []);
+
+  // Animate loading progress
+  useEffect(() => {
+    if (!showSolid) {
+      const interval = 20; // ms between increments
+      const steps = duration * 1000 / interval; // total steps
+      let currentStep = 0;
+      const timer = setInterval(() => {
+        currentStep++;
+        setProgress(Math.min(100, Math.floor((currentStep / steps) * 100)));
+        if (currentStep >= steps) {
+          clearInterval(timer);
+        }
+      }, interval);
+      return () => clearInterval(timer);
+    }
+  }, [showSolid, duration]);
 
   return (
     <AnimatePresence>
@@ -42,12 +60,14 @@ export default function RippleTransition({
             opacity: 1,
           }}
           transition={{ duration, ease: "easeInOut" }}
-          className={`fixed top-0 left-0 z-[9999] pointer-events-none ${colorClass} ${borderClass} border-4`}
+          className={`fixed top-0 left-0 z-[9999] pointer-events-none ${colorClass} ${borderClass} border-4 flex items-center justify-center`}
           onAnimationComplete={() => {
             setShowSolid(true);
-            setTimeout(onComplete, 80); // short delay before page transition
+            setTimeout(onComplete, 40); // short delay before page transition
           }}
-        />
+        >
+          <span className="text-black text-6xl font-bold">{progress}%</span>
+        </motion.div>
       )}
 
       {showSolid && (
@@ -55,8 +75,10 @@ export default function RippleTransition({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 1 }}
-          className={`fixed top-0 left-0 w-full h-full z-[9999] pointer-events-none ${colorClass}`}
-        />
+          className={`fixed top-0 left-0 w-full h-full z-[9999] pointer-events-none ${colorClass} flex items-center justify-center`}
+        >
+          <span className="text-black text-6xl font-bold">100%</span>
+        </motion.div>
       )}
     </AnimatePresence>
   );

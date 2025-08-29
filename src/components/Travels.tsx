@@ -112,7 +112,7 @@ export default function Travels({ data }: TravelsProps) {
         <motion.div
           key={i}
           variants={item}
-          className="flex flex-col items-center cursor-pointer hover:scale-125 hover:rotate-3 transition-transform duration-300"
+          className="flex flex-col items-center hover:scale-125 hover:rotate-3 transition-transform duration-300"
           animate={{ y: [0, -5, 0] }}
           transition={{ repeat: Infinity, repeatType: "mirror", duration: 4 + i * 0.05 }}
         >
