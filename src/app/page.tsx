@@ -50,7 +50,22 @@ export default function HomePage() {
   };
 
   return (
-    <div
+    <>
+      <head>
+        <title>Ryu - Web App Developer, Ski Instructor & Traveler</title>
+        <meta
+          name="description"
+          content="Hi, I’m Ryu — Web App Developer, Ski Instructor, and World Traveler. Explore my multilingual website in English, Japanese, or Chinese."
+        />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="robots" content="index, follow" />
+        {/* Open Graph / Social sharing */}
+        <meta property="og:title" content="Ryu - Web App Developer, Ski Instructor & Traveler" />
+        <meta property="og:description" content="Explore my multilingual website in English, Japanese, or Chinese." />
+        <meta property="og:image" content="/images/astro.jpg" />
+        <meta property="og:type" content="website" />
+      </head>
+      <div
       className="relative flex flex-col items-center justify-center min-h-screen overflow-hidden px-4"
       style={{ cursor: "none" }} // hide default cursor
     >
@@ -156,6 +171,7 @@ export default function HomePage() {
           background-repeat: repeat;
         }
       `}</style>
-    </div>
+      </div>
+    </>
   );
 }
