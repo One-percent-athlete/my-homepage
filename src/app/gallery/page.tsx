@@ -63,7 +63,7 @@ export default function GalleryPage() {
         <title>Gallery - Ryu's Colorful Journeys</title>
         <meta
           name="description"
-          content="Explore Ryu's vibrant gallery showcasing adventures from around the world. Dive into colorful journeys through stunning photography."
+          content="Explore my vibrant gallery showcasing adventures from around the world. Dive into colorful journeys through stunning photography."
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>

@@ -25,7 +25,6 @@ const languages = supportedLocales.map((code) => ({
 export default function HomePage() {
   const router = useRouter();
 
-  const [isHoveringButton, setIsHoveringButton] = useState(false);
   const [ripple, setRipple] = useState<{ x: number; y: number; lang: Locale } | null>(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
@@ -130,15 +129,13 @@ export default function HomePage() {
         {languages.map((lang) => (
           <motion.button
             key={lang.code}
-            onMouseEnter={() => setIsHoveringButton(true)}
-            onMouseLeave={() => setIsHoveringButton(false)}
             onClick={(e) => handleClick(e, lang.code)}
             whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.96 }}
             className="relative flex-1 py-6 bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-500
-                       text-black font-bold rounded-3xl shadow-[0_0_20px_rgba(255,215,0,0.7)]
-                       border-2 border-transparent bg-clip-padding overflow-hidden
-                       text-xl tracking-wider uppercase transition-all duration-300 cursor-none"
+                      text-black font-bold rounded-3xl shadow-[0_0_20px_rgba(255,215,0,0.7)]
+                      border-2 border-transparent bg-clip-padding overflow-hidden
+                      text-xl tracking-wider uppercase transition-all duration-300 cursor-none"
           >
             <span className="relative z-10 flex items-center justify-center">{lang.name}</span>
             <span
