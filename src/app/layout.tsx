@@ -80,6 +80,15 @@ export default function RootLayout({
             })(window,document,'script','dataLayer','GTM-P3NZ4WT7');
           `}
         </Script>
+         {/* <!-- Google tag (gtag.js) --> */}
+        <Script async src="https://www.googletagmanager.com/gtag/js?id=G-WQVTT6KTM3"></Script>
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'G-WQVTT6KTM3');`}
+        </Script>
         <script type="application/ld+json" dangerouslySetInnerHTML={{
         __html: JSON.stringify({
           "@context": "https://schema.org",
