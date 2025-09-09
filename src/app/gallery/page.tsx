@@ -60,7 +60,7 @@ export default function GalleryPage() {
 
           gtag('config', 'G-EHNC14Q4CJ');`}
         </Script>
-        <title>Gallery - Ryu's Colorful Journeys</title>
+        <title>Gallery - Ryu Journeys</title>
         <meta
           name="description"
           content="Explore my vibrant gallery showcasing adventures from around the world. Dive into colorful journeys through stunning photography."
