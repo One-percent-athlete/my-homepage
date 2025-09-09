@@ -49,17 +49,26 @@ export default function GalleryPage() {
   }, [selectedIndex]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-200 via-yellow-200 via-green-200 to-blue-300 p-8">
-      {/* Google tag (gtag.js) */}
-      <Script async src="https://www.googletagmanager.com/gtag/js?id=G-XCJHG7E4BZ"></Script>
-      <Script id="google-analytics" strategy="afterInteractive">
-        {`
-          window.dataLayer = window.dataLayer || [];
+    <>
+      <head>
+        {/* <!-- Google tag (gtag.js) --> */}
+        <Script async src="https://www.googletagmanager.com/gtag/js?id=G-EHNC14Q4CJ"></Script>
+        <Script>
+          {`window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
-          gtag('config', 'G-XCJHG7E4BZ');
-        `}
-      </Script>
+
+          gtag('config', 'G-EHNC14Q4CJ');`}
+        </Script>
+        <title>Gallery - Ryu's Colorful Journeys</title>
+        <meta
+          name="description"
+          content="Explore Ryu's vibrant gallery showcasing adventures from around the world. Dive into colorful journeys through stunning photography."
+        />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </head>
+    
+    <div className="min-h-screen bg-gradient-to-br from-pink-200 via-yellow-200 via-green-200 to-blue-300 p-8">
       {/* Title */}
       <motion.h1
         className="text-6xl font-extrabold text-center mb-14 text-purple-700 drop-shadow-xl"
@@ -152,5 +161,6 @@ export default function GalleryPage() {
         )}
       </AnimatePresence>
     </div>
+  </>
   );
 }

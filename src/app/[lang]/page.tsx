@@ -82,28 +82,35 @@ export default async function Page({ params }: PageProps) {
 
 
   return (
-    <main style={{ cursor: "none" }}>
-      {/* Google tag (gtag.js) */}
-      <Script async src="https://www.googletagmanager.com/gtag/js?id=G-XCJHG7E4BZ"></Script>
-      <Script id="google-analytics" strategy="afterInteractive">
-        {`
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-        `}
-        {`
-          gtag('config', 'G-XCJHG7E4BZ');
-        `}
-      </Script>
-      <ScrollIndicator />
-      <Navbar />
-      <Hero data={t.hero} />
-      <Quote data={t.quote} />
-      <SkillsExperience data={t.skills} />
-      <Projects data={t.projects} />
-      <Travels data={t.travels} />
-      <Contact data={t.contact} />
-      <Footer />
-    </main>
+    <>
+      <head>
+        {/* <!-- Google tag (gtag.js) --> */}
+        <Script async src="https://www.googletagmanager.com/gtag/js?id=G-EHNC14Q4CJ"></Script>
+        <Script>
+          {`window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-EHNC14Q4CJ');`}
+        </Script>
+        <title>Ryu | Full-Stack Engineer</title>
+        <meta
+          name="description"
+          content="Portfolio of Ryu, a full-stack engineer specializing in backend development with Django, SQL, and MongoDB, and modern frontend with React, Next.js, and Tailwind CSS."
+        />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </head>
+      <main style={{ cursor: "none" }}>
+        <ScrollIndicator />
+        <Navbar />
+        <Hero data={t.hero} />
+        <Quote data={t.quote} />
+        <SkillsExperience data={t.skills} />
+        <Projects data={t.projects} />
+        <Travels data={t.travels} />
+        <Contact data={t.contact} />
+        <Footer />
+      </main>
+    </>
   );
 }
