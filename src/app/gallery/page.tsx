@@ -52,13 +52,13 @@ export default function GalleryPage() {
     <>
       <head>
         {/* <!-- Google tag (gtag.js) --> */}
-        <Script async src="https://www.googletagmanager.com/gtag/js?id=G-EHNC14Q4CJ"></Script>
+        <Script async src="https://www.googletagmanager.com/gtag/js?id=G-WQVTT6KTM3"></Script>
         <Script id="google-analytics" strategy="afterInteractive">
           {`window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
 
-          gtag('config', 'G-EHNC14Q4CJ');`}
+          gtag('config', 'G-WQVTT6KTM3');`}
         </Script>
         <title>Gallery - Ryu Journeys</title>
         <meta

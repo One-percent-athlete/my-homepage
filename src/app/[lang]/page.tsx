@@ -44,7 +44,7 @@ export const metadata = {
     title: "Ryu | Full-Stack Engineer & Web Developer",
     description:
       "Ryu is a full-stack engineer with expertise in Django, SQL, MongoDB for backend systems, and React, Next.js, Tailwind CSS for frontend. Explore portfolio projects and contact for collaboration.",
-    url: "https://www.ryu.dev", // ← replace with your domain
+    url: "https://www.37x.jp", // ← replace with your domain
     siteName: "Ryu Portfolio",
     images: [
       {
@@ -85,13 +85,13 @@ export default async function Page({ params }: PageProps) {
     <>
       <head>
         {/* <!-- Google tag (gtag.js) --> */}
-        <Script async src="https://www.googletagmanager.com/gtag/js?id=G-EHNC14Q4CJ"></Script>
+        <Script async src="https://www.googletagmanager.com/gtag/js?id=G-WQVTT6KTM3"></Script>
         <Script id="google-analytics" strategy="afterInteractive">
           {`window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
 
-        gtag('config', 'G-EHNC14Q4CJ');`}
+        gtag('config', 'G-WQVTT6KTM3');`}
         </Script>
         <title>Ryu | Full-Stack Engineer</title>
         <meta
