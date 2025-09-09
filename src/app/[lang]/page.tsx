@@ -85,14 +85,12 @@ export default async function Page({ params }: PageProps) {
     <main style={{ cursor: "none" }}>
       {/* Google tag (gtag.js) */}
       <Script async src="https://www.googletagmanager.com/gtag/js?id=G-XCJHG7E4BZ"></Script>
-      <Script>
+      <Script  id="google-analytics" strategy="afterInteractive">
         {`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
         `}
-      </Script>
-      <Script>
         {`
           gtag('config', 'G-XCJHG7E4BZ');
         `}
