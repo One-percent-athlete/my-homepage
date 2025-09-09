@@ -63,7 +63,7 @@ export default function RippleTransition({
           className={`fixed top-0 left-0 z-[9999] pointer-events-none ${colorClass} ${borderClass} border-4 flex items-center justify-center`}
           onAnimationComplete={() => {
             setShowSolid(true);
-            setTimeout(onComplete, 40); // short delay before page transition
+            setTimeout(onComplete, 10); // short delay before page transition
           }}
         >
           <span className="text-black text-6xl font-bold">{progress}%</span>
