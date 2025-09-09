@@ -1,4 +1,5 @@
 // src/app/[lang]/page.tsx
+import Script from "next/script"
 import Contact from "@/components/Contact";
 import Projects from "@/components/Projects";
 import Hero from "@/components/Hero";
@@ -82,6 +83,20 @@ export default async function Page({ params }: PageProps) {
 
   return (
     <main style={{ cursor: "none" }}>
+      {/* Google tag (gtag.js) */}
+      <Script async src="https://www.googletagmanager.com/gtag/js?id=G-XCJHG7E4BZ"></Script>
+      <Script>
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+        `}
+      </Script>
+      <Script>
+        {`
+          gtag('config', 'G-XCJHG7E4BZ');
+        `}
+      </Script>
       <ScrollIndicator />
       <Navbar />
       <Hero data={t.hero} />
