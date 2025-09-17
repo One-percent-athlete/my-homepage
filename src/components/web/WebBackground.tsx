@@ -7,10 +7,10 @@ const WebBackground = () => {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas) return; // Exit if canvas is null
 
     const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    if (!ctx) return; // Exit if context is null
 
     let animationId: number;
     let particles: Particle[] = [];
@@ -48,22 +48,24 @@ const WebBackground = () => {
       }
     }
 
-    function init() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+    // Pass the canvas element as an argument to ensure it's not null.
+    function init(c: HTMLCanvasElement) {
+      c.width = window.innerWidth;
+      c.height = window.innerHeight;
       particles = [];
       for (let i = 0; i < NUM_PARTICLES; i++) {
-        particles.push(new Particle(canvas.width, canvas.height));
+        particles.push(new Particle(c.width, c.height));
       }
     }
 
-    function animate() {
-      animationId = requestAnimationFrame(animate);
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Pass canvas and ctx to the animate function.
+    function animate(c: HTMLCanvasElement, context: CanvasRenderingContext2D) {
+      animationId = requestAnimationFrame(() => animate(c, context));
+      context.clearRect(0, 0, c.width, c.height);
 
       particles.forEach((p, i) => {
-        p.update(canvas.width, canvas.height);
-        p.draw(ctx);
+        p.update(c.width, c.height);
+        p.draw(context);
 
         // Draw connecting lines
         for (let j = i + 1; j < particles.length; j++) {
@@ -73,25 +75,25 @@ const WebBackground = () => {
           const dist = Math.sqrt(dx * dx + dy * dy);
 
           if (dist < LINE_DISTANCE) {
-            ctx.beginPath();
-            ctx.moveTo(p.x, p.y);
-            ctx.lineTo(p2.x, p2.y);
+            context.beginPath();
+            context.moveTo(p.x, p.y);
+            context.lineTo(p2.x, p2.y);
             const opacity = 1 - dist / LINE_DISTANCE;
-            ctx.strokeStyle = `rgba(100, 255, 200, ${opacity})`;
-            ctx.lineWidth = 0.5;
-            ctx.stroke();
+            context.strokeStyle = `rgba(100, 255, 200, ${opacity})`;
+            context.lineWidth = 0.5;
+            context.stroke();
           }
         }
       });
     }
 
-    // Init + start animation
-    init();
-    animate();
+    // Initialize and start animation with the non-null canvas and ctx
+    init(canvas);
+    animate(canvas, ctx);
 
     // Handle resizing
     const handleResize = () => {
-      init();
+      init(canvas);
     };
     window.addEventListener("resize", handleResize);
 

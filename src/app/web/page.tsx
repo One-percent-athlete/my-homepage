@@ -1,7 +1,7 @@
 "use client";
 
 import FloatingButtons from '../../components/FloatingButtons';
-import { motion, type Variants } from 'framer-motion';
+import { motion } from 'framer-motion';
 import WebBackground from '../../components/web/WebBackground';
 import LogoShowcase from '../../components/web/LogoShowcase';
 import SkillCardGrid from '../../components/web/SkillCardGrid';
