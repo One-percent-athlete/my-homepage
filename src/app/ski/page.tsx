@@ -38,11 +38,6 @@ export default function Ski() {
     <div className="bg-gray-100 min-h-screen">
       {/* Header Section with Image */}
       <header className="relative w-full h-96">
-        <img
-          src="https://images.unsplash.com/photo-1549488344-933e46123a3d"
-          alt="Skier on a pristine, snowy mountain with a clear blue sky"
-          className="w-full h-full object-cover"
-        />
         <motion.div
           className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center"
           initial="hidden"
@@ -68,7 +63,7 @@ export default function Ski() {
           variants={itemVariants}
         >
           <p className="text-lg sm:text-xl text-gray-700 leading-relaxed">
-            Whether you're a first-timer or an advanced rider looking for a new challenge, my lessons are designed to help you **build confidence** and refine your technique. As a certified guide, I'll show you the **best terrain** and **hidden spots** on the mountain, ensuring you get the most out of your day.
+            Whether you&apos;re a first-timer or an advanced rider looking for a new challenge, my lessons are designed to help you **build confidence** and refine your technique. As a certified guide, I&apos;ll show you the best terrain and **hidden spots** on the mountain, ensuring you get the most out of your day.
           </p>
         </motion.section>
 

@@ -52,11 +52,7 @@ export default async function BlogPage() {
             {/* Introduction */}
             <header className="text-center mb-12">
                 <h1 className="text-4xl font-bold mb-4">Stories, Guides, & Insights: The Blog</h1>
-                <p className="text-lg text-gray-600">
-                This is where I share my passions for technology, travel, and the mountains.
-                You'll find practical advice for building a global brand, inspiring stories
-                from my travels, and tips for your next ski trip.
-                </p>
+                <p className="text-lg text-gray-600">This is where I share my passions for technology, travel, and the mountains. You&apos;ll find practical advice for building a global brand, inspiring stories from my travels, and tips for your next ski trip.</p>
             </header>
             
             {/* Blog Posts Grid */}

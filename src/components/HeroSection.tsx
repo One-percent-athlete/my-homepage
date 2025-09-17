@@ -74,7 +74,7 @@ export default function HeroSection({ children }: { children: React.ReactNode })
           transition={{ duration: 1, delay: 0.3 }}
           className="text-xl md:text-2xl text-center max-w-3xl mb-3 text-white drop-shadow-lg"
         >
-          From multilingual websites to unforgettable travel, <br/>let's turn your ideas into reality.
+          From multilingual websites to unforgettable travel, <br/>let&apos;s turn your ideas into reality.
         </motion.p>
       </div>
 

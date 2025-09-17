@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import { usePathname } from 'next/navigation';
 
 export default function CustomCursor() {
@@ -14,15 +14,14 @@ export default function CustomCursor() {
   // Use the usePathname hook to get the current route
   const pathname = usePathname();
 
-  // Map different routes to specific Tailwind color classes
-  const colorMap: Record<string, string> = {
+  // Memoize the colorMap object to prevent it from being recreated on every render
+  const colorMap = useMemo(() => ({
     '/web': 'bg-teal-400 border-teal-400',
     '/travel': 'bg-pink-400 border-pink-400',
     '/ski': 'bg-blue-400 border-blue-400',
     '/blog': 'bg-red-500 border-red-500',
-    // Default color if no match is found
     default: 'bg-yellow-400 border-yellow-400',
-  };
+  }), []);
 
   useEffect(() => {
     // Determine the new color classes based on the current pathname
@@ -61,8 +60,7 @@ export default function CustomCursor() {
     animateCircle();
 
     return () => window.removeEventListener("mousemove", updateCursor);
-    
-  }, [pathname, colorMap]); // Add pathname and colorMap to the dependency array
+  }, [pathname, colorMap]); // The dependencies are now stable
 
   return (
     <>
