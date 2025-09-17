@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
-import RippleTransition from "./RippleTransition";
+import RippleTransition from "../RippleTransition";
 import '@/app/globals.css';
 
 export default function ButtonSection() {

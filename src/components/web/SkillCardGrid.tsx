@@ -1,0 +1,107 @@
+"use client";
+
+import { motion, type Variants } from "framer-motion";
+import {
+  SiPython,
+  SiJavascript,
+  SiReact,
+  SiMongodb,
+  SiPostgresql,
+  SiTailwindcss,
+  SiNextdotjs,
+  SiTypescript,
+  SiNodedotjs,
+} from "react-icons/si";
+
+// Define the data for each skill card
+const skills = [
+  {
+    icon: SiPython,
+    title: "Python",
+    description: "Building robust and efficient backend systems.",
+  },
+  {
+    icon: SiJavascript,
+    title: "JavaScript",
+    description: "Creating dynamic and interactive web applications.",
+  },
+  {
+    icon: SiReact,
+    title: "React",
+    description: "Developing modern, single-page user interfaces.",
+  },
+  {
+    icon: SiNextdotjs,
+    title: "Next.js",
+    description: "Server-side rendering and static site generation.",
+  },
+  {
+    icon: SiTailwindcss,
+    title: "Tailwind CSS",
+    description: "Rapid and responsive UI design with utility classes.",
+  },
+  {
+    icon: SiMongodb,
+    title: "MongoDB",
+    description: "Designing flexible NoSQL databases for scalability.",
+  },
+  {
+    icon: SiPostgresql,
+    title: "PostgreSQL",
+    description: "Managing powerful relational databases.",
+  },
+  {
+    icon: SiTypescript,
+    title: "TypeScript",
+    description: "Writing type-safe and scalable JavaScript code.",
+  },
+  {
+    icon: SiNodedotjs,
+    title: "Node.js",
+    description: "Crafting efficient and scalable server-side applications.",
+  },
+];
+
+const cardVariants: Variants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: { y: 0, opacity: 1, transition: { duration: 0.4 } },
+};
+
+export default function SkillCardGrid() {
+  return (
+    <motion.div
+      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.3 }}
+      variants={{
+        visible: { transition: { staggerChildren: 0.1 } },
+      }}
+    >
+      {skills.map((skill, index) => (
+        <motion.div
+          key={index}
+          className="relative group rounded-xl"
+          variants={cardVariants}
+        >
+          {/* Glow layers */}
+          <div className="absolute inset-0 rounded-xl bg-teal-400 opacity-30 blur-3xl group-hover:opacity-70 transition duration-500"></div>
+          <div className="absolute inset-0 rounded-xl bg-teal-500 opacity-20 blur-[100px] group-hover:opacity-40 transition duration-700"></div>
+
+          {/* Actual card */}
+          <div className="relative bg-neutral-800 p-6 rounded-xl shadow-lg border-2 border-teal-500 flex items-start space-x-4 h-28">
+            <div className="text-4xl text-teal-400 flex-shrink-0 mt-1">
+              <skill.icon />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold mb-1 text-white">
+                {skill.title}
+              </h3>
+              <p className="text-neutral-400 text-sm">{skill.description}</p>
+            </div>
+          </div>
+        </motion.div>
+      ))}
+    </motion.div>
+  );
+}
