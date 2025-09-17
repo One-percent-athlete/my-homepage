@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import RippleTransition from "./RippleTransition";
-import '@/app/globals.css'; // Make sure this is still here
+import '@/app/globals.css';
 
 export default function ButtonSection() {
   const router = useRouter();
@@ -22,11 +22,6 @@ export default function ButtonSection() {
     const x = rect.left + rect.width / 2;
     const y = rect.top + rect.height / 2;
     setRipple({ x, y, href });
-
-    // Use a short delay before navigation to show the full ripple effect
-    setTimeout(() => {
-      router.push(href);
-    }, 400); // This duration should match the ripple duration
   };
 
   return (
@@ -47,12 +42,12 @@ export default function ButtonSection() {
                      flex items-center justify-center rounded-full
                      border-2 border-yellow-400
                      bg-transparent text-yellow-400
-                     shadow-[0_0_15px_rgba(255,215,0,0.5)] // Initial yellow glow
+                     shadow-[0_0_15px_rgba(255,215,0,0.5)]
                      overflow-hidden
                      transition-all duration-300 ease-in-out
                      cursor-none
-                     hover:shadow-[0_0_25px_rgba(255,223,0,0.8),_0_0_40px_rgba(255,193,7,0.6)] // Enhanced golden glow on hover
-                     hover:border-yellow-300" // Slightly lighter border on hover
+                     hover:shadow-[0_0_25px_rgba(255,223,0,0.8),_0_0_40px_rgba(255,193,7,0.6)]
+                     hover:border-yellow-300"
         >
           {/* Icon - disappears on hover */}
           <span className="relative z-10 text-4xl md:text-5xl transition-opacity duration-300 group-hover:opacity-0">
@@ -75,17 +70,15 @@ export default function ButtonSection() {
         </motion.button>
       ))}
 
-      {/* Ripple effect container */}
-      {ripple && (
-        <div className="fixed inset-0 z-50 pointer-events-none">
-          <RippleTransition
-            x={ripple.x}
-            y={ripple.y}
-            colorClass="bg-white"
-            duration={0.4}
-            onComplete={() => setRipple(null)}
-          />
-        </div>
+        {ripple && (
+        <RippleTransition
+          x={ripple.x}
+          y={ripple.y}
+          colorClass="bg-yellow-500"
+          borderClass="border-black"
+          duration={0.4}
+          onComplete={() => router.push(ripple.href)}
+        />
       )}
     </motion.div>
   );

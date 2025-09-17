@@ -24,11 +24,10 @@ export default function CustomCursor() {
   }), []);
 
   useEffect(() => {
-    // Determine the new color classes based on the current pathname
-    const newColor = colorMap[pathname] || colorMap.default;
+    // Type assertion to tell TypeScript that pathname is a valid key in colorMap
+    const newColor = colorMap[pathname as keyof typeof colorMap] || colorMap.default;
     setCursorColor(newColor);
     
-    // The rest of your cursor animation logic from the original code
     let circleX = 0;
     let circleY = 0;
 
@@ -60,18 +59,16 @@ export default function CustomCursor() {
     animateCircle();
 
     return () => window.removeEventListener("mousemove", updateCursor);
-  }, [pathname, colorMap]); // The dependencies are now stable
+  }, [pathname, colorMap]);
 
   return (
     <>
       <div
         ref={dotRef}
-        // Dynamically apply the color class from state
         className={`fixed top-0 left-0 z-[9999] w-2 h-2 rounded-full pointer-events-none shadow-lg ${cursorColor.split(' ')[0]}`}
       />
       <div
         ref={circleRef}
-        // Dynamically apply the color class from state
         className={`fixed top-0 left-0 z-[9998] w-8 h-8 rounded-full border-2 pointer-events-none ${cursorColor.split(' ')[1]}`}
       />
     </>
