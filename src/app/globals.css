@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "flag-icons/css/flag-icons.min.css";
 
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -30,13 +31,44 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  cursor: none;
 }
 
 html {
   scroll-behavior: smooth;
+  cursor: none;
 }
 
 @keyframes marquee {
   0% { transform: translateX(0%); }
   100% { transform: translateX(-50%); } /* scroll by half container width */
+}
+
+@tailwind utilities;
+
+/* Custom keyframes for the golden circling dot */
+/* For w-28 buttons (radius of 14px relative to center for a 28px diameter dot) */
+@keyframes spin-golden-dot-w28 {
+  0% { transform: rotate(0deg) translateY(calc(-14px - 10px)); } /* 14px radius + 10px offset from border */
+  100% { transform: rotate(360deg) translateY(calc(-14px - 10px)); }
+}
+
+/* For w-36 buttons (radius of 18px relative to center for a 36px diameter dot) */
+@keyframes spin-golden-dot-w36 {
+  0% { transform: rotate(0deg) translateY(calc(-18px - 10px)); } /* 18px radius + 10px offset from border */
+  100% { transform: rotate(360deg) translateY(calc(-18px - 10px)); }
+}
+
+/* Custom utility classes for Tailwind to pick up the animations */
+/* Apply these directly in the component's class list, e.g., animate-spin-golden-dot-w28 */
+
+
+/* Ensure other base styles are here */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }

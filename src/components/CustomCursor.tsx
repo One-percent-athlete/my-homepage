@@ -1,13 +1,35 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { usePathname } from 'next/navigation';
 
 export default function CustomCursor() {
   const dotRef = useRef<HTMLDivElement>(null);
   const circleRef = useRef<HTMLDivElement>(null);
   const mousePos = useRef({ x: 0, y: 0 });
+  
+  // Define a state to hold the current cursor color classes
+  const [cursorColor, setCursorColor] = useState('bg-yellow-400 border-yellow-400');
+  
+  // Use the usePathname hook to get the current route
+  const pathname = usePathname();
+
+  // Map different routes to specific Tailwind color classes
+  const colorMap: Record<string, string> = {
+    '/web': 'bg-teal-400 border-teal-400',
+    '/travel': 'bg-pink-400 border-pink-400',
+    '/ski': 'bg-blue-400 border-blue-400',
+    '/blog': 'bg-red-500 border-red-500',
+    // Default color if no match is found
+    default: 'bg-yellow-400 border-yellow-400',
+  };
 
   useEffect(() => {
+    // Determine the new color classes based on the current pathname
+    const newColor = colorMap[pathname] || colorMap.default;
+    setCursorColor(newColor);
+    
+    // The rest of your cursor animation logic from the original code
     let circleX = 0;
     let circleY = 0;
 
@@ -15,7 +37,6 @@ export default function CustomCursor() {
       const { clientX: x, clientY: y } = e;
       mousePos.current = { x, y };
 
-      // Dot follows instantly, center it
       if (dotRef.current) {
         const dotSize = dotRef.current.offsetWidth;
         dotRef.current.style.transform = `translate3d(${x - dotSize / 2}px, ${y - dotSize / 2}px, 0)`;
@@ -40,17 +61,20 @@ export default function CustomCursor() {
     animateCircle();
 
     return () => window.removeEventListener("mousemove", updateCursor);
-  }, []);
+    
+  }, [pathname, colorMap]); // Add pathname and colorMap to the dependency array
 
   return (
     <>
       <div
         ref={dotRef}
-        className="fixed top-0 left-0 z-[9999] w-2 h-2 rounded-full pointer-events-none bg-yellow-400 shadow-lg"
+        // Dynamically apply the color class from state
+        className={`fixed top-0 left-0 z-[9999] w-2 h-2 rounded-full pointer-events-none shadow-lg ${cursorColor.split(' ')[0]}`}
       />
       <div
         ref={circleRef}
-        className="fixed top-0 left-0 z-[9998] w-8 h-8 rounded-full border-2 border-yellow-400 pointer-events-none"
+        // Dynamically apply the color class from state
+        className={`fixed top-0 left-0 z-[9998] w-8 h-8 rounded-full border-2 pointer-events-none ${cursorColor.split(' ')[1]}`}
       />
     </>
   );
