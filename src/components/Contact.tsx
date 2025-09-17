@@ -11,10 +11,38 @@ import {
   FaPhoneAlt,
   FaEnvelope,
 } from "react-icons/fa";
-import LogoShowcase from "./web/LogoShowcase";
+
+// Map icon strings to React components
+const iconMap = {
+  envelope: <FaEnvelope aria-label="Email" />,
+  phone: <FaPhoneAlt aria-label="Phone" />,
+  github: <FaGithub aria-label="GitHub" />,
+  linkedin: <FaLinkedin aria-label="LinkedIn" />,
+  instagram: <FaInstagram aria-label="Instagram" />,
+  facebook: <FaFacebook aria-label="Facebook" />,
+} as const;
+
+type IconKey = keyof typeof iconMap;
+
+type ContactItem = {
+  icon: IconKey;
+  label: string;
+  value: string;
+  link: string;
+};
+
+type QrCodeItem = {
+  label: string;
+  src: string;
+};
 
 // Real contact data
-const contactData = {
+const contactData: {
+  title: string;
+  subtitle: string;
+  contacts: ContactItem[];
+  qrcodes: QrCodeItem[];
+} = {
   title: "Get in Touch",
   subtitle:
     "Open for freelance projects, collaborations, or just a chat about your next big idea. Reach me via any method below.",
@@ -64,18 +92,15 @@ const contactData = {
 };
 
 export default function Contact() {
-  // Map icon strings to React components
-  const iconMap = {
-    envelope: <FaEnvelope aria-label="Email" />,
-    phone: <FaPhoneAlt aria-label="Phone" />,
-    github: <FaGithub aria-label="GitHub" />,
-    linkedin: <FaLinkedin aria-label="LinkedIn" />,
-    instagram: <FaInstagram aria-label="Instagram" />,
-    facebook: <FaFacebook aria-label="Facebook" />,
+  // Particle effect
+  type Particle = {
+    startX: number;
+    startY: number;
+    endX: number;
+    endY: number;
+    duration: number;
   };
 
-  // Particle effect
-  type Particle = { startX: number; startY: number; endX: number; endY: number; duration: number };
   const [particles, setParticles] = useState<Particle[]>([]);
 
   useEffect(() => {
@@ -102,8 +127,18 @@ export default function Contact() {
           key={i}
           className="absolute w-2 h-2 bg-yellow-400 rounded-full opacity-70"
           initial={{ x: p.startX, y: p.startY, opacity: 0.5, scale: 1 }}
-          animate={{ x: p.endX, y: p.endY, opacity: [0.3, 1, 0.3], scale: [0.8, 1.2, 0.8] }}
-          transition={{ duration: p.duration, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" }}
+          animate={{
+            x: p.endX,
+            y: p.endY,
+            opacity: [0.3, 1, 0.3],
+            scale: [0.8, 1.2, 0.8],
+          }}
+          transition={{
+            duration: p.duration,
+            repeat: Infinity,
+            repeatType: "mirror",
+            ease: "easeInOut",
+          }}
         />
       ))}
 
@@ -140,7 +175,9 @@ export default function Contact() {
               md:border-yellow-400 md:hover:border-yellow-400 md:hover:shadow-[0_0_40px_orange]
               shadow-[0_0_30px_orange] md:shadow-none border-1 border-yellow-400"
           >
-            <span className="text-4xl mb-4 text-yellow-400">{iconMap[contact.icon]}</span>
+            <span className="text-4xl mb-4 text-yellow-400">
+              {iconMap[contact.icon]}
+            </span>
             <h3 className="font-bold text-xl mb-2">{contact.label}</h3>
             <a
               href={contact.link}

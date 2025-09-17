@@ -2,8 +2,6 @@
 
 import FloatingButtons from '../../components/FloatingButtons';
 import { motion, type Variants } from 'framer-motion';
-import { FaGlobe, FaCogs, FaHandsHelping, FaRocket } from 'react-icons/fa';
-import Image from 'next/image';
 import WebBackground from '../../components/web/WebBackground';
 import LogoShowcase from '../../components/web/LogoShowcase';
 import SkillCardGrid from '../../components/web/SkillCardGrid';
