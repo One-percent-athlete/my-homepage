@@ -8,10 +8,11 @@ const WebBackground = () => {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    
+
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    let animationId: number;
     let particles: Particle[] = [];
     const NUM_PARTICLES = 100;
     const LINE_DISTANCE = 100;
@@ -23,26 +24,26 @@ const WebBackground = () => {
       vy: number;
       radius: number;
 
-      constructor() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
+      constructor(width: number, height: number) {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
         this.vx = (Math.random() - 0.5) * 0.5;
         this.vy = (Math.random() - 0.5) * 0.5;
         this.radius = 0.5 + Math.random();
       }
 
-      update() {
+      update(width: number, height: number) {
         this.x += this.vx;
         this.y += this.vy;
 
-        if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
-        if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+        if (this.x < 0 || this.x > width) this.vx *= -1;
+        if (this.y < 0 || this.y > height) this.vy *= -1;
       }
 
-      draw() {
+      draw(ctx: CanvasRenderingContext2D) {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(100, 255, 200, 0.8)"; // Teal color
+        ctx.fillStyle = "rgba(100, 255, 200, 0.8)";
         ctx.fill();
       }
     }
@@ -52,24 +53,24 @@ const WebBackground = () => {
       canvas.height = window.innerHeight;
       particles = [];
       for (let i = 0; i < NUM_PARTICLES; i++) {
-        particles.push(new Particle());
+        particles.push(new Particle(canvas.width, canvas.height));
       }
     }
 
     function animate() {
-      requestAnimationFrame(animate);
+      animationId = requestAnimationFrame(animate);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       particles.forEach((p, i) => {
-        p.update();
-        p.draw();
+        p.update(canvas.width, canvas.height);
+        p.draw(ctx);
 
-        // Check for connections
+        // Draw connecting lines
         for (let j = i + 1; j < particles.length; j++) {
           const p2 = particles[j];
-          const dist = Math.sqrt(
-            Math.pow(p.x - p2.x, 2) + Math.pow(p.y - p2.y, 2)
-          );
+          const dx = p.x - p2.x;
+          const dy = p.y - p2.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
 
           if (dist < LINE_DISTANCE) {
             ctx.beginPath();
@@ -83,25 +84,29 @@ const WebBackground = () => {
         }
       });
     }
-    
-    // Initial setup and animation start
+
+    // Init + start animation
     init();
     animate();
 
-    // Handle window resizing
-    const handleResize = () => init();
+    // Handle resizing
+    const handleResize = () => {
+      init();
+    };
     window.addEventListener("resize", handleResize);
 
+    // Cleanup
     return () => {
+      cancelAnimationFrame(animationId);
       window.removeEventListener("resize", handleResize);
     };
   }, []);
 
   return (
-    <canvas 
-      ref={canvasRef} 
+    <canvas
+      ref={canvasRef}
       className="absolute top-0 left-0 w-full h-full"
-      style={{ zIndex: -10 }} // Ensure it stays in the background
+      style={{ zIndex: -10 }}
     />
   );
 };

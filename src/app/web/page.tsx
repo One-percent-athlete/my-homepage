@@ -8,34 +8,6 @@ import SkillCardGrid from '../../components/web/SkillCardGrid';
 import ProjectCardGrid from '../../components/web/ProjectCardGrid'; // Import the new component
 import Contact from "@/components/Contact";
 
-// Animation variants for Framer Motion
-const containerVariants: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-};
-
-const itemVariants: Variants = {
-  hidden: { y: 20, opacity: 0 },
-  visible: { y: 0, opacity: 1 },
-};
-
-const cardVariants: Variants = {
-  hidden: { scale: 0.9, opacity: 0 },
-  visible: {
-    scale: 1,
-    opacity: 1,
-    transition: {
-      type: 'spring',
-      stiffness: 100,
-    },
-  },
-};
-
 export default function Web() {
   return (
     <>
