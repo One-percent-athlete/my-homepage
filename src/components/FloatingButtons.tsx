@@ -45,10 +45,9 @@ const themes = {
 export default function FloatingButtons() {
   const pathname = usePathname();
 
-  // Get the theme for the current page, defaulting to a base theme if not found
-  const currentTheme = themes[pathname] || themes['/']; 
+  // Fix: Use a type assertion to tell TypeScript that pathname is a valid key
+  const currentTheme = themes[pathname as keyof typeof themes] || themes['/']; 
 
-  // Add the /web link to the buttonData array
   const buttonData = [
     { href: '/', emoji: '🏠', text: 'Home' },
     { href: '/web', emoji: '💻', text: 'Web' },
