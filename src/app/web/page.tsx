@@ -61,7 +61,7 @@ export default function Web() {
         </section>
 
         {/* Contact Section */}
-        <section className="snap-start w-full h-screen flex items-center justify-center p-8 relative z-10">
+        <section className="snap-start w-full min-h-screen flex items-center justify-center p-8 relative z-10">
             <Contact />
         </section>
         <LogoShowcase />
