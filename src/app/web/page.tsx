@@ -43,7 +43,7 @@ export default function Web() {
         </section>
 
         {/* My Skills Section */}
-        <section className="snap-start w-full h-screen flex flex-col items-center justify-center p-8 relative z-10">
+        <section className="snap-start w-full min-h-screen flex flex-col items-center justify-center p-8 relative z-10">
           <div className="max-w-7xl mx-auto text-center">
             <h2 className="text-3xl font-bold mb-12 text-teal-400">My Skills</h2>
             <SkillCardGrid />
@@ -53,7 +53,7 @@ export default function Web() {
         {/* --- Removed Our Process Section --- */}
 
         {/* Projects Section */}
-        <section className="snap-start w-full h-screen flex items-center justify-center p-8 relative z-10">
+        <section className="snap-start w-full min-h-screen flex items-center justify-center p-8 relative z-10">
           <div className="max-w-7xl mx-auto text-center">
             <h2 className="text-3xl font-bold text-center mb-12 text-teal-400">Projects</h2>
             <ProjectCardGrid /> {/* Use the new component here */}
