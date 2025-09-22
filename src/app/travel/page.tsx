@@ -1,157 +1,233 @@
 "use client";
 
-import FloatingButtons from "@/components/FloatingButtons";
-import { motion, type Variants } from 'framer-motion';
-import { FaCompass, FaMapMarkedAlt, FaPlane, FaQuoteLeft } from 'react-icons/fa';
+import { useState, useEffect } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import FloatingButtons from "../../components/FloatingButtons";
 
-// Animation variants for Framer Motion
-const containerVariants: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-};
+// --- Full countries list ---
+const countries = [
+  { code: "ar", name: "Argentina" },
+  { code: "au", name: "Australia" },
+  { code: "at", name: "Austria" },
+  { code: "be", name: "Belgium" },
+  { code: "br", name: "Brazil" },
+  { code: "ca", name: "Canada" },
+  { code: "cl", name: "Chile" },
+  { code: "cn", name: "China" },
+  { code: "co", name: "Colombia" },
+  { code: "cr", name: "Costa Rica" },
+  { code: "fr", name: "France" },
+  { code: "de", name: "Germany" },
+  { code: "gr", name: "Greece" },
+  { code: "is", name: "Iceland" },
+  { code: "in", name: "India" },
+  { code: "it", name: "Italy" },
+  { code: "jp", name: "Japan" },
+  { code: "ke", name: "Kenya" },
+  { code: "mx", name: "Mexico" },
+  { code: "nl", name: "Netherlands" },
+  { code: "nz", name: "New Zealand" },
+  { code: "pt", name: "Portugal" },
+  { code: "es", name: "Spain" },
+  { code: "ch", name: "Switzerland" },
+  { code: "th", name: "Thailand" },
+  { code: "tr", name: "Turkey" },
+  { code: "gb", name: "United Kingdom" },
+  { code: "us", name: "United States" },
+  { code: "vn", name: "Vietnam" },
+].sort((a, b) => a.name.localeCompare(b.name));
 
-const itemVariants: Variants = {
-  hidden: { y: 20, opacity: 0 },
-  visible: { y: 0, opacity: 1 },
-};
+export default function TravelPage() {
+  const [scrollY, setScrollY] = useState(0);
 
-const cardVariants: Variants = {
-  hidden: { scale: 0.9, opacity: 0 },
-  visible: {
-    scale: 1,
-    opacity: 1,
-    transition: {
-      type: 'spring',
-      stiffness: 100,
-    },
-  },
-};
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
-export default function Travel() {
-  return (
-    <>
-      <FloatingButtons />
-      <div className="bg-neutral-900 text-neutral-100 min-h-screen py-20 px-4 sm:px-8 font-sans">
-        <motion.header
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <h1 className="text-4xl sm:text-6xl font-extrabold text-lime-400 mb-4 tracking-tight">
-            Crafting Your Adventure
-          </h1>
-          <p className="text-xl sm:text-2xl max-w-3xl mx-auto text-neutral-300">
-            My journey began with a single backpack and a love for languages. I believe that travel isn&apos;t just about seeing new places&mdash;it&apos;s about finding yourself in them. I&apos;ll help you skip the tourist traps and discover the authentic heart of your destination.
-          </p>
-        </motion.header>
+  // circle radius grows with scroll
+  const baseRadius = 300;
+  const radius = baseRadius + scrollY * 0.5;
+  const opacity = Math.max(1 - scrollY / 2000, 0);
 
-        <main className="max-w-7xl mx-auto">
-          <section className="mb-20">
-            <h2 className="text-3xl font-bold text-center mb-12 text-lime-400">How We Work</h2>
-            <motion.div
-              className="grid md:grid-cols-3 gap-8"
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-            >
-              <motion.div variants={itemVariants} className="bg-neutral-800 p-8 rounded-xl shadow-lg border border-neutral-700 hover:border-lime-400 transition-colors duration-300">
-                <div className="text-4xl text-lime-400 mb-4">
-                  <FaMapMarkedAlt />
-                </div>
-                <h3 className="text-xl font-bold mb-2">Custom Itineraries</h3>
-                <p className="text-neutral-400">No more generic tours. I create a day-by-day plan tailored to your interests, budget, and travel style.</p>
-              </motion.div>
+  // framer-motion scroll-based parallax
+  const { scrollYProgress } = useScroll();
+  const yParallax = useTransform(scrollYProgress, [0, 1], [0, -600]);
 
-              <motion.div variants={itemVariants} className="bg-neutral-800 p-8 rounded-xl shadow-lg border border-neutral-700 hover:border-lime-400 transition-colors duration-300">
-                <div className="text-4xl text-lime-400 mb-4">
-                  <FaCompass />
-                </div>
-                <h3 className="text-xl font-bold mb-2">Local Insights &amp; Tips</h3>
-                <p className="text-neutral-400">Get the inside scoop on hidden gems, off-the-beaten-path restaurants, and cultural nuances only a local would know.</p>
-              </motion.div>
+  return (
+    <div className="relative min-h-screen bg-gradient-to-br from-gray-950 via-slate-900 to-cyan-950 overflow-hidden text-white">
+      {/* Floating Buttons */}
+      <FloatingButtons />
 
-              <motion.div variants={itemVariants} className="bg-neutral-800 p-8 rounded-xl shadow-lg border border-neutral-700 hover:border-lime-400 transition-colors duration-300">
-                <div className="text-4xl text-lime-400 mb-4">
-                  <FaPlane />
-                </div>
-                <h3 className="text-xl font-bold mb-2">Booking Assistance</h3>
-                <p className="text-neutral-400">From flights and accommodations to local tours and transportation, I help with every step of the planning process.</p>
-              </motion.div>
-            </motion.div>
-          </section>
+      {/* Hero Section with Flags Circle */}
+      <section className="relative flex flex-col items-center justify-center text-center px-6 py-32 min-h-screen z-10">
+        {/* Flags circle */}
+        <motion.div
+          className="fixed inset-0 flex items-center justify-center pointer-events-none"
+          style={{ opacity }}
+        >
+          <div className="relative w-[700px] h-[700px]">
+            {countries.map((country, i) => {
+              const angle = (i / countries.length) * 2 * Math.PI;
+              const x = Math.cos(angle) * radius;
+              const y = Math.sin(angle) * radius;
+              return (
+                <motion.div
+                  key={i}
+                  className="absolute flex flex-col items-center"
+                  style={{ transform: `translate(${350 + x}px, ${350 + y}px)` }}
+                >
+                  <span className={`fi fi-${country.code} text-2xl md:text-3xl`}></span>
+                </motion.div>
+              );
+            })}
+          </div>
+        </motion.div>
 
-          <section className="mb-20">
-            <h2 className="text-3xl font-bold text-center mb-12 text-lime-400">What Clients Say</h2>
-            <motion.div
-              className="grid md:grid-cols-2 gap-8"
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-            >
-              <motion.div variants={cardVariants} className="bg-neutral-800 p-8 rounded-xl shadow-lg border-l-4 border-lime-500">
-                <FaQuoteLeft className="text-lime-400 text-3xl mb-4" />
-                <p className="italic text-neutral-300 mb-4">&quot;I would have never found the amazing local market and tiny ramen shop without the personalized plan. It made my trip to Sapporo truly unforgettable!&quot;</p>
-                <p className="font-bold text-neutral-200">- Alex R., California, USA</p>
-              </motion.div>
+        <motion.h1
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+          className="text-6xl font-extrabold drop-shadow-lg"
+        >
+          ✈️ Discover Your Next Adventure
+        </motion.h1>
+        <motion.p
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 1 }}
+          className="mt-6 text-xl text-gray-300 max-w-2xl"
+        >
+          Escape the ordinary and step into a world full of colors, cultures, and unforgettable moments. Where will your heart take you next?
+        </motion.p>
+      </section>
 
-              <motion.div variants={cardVariants} className="bg-neutral-800 p-8 rounded-xl shadow-lg border-l-4 border-lime-500">
-                <FaQuoteLeft className="text-lime-400 text-3xl mb-4" />
-                <p className="italic text-neutral-300 mb-4">&quot;The consultation was a game-changer. It saved me hours of research and gave me the confidence to explore a country where I didn&apos;t speak the language.&quot;</p>
-                <p className="font-bold text-neutral-200">- Sarah P., London, UK</p>
-              </motion.div>
-            </motion.div>
-          </section>
+      {/* Destinations Grid */}
+      <section className="max-w-6xl mx-auto px-6 py-24 grid md:grid-cols-3 gap-10">
+        {[
+          {
+            title: "Tropical Paradise",
+            img: "/images/beach.jpg",
+            desc: "Soak up the sun, feel the sand between your toes, and sip on fresh coconut water.",
+          },
+          {
+            title: "Mountain Escape",
+            img: "/images/mountain.jpg",
+            desc: "Breathe in crisp air, chase waterfalls, and find peace among majestic peaks.",
+          },
+          {
+            title: "City Lights",
+            img: "/images/city.jpg",
+            desc: "Get lost in buzzing streets, taste local delights, and dance the night away.",
+          },
+        ].map((place, index) => (
+          <motion.div
+            key={index}
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: index * 0.2, duration: 0.8 }}
+            className="bg-white/10 backdrop-blur-md rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl hover:scale-105 transition-transform cursor-pointer"
+          >
+            <img src={place.img} alt={place.title} className="h-56 w-full object-cover" />
+            <div className="p-6">
+              <h3 className="text-2xl font-bold text-white">{place.title}</h3>
+              <p className="mt-3 text-gray-300">{place.desc}</p>
+            </div>
+          </motion.div>
+        ))}
+      </section>
 
-          <section className="mb-20">
-            <h2 className="text-3xl font-bold text-center mb-12 text-lime-400">Our Packages</h2>
-            <motion.div
-              className="grid md:grid-cols-3 gap-8"
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-            >
-              <motion.div variants={cardVariants} className="bg-neutral-800 p-8 rounded-xl shadow-lg border-l-4 border-lime-500">
-                <h3 className="text-2xl font-bold mb-2">The &quot;Planner&quot;</h3>
-                <p className="text-neutral-400">A one-hour phone consultation and a detailed PDF guide with my top recommendations for your destination.</p>
-              </motion.div>
+      {/* Parallax Showcase */}
+      <section className="relative h-[80vh] flex items-center justify-center overflow-hidden">
+        <motion.div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: "url('/images/nature.jpg')",
+            y: yParallax,
+          }}
+        />
+        <div className="relative z-10 text-center">
+          <h2 className="text-5xl font-extrabold drop-shadow-xl">🌄 Breathtaking Views</h2>
+          <p className="mt-4 text-xl text-gray-200">Let nature remind you how small the world makes you feel.</p>
+        </div>
+      </section>
 
-              <motion.div variants={cardVariants} className="bg-neutral-800 p-8 rounded-xl shadow-lg border-l-4 border-lime-500">
-                <h3 className="text-2xl font-bold mb-2">The &quot;Explorer&quot;</h3>
-                <p className="text-neutral-400">A full-service package including a detailed day-by-day itinerary, booking assistance, and ongoing support for a week-long trip.</p>
-              </motion.div>
+      {/* Testimonials */}
+      <section className="max-w-6xl mx-auto px-6 py-24">
+        <h2 className="text-4xl font-bold text-center mb-12">❤️ Travelers Love It</h2>
+        <div className="grid md:grid-cols-3 gap-8">
+          {[
+            {
+              quote: "The most magical trip of my life, everything was perfectly arranged!",
+              name: "Sarah K.",
+            },
+            {
+              quote: "I discovered hidden gems and met amazing people. Truly unforgettable.",
+              name: "Daniel W.",
+            },
+            {
+              quote: "From mountains to oceans, every moment felt like a dream.",
+              name: "Emma L.",
+            },
+          ].map((t, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.2 }}
+              className="bg-white/10 backdrop-blur-md rounded-xl shadow-lg p-6"
+            >
+              <p className="italic text-gray-200">“{t.quote}”</p>
+              <h4 className="mt-4 font-semibold text-cyan-300">{t.name}</h4>
+            </motion.div>
+          ))}
+        </div>
+      </section>
 
-              <motion.div variants={cardVariants} className="bg-neutral-800 p-8 rounded-xl shadow-lg border-l-4 border-lime-500">
-                <h3 className="text-2xl font-bold mb-2">The &quot;Quick Q&amp;A&quot;</h3>
-                <p className="text-neutral-400">A 30-minute call to answer all your travel questions and get quick, expert advice before your trip.</p>
-              </motion.div>
-            </motion.div>
-          </section>
+      {/* Extra Parallax Section */}
+      <section className="relative h-[70vh] flex items-center justify-center overflow-hidden">
+        <motion.div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: "url('/images/adventure.jpg')",
+            y: yParallax,
+          }}
+        />
+        <div className="relative z-10 text-center">
+          <h2 className="text-5xl font-extrabold drop-shadow-xl">🌍 Endless Adventures</h2>
+          <p className="mt-4 text-xl text-gray-200">Every step brings a new story to tell.</p>
+        </div>
+      </section>
 
-          <section className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-neutral-100 mb-6">
-              Ready to Start Planning?
-            </h2>
-            <p className="text-lg text-neutral-300 max-w-2xl mx-auto mb-8">
-              Let&apos;s create your perfect journey, tailored just for you.
-            </p>
-            <motion.a
-              href="/contact"
-              className="inline-flex items-center justify-center px-8 py-4 font-bold rounded-full text-neutral-900 bg-lime-400 hover:bg-lime-300 transition-colors duration-300 shadow-xl"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <FaCompass className="mr-2 text-xl" />
-              Book a Free Consultation
-            </motion.a>
-          </section>
-        </main>
-      </div>
-    </>
-  );
+      {/* Call to Action */}
+      <section className="text-center px-6 py-24 bg-gradient-to-r from-cyan-700 to-indigo-800">
+        <motion.h2
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+          className="text-4xl font-extrabold drop-shadow-md"
+        >
+          🌍 The world is waiting for you
+        </motion.h2>
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ delay: 0.5, duration: 1 }}
+          className="mt-4 text-lg text-gray-300"
+        >
+          Pack your bags and let your soul wander. Adventure is just a heartbeat away.
+        </motion.p>
+        <motion.button
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+          className="mt-8 px-8 py-4 text-lg font-bold rounded-full bg-cyan-500 text-white shadow-lg hover:bg-cyan-600"
+        >
+          Start Exploring
+        </motion.button>
+      </section>
+    </div>
+  );
 }
