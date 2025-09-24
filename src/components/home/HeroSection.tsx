@@ -4,11 +4,12 @@
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import React from 'react';
+import ButtonSection from "./ButtonSection";
 
 const starColors = ["#FFD700", "#FFC107", "#FFB300", "#7EC8E3", "#FFFFFF"];
 
 // Add children prop
-export default function HeroSection({ children }: { children: React.ReactNode }) {
+export default function HeroSection() {
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
   useEffect(() => {
@@ -77,10 +78,7 @@ export default function HeroSection({ children }: { children: React.ReactNode })
           From multilingual websites to unforgettable travel, <br/>let&apos;s turn your ideas into reality.
         </motion.p>
       </div>
-
-      {/* This is where the buttons will be rendered */}
-      {children}
-
+      <ButtonSection />
       {/* Custom shimmer keyframes */}
       <style jsx>{`
         @keyframes shimmer {

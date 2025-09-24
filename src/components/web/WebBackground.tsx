@@ -107,7 +107,7 @@ const WebBackground = () => {
   return (
     <canvas
       ref={canvasRef}
-      className="absolute top-0 left-0 w-full h-full"
+      className="w-full h-full overflow-hidden"
       style={{ zIndex: -10 }}
     />
   );

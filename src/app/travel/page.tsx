@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import FloatingButtons from "../../components/FloatingButtons";
+import Footer from "@/components/Footer";
 
 // --- Full countries list ---
 const countries = [
@@ -56,6 +57,7 @@ export default function TravelPage() {
   const yParallax = useTransform(scrollYProgress, [0, 1], [0, -600]);
 
   return (
+    <>
     <div className="relative min-h-screen bg-gradient-to-br from-gray-950 via-slate-900 to-cyan-950 overflow-hidden text-white">
       {/* Floating Buttons */}
       <FloatingButtons />
@@ -229,5 +231,7 @@ export default function TravelPage() {
         </motion.button>
       </section>
     </div>
+    <Footer />
+    </>
   );
 }

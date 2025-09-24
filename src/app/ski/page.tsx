@@ -3,6 +3,7 @@
 "use client";
 
 import FloatingButtons from "@/components/FloatingButtons";
+import Footer from "@/components/Footer";
 import { motion, type Variants } from "framer-motion";
 
 // Animation Variants
@@ -30,6 +31,7 @@ const cardVariants: Variants = {
 
 export default function Ski() {
   return (
+    <>
     <div className="bg-gray-100 min-h-screen">
       {/* Hero Section */}
       <header className="relative w-full h-[28rem] bg-cover bg-center" style={{ backgroundImage: "url('/images/ski-hero.jpg')" }}>
@@ -269,5 +271,7 @@ export default function Ski() {
       {/* Floating Action Buttons */}
       <FloatingButtons />
     </div>
+    <Footer />
+    </>
   );
 }

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import FloatingButtons from "@/components/FloatingButtons";
+import Footer from "@/components/Footer";
 
 // This is a placeholder for a function that fetches your blog posts.
 // In a real application, you'd fetch this data from a database,
@@ -98,6 +99,7 @@ export default async function BlogPage() {
                 </button>
             </section>
             </div>
+      <Footer />
      </>
   );
 }
