@@ -66,26 +66,31 @@ export default function TravelPage() {
       <section className="relative flex flex-col items-center justify-center text-center px-6 py-32 min-h-screen z-10">
         {/* Flags circle */}
         <motion.div
-          className="fixed inset-0 flex items-center justify-center pointer-events-none"
-          style={{ opacity }}
-        >
-          <div className="relative w-[700px] h-[700px]">
-            {countries.map((country, i) => {
-              const angle = (i / countries.length) * 2 * Math.PI;
-              const x = Math.cos(angle) * radius;
-              const y = Math.sin(angle) * radius;
-              return (
-                <motion.div
-                  key={i}
-                  className="absolute flex flex-col items-center"
-                  style={{ transform: `translate(${350 + x}px, ${350 + y}px)` }}
-                >
-                  <span className={`fi fi-${country.code} text-2xl md:text-3xl`}></span>
-                </motion.div>
-              );
-            })}
-          </div>
+            className="fixed inset-0 flex items-center justify-center pointer-events-none"
+            style={{ opacity }}
+            >
+            <motion.div
+                className="relative w-[700px] h-[700px]"
+                animate={{ rotate: 360 }}
+                transition={{ repeat: Infinity, duration: 60, ease: "linear" }}
+            >
+                {countries.map((country, i) => {
+                const angle = (i / countries.length) * 2 * Math.PI;
+                const x = Math.cos(angle) * radius;
+                const y = Math.sin(angle) * radius;
+                return (
+                    <motion.div
+                    key={i}
+                    className="absolute flex flex-col items-center"
+                    style={{ transform: `translate(${350 + x}px, ${350 + y}px)` }}
+                    >
+                    <span className={`fi fi-${country.code} text-2xl md:text-3xl`}></span>
+                    </motion.div>
+                );
+                })}
+            </motion.div>
         </motion.div>
+
 
         <motion.h1
           initial={{ opacity: 0, y: -50 }}
