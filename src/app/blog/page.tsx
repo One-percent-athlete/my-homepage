@@ -6,8 +6,21 @@ import Image from "next/image";
 import FloatingButtons from "@/components/FloatingButtons";
 import Footer from "@/components/Footer";
 
-async function getBlogPosts() {
-  const posts = [
+// ---- Types ----
+type Category = "Tech & Business" | "Travel & Culture" | "Ski & Snow";
+
+type BlogPost = {
+  slug: string;
+  title: string;
+  excerpt: string;
+  date: string;
+  image: string;
+  category: Category;
+};
+
+// ---- Data ----
+async function getBlogPosts(): Promise<BlogPost[]> {
+  const posts: BlogPost[] = [
     {
       slug: "the-best-multilingual-seo-tools",
       title: "The Best Multilingual SEO Tools",
@@ -39,21 +52,26 @@ async function getBlogPosts() {
   return posts;
 }
 
+// ---- Component ----
 export default function BlogPage() {
-  const [posts, setPosts] = useState<any[]>([]);
-  const [activeTab, setActiveTab] = useState<string>("Tech & Business");
+  const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [activeTab, setActiveTab] = useState<Category>("Tech & Business");
 
   useEffect(() => {
     getBlogPosts().then((data) => setPosts(data));
   }, []);
 
-  const categories = ["Tech & Business", "Travel & Culture", "Ski & Snow"];
+  const categories: Category[] = [
+    "Tech & Business",
+    "Travel & Culture",
+    "Ski & Snow",
+  ];
 
   // Filter posts based on active tab
   const filteredPosts = posts.filter((post) => post.category === activeTab);
 
   // Videos for each category
-  const videoSources: Record<string, string> = {
+  const videoSources: Record<Category, string> = {
     "Tech & Business": "/videos/tech.mp4",
     "Travel & Culture": "/videos/travel.mp4",
     "Ski & Snow": "/videos/ski.mp4",
@@ -82,9 +100,10 @@ export default function BlogPage() {
               Stories, Guides, & Insights: The Blog
             </h1>
             <p className="text-lg md:text-xl text-gray-200 max-w-2xl">
-              This is where I share my passions for technology, travel, and the mountains. 
-              You&apos;ll find practical advice for building a global brand, inspiring stories from my travels, 
-              and tips for your next ski trip.
+              This is where I share my passions for technology, travel, and the
+              mountains. You&apos;ll find practical advice for building a global
+              brand, inspiring stories from my travels, and tips for your next
+              ski trip.
             </p>
           </div>
         </header>
@@ -95,7 +114,7 @@ export default function BlogPage() {
             <button
               key={category}
               onClick={() => setActiveTab(category)}
-              className={`px-4 py-2 font-semibold rounded-full transition-colors cursor-none hover:scale-110 ${
+              className={`px-4 py-2 font-semibold rounded-full transition-transform hover:scale-110 ${
                 activeTab === category
                   ? "bg-blue-600 text-white"
                   : "bg-gray-200 text-gray-700 hover:bg-gray-300"

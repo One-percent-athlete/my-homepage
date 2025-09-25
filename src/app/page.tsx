@@ -1,9 +1,7 @@
 // app/page.tsx (Updated)
 import React from 'react';
 import HeroSection from "@/components/home/HeroSection";
-import ButtonSection from "@/components/home/ButtonSection";
 import type { Metadata } from "next";
-import Animation from "@/components/Animation";
 
 export const metadata: Metadata = {
   title: "Ryu - Web App Developer, Ski Instructor & Traveler",

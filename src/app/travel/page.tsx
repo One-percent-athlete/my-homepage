@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import FloatingButtons from "../../components/FloatingButtons";
 import Footer from "@/components/Footer";
+import Image from "next/image";
 
 // --- Full countries list ---
 const countries = [
@@ -137,7 +138,7 @@ export default function TravelPage() {
             transition={{ delay: index * 0.2, duration: 0.8 }}
             className="bg-white/10 backdrop-blur-md rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl hover:scale-105 transition-transform cursor-pointer"
           >
-            <img src={place.img} alt={place.title} className="h-56 w-full object-cover" />
+            <Image src={place.img} alt={place.title} className="rounded-lg" width={600} height={400} />
             <div className="p-6">
               <h3 className="text-2xl font-bold text-white">{place.title}</h3>
               <p className="mt-3 text-gray-300">{place.desc}</p>
