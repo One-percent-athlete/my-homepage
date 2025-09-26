@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { CldUploadWidget } from "next-cloudinary";
 import { v4 as uuidv4 } from "uuid";
+import Image from "next/image";
 
 export default function CreatePostPage() {
   const router = useRouter();
@@ -104,7 +105,7 @@ export default function CreatePostPage() {
             )}
           </CldUploadWidget>
           {coverImage && (
-            <img src={coverImage} alt="Cover" className="mt-2 w-full rounded-md" />
+            <Image height={400} width={400} src={coverImage} alt="Cover" className="mt-2 w-full rounded-md" />
           )}
         </div>
 
