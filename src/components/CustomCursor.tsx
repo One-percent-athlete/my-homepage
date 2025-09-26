@@ -17,7 +17,7 @@ export default function CustomCursor() {
   // Memoize the colorMap object to prevent it from being recreated on every render
   const colorMap = useMemo(() => ({
     '/web': 'bg-teal-400 border-teal-400',
-    '/travel': 'bg-pink-400 border-pink-400',
+    '/travel': 'bg-orange-400 border-orange-400',
     '/ski': 'bg-blue-400 border-blue-400',
     '/blog': 'bg-red-500 border-red-500',
     default: 'bg-yellow-400 border-yellow-400',

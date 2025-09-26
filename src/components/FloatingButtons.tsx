@@ -12,11 +12,18 @@ const themes = {
     activeBg: 'bg-blue-500',
     activeText: 'text-white'
   },
+  '/web': {
+    border: 'border-teal-400',
+    text: 'text-teal-400',
+    hover: 'hover:text-teal-400',
+    activeBg: 'bg-teal-400',
+    activeText: 'text-white'
+  },
   '/travel': {
-    border: 'border-green-500',
-    text: 'text-green-500',
-    hover: 'hover:text-green-500',
-    activeBg: 'bg-green-500',
+    border: 'border-orange-400',
+    text: 'text-orange-400',
+    hover: 'hover:text-orange-400',
+    activeBg: 'bg-orange-400',
     activeText: 'text-white'
   },
   '/ski': {
@@ -33,13 +40,6 @@ const themes = {
     activeBg: 'bg-purple-500',
     activeText: 'text-white'
   },
-  '/web': {
-    border: 'border-teal-400',
-    text: 'text-teal-400',
-    hover: 'hover:text-teal-400',
-    activeBg: 'bg-teal-400',
-    activeText: 'text-white'
-  }
 };
 
 export default function FloatingButtons() {

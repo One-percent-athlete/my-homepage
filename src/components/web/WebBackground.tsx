@@ -15,7 +15,7 @@ const WebBackground = () => {
     let animationId: number;
     let particles: Particle[] = [];
     const NUM_PARTICLES = 30;
-    const LINE_DISTANCE = 300; // slightly longer for neon effect
+    const LINE_DISTANCE = 150; // slightly longer for neon effect
 
     class Particle {
       x: number;
