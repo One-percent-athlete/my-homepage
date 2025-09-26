@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
-import RippleTransition from "../RippleTransition";
+import RippleTransition from "./RippleTransition";
 import '@/app/globals.css';
 
 export default function ButtonSection() {
@@ -32,7 +32,7 @@ export default function ButtonSection() {
       className="relative z-20 flex flex-wrap justify-center gap-6 w-full max-w-2xl"
     >
       {services.map((service) => (
-        <motion.button
+          <motion.button
           key={service.href}
           onClick={(e) => handleClick(e, service.href)}
           whileHover={{ scale: 1.05 }}
@@ -82,9 +82,6 @@ export default function ButtonSection() {
         <RippleTransition
           x={ripple.x}
           y={ripple.y}
-          colorClass="bg-yellow-500"
-          borderClass="border-black"
-          duration={0.4}
           onComplete={() => router.push(ripple.href)}
         />
       )}
