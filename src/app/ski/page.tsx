@@ -29,7 +29,7 @@ export default function Ski() {
   ];
 
   const testimonials = [
-    { quote: "Ryu is the best instructor I’ve ever had. Patient, fun, and helped me finally conquer black runs!", author: "Sarah, USA" },
+    { quote: "Ryu is the best instructor I&apos;ve ever had. Patient, fun, and helped me finally conquer black runs!", author: "Sarah, USA" },
     { quote: "The guided tour was incredible. He showed us hidden spots I never would have found on my own.", author: "Kenji, Japan" },
   ];
 
@@ -60,7 +60,7 @@ export default function Ski() {
                 className="mt-8 inline-block bg-gradient-to-r from-sky-300 to-sky-700 text-white font-bold text-lg py-3 px-8 rounded-full shadow-lg hover:scale-105 transition transform"
                 variants={itemVariants}
               >
-                Let's Go
+                Let&apos;s Go
               </motion.a>
             </motion.div>
           </div>

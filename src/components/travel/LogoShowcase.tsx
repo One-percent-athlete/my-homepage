@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { FC, useEffect, useState } from "react";
 
 // Full list of 63 country codes
@@ -12,37 +13,65 @@ const countries = [
   "kh","la","bd"
 ];
 
-const LogoShowcase: FC = () => {
+interface LogoShowcaseProps {
+  direction?: "left" | "right";
+}
+
+const LogoShowcase: FC<LogoShowcaseProps> = ({ direction = "left" }) => {
   const [flags, setFlags] = useState<string[]>([]);
 
   useEffect(() => {
-    // Preload flag URLs
-    const urls = countries.map(code => `https://flagcdn.com/w40/${code}.png`);
+    const urls = countries.map((code) => `https://flagcdn.com/w40/${code}.png`);
     setFlags(urls);
   }, []);
 
   return (
     <div className="overflow-hidden w-full py-4 relative">
-      {/* Top row */}
-      <div className="flex animate-marquee gap-4 sm:gap-6 md:gap-8">
-        {Array(4) // repeat for smooth infinite scroll
+      <div className={`flex ${direction === "left" ? "animate-marquee" : "animate-marquee-reverse"} gap-4 sm:gap-6 md:gap-8`}>
+        {Array(4)
           .fill(flags)
           .flat()
           .map((src, idx) => (
-            <img key={idx} src={src} alt="flag" className="w-10 h-10 sm:w-12 sm:h-12 object-cover" />
+            <Image
+              height={20}
+              width={20}
+              key={idx}
+              src={src}
+              alt="flag"
+              className="object-cover"
+            />
           ))}
       </div>
 
       <style jsx>{`
         @keyframes marquee {
-          0% { transform: translateX(0%); }
-          100% { transform: translateX(-100%); }
+          0% {
+            transform: translateX(10%);
+          }
+          100% {
+            transform: translateX(-100%);
+          }
+        }
+
+        @keyframes marquee-reverse {
+          0% {
+            transform: translateX(-100%);
+          }
+          100% {
+            transform: translateX(100%);
+          }
         }
 
         .animate-marquee {
           display: flex;
           width: max-content;
-          animation: marquee 300s linear infinite;
+          animation: marquee 500s linear infinite;
+        }
+
+        .animate-marquee-reverse {
+          display: flex;
+          width: max-content;
+          animation: marquee-reverse 500s linear infinite;
         }
       `}</style>
     </div>

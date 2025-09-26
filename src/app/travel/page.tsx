@@ -54,7 +54,7 @@ export default function TravelPage() {
                     transition={{ delay: 0.6, duration: 1 }}
                     className="mt-8 inline-block px-8 py-4 text-lg font-bold rounded-full bg-orange-500 text-white shadow-lg hover:bg-orange-600 transition-colors"
                 >
-                    Let's Go
+                    Let&apos;s Go
                 </motion.a>
             </section>
 
@@ -153,7 +153,7 @@ export default function TravelPage() {
                     <p className="mt-4 text-xl text-gray-200">Every step brings a new story to tell.</p>
                 </div>
             </section>
-
+            <LogoShowcase direction="right" />
             {/* Call to Action */}
             <section
                 id="cta-section"
@@ -184,7 +184,7 @@ export default function TravelPage() {
                 </motion.button>
             </section>
 
-            <LogoShowcase />
+            <LogoShowcase direction="left" />
         </div>
         <Footer />
         </>

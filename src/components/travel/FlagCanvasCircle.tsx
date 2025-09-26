@@ -53,7 +53,6 @@ export default function FlagCanvasCircle({ scrollY }: FlagCanvasCircleProps) {
     if (!ctx) return;
 
     const images: HTMLImageElement[] = [];
-    let loaded = 0;
     const radiusBase = 400;
     let rotation = 0;
     let animationFrameId: number;
@@ -63,7 +62,6 @@ export default function FlagCanvasCircle({ scrollY }: FlagCanvasCircleProps) {
       const img = new Image();
       img.src = `https://flagcdn.com/w40/${code}.png`; // 40px flags
       img.onload = () => {
-        loaded++;
         images.push(img);
       };
     });

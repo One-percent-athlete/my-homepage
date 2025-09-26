@@ -26,14 +26,14 @@ async function getBlogPosts(): Promise<BlogPost[]> {
       slug: "the-best-multilingual-seo-tools",
       title: "The Best Multilingual SEO Tools",
       excerpt:
-        "Discover the top tools to optimize your website for a global audience and expand your brand's reach.",
+        "Discover the top tools to optimize your website for a global audience and expand your brand&apos;s reach.",
       date: "September 15, 2025",
       image: "/images/seo-tools.jpg",
       category: "Tech & Business",
     },
     {
       slug: "a-foodies-guide-to-sapporo",
-      title: "A Foodie's Guide to Sapporo",
+      title: "A Foodie&apos;s Guide to Sapporo",
       excerpt:
         "From ramen to fresh seafood, explore the culinary delights of Sapporo, Hokkaido, with this comprehensive guide.",
       date: "September 10, 2025",
@@ -101,7 +101,7 @@ export default function BlogPage() {
             </h1>
             <p className="text-lg md:text-xl max-w-2xl text-pink-400">
               This is where I share my passions for technology, travel, and the
-              mountains. You'll find practical advice for building a global
+              mountains. You&apos;ll find practical advice for building a global
               brand, inspiring stories from my travels, and tips for your next
               ski trip.
             </p>
