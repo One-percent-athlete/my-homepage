@@ -5,11 +5,18 @@ const prisma = new PrismaClient();
 
 export async function GET(req: NextRequest, { params }: { params: { slug: string } }) {
   try {
+    const { slug } = params;
     const post = await prisma.post.findUnique({
-      where: { slug: params.slug },
-      include: { postTags: { include: { tag: true } }, author: true, comments: true },
+      where: { slug },
+      include: {
+        author: true,
+        comments: true,
+        postTags: { include: { tag: true } },
+      },
     });
+
     if (!post) return NextResponse.json({ error: "Post not found" }, { status: 404 });
+
     return NextResponse.json(post);
   } catch (err) {
     console.error(err);
