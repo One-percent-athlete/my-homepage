@@ -3,9 +3,10 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function GET(req: NextRequest, { params }: { params: { slug: string } }) {
+// GET /api/blog/[slug]
+export async function GET(req: NextRequest, context: { params: { slug: string } }) {
+  const { slug } = context.params; // correct way
   try {
-    const { slug } = params;
     const post = await prisma.post.findUnique({
       where: { slug },
       include: {
