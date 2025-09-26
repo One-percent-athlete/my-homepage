@@ -27,17 +27,17 @@ const themes = {
     activeText: 'text-white'
   },
   '/ski': {
-    border: 'border-cyan-500',
-    text: 'text-cyan-500',
-    hover: 'hover:text-cyan-500',
-    activeBg: 'bg-cyan-500',
+    border: 'border-sky-400',
+    text: 'text-sky-400',
+    hover: 'hover:text-sky-400',
+    activeBg: 'bg-sky-400',
     activeText: 'text-white'
   },
   '/blog': {
-    border: 'border-purple-500',
-    text: 'text-purple-500',
-    hover: 'hover:text-purple-500',
-    activeBg: 'bg-purple-500',
+    border: 'border-purple-400',
+    text: 'text-purple-400',
+    hover: 'hover:text-purple-400',
+    activeBg: 'bg-purple-400',
     activeText: 'text-white'
   },
 };

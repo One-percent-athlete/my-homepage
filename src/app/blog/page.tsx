@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import FloatingButtons from "@/components/FloatingButtons";
 import Footer from "@/components/Footer";
+import CustomCursor from "@/components/CustomCursor";
 
 // ---- Types ----
 type Category = "Tech & Business" | "Travel & Culture" | "Ski & Snow";
@@ -67,10 +68,8 @@ export default function BlogPage() {
     "Ski & Snow",
   ];
 
-  // Filter posts based on active tab
   const filteredPosts = posts.filter((post) => post.category === activeTab);
 
-  // Videos for each category
   const videoSources: Record<Category, string> = {
     "Tech & Business": "/videos/tech.mp4",
     "Travel & Culture": "/videos/travel.mp4",
@@ -79,6 +78,7 @@ export default function BlogPage() {
 
   return (
     <>
+      <CustomCursor />
       <FloatingButtons />
       <div className="container mx-auto px-4 py-8">
         {/* Header with video background */}
@@ -94,14 +94,14 @@ export default function BlogPage() {
             <source src={videoSources[activeTab]} type="video/mp4" />
           </video>
 
-          {/* Overlay for readability */}
+          {/* Overlay */}
           <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center text-center px-6">
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 drop-shadow-lg">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 drop-shadow-lg text-purple-400">
               Stories, Guides, & Insights: The Blog
             </h1>
-            <p className="text-lg md:text-xl text-gray-200 max-w-2xl">
+            <p className="text-lg md:text-xl max-w-2xl text-pink-400">
               This is where I share my passions for technology, travel, and the
-              mountains. You&apos;ll find practical advice for building a global
+              mountains. You'll find practical advice for building a global
               brand, inspiring stories from my travels, and tips for your next
               ski trip.
             </p>
@@ -116,7 +116,7 @@ export default function BlogPage() {
               onClick={() => setActiveTab(category)}
               className={`px-4 py-2 font-semibold rounded-full transition-transform hover:scale-110 ${
                 activeTab === category
-                  ? "bg-blue-600 text-white"
+                  ? "bg-purple-400 text-white"
                   : "bg-gray-200 text-gray-700 hover:bg-gray-300"
               }`}
             >
@@ -130,7 +130,7 @@ export default function BlogPage() {
           {filteredPosts.map((post) => (
             <article
               key={post.slug}
-              className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200 transition-transform transform hover:scale-105"
+              className="bg-gray-50 rounded-lg shadow-lg overflow-hidden border border-gray-200 transition-transform transform hover:scale-105"
             >
               <Link href={`/blog/${post.slug}`}>
                 <div className="relative w-full h-48">
@@ -144,13 +144,13 @@ export default function BlogPage() {
                 </div>
               </Link>
               <div className="p-6">
-                <span className="text-sm font-semibold text-blue-600 uppercase tracking-wide">
+                <span className="text-sm font-semibold text-purple-400 uppercase tracking-wide">
                   {post.category}
                 </span>
                 <h2 className="text-xl font-bold mt-2 mb-2">
                   <Link
                     href={`/blog/${post.slug}`}
-                    className="hover:text-blue-600 transition-colors"
+                    className="text-purple-400 transition-colors"
                   >
                     {post.title}
                   </Link>
@@ -163,14 +163,14 @@ export default function BlogPage() {
         </section>
 
         {/* Call to Action */}
-        <section className="text-center mt-12 py-8 bg-gray-100 rounded-lg">
-          <h3 className="text-2xl font-bold mb-4">
+        <section className="text-center mt-12 py-8 bg-gray-50 rounded-lg">
+          <h3 className="text-2xl font-bold mb-4 text-purple-400">
             Have a question? Leave a comment!
           </h3>
-          <p className="text-lg mb-4">
+          <p className="text-lg mb-4 text-pink-400">
             Or, join my mailing list for exclusive tips and updates.
           </p>
-          <button className="bg-blue-600 text-white font-bold py-3 px-6 rounded-full hover:bg-blue-700 transition-colors">
+          <button className="bg-lime-400 text-white font-bold py-3 px-6 rounded-full hover:bg-lime-500 transition-colors">
             Join the Newsletter
           </button>
         </section>

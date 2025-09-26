@@ -18,8 +18,8 @@ export default function CustomCursor() {
   const colorMap = useMemo(() => ({
     '/web': 'bg-teal-400 border-teal-400',
     '/travel': 'bg-orange-400 border-orange-400',
-    '/ski': 'bg-blue-400 border-blue-400',
-    '/blog': 'bg-red-500 border-red-500',
+    '/ski': 'bg-sky-400 border-sky-400',
+    '/blog': 'bg-purple-400 border-purple-400',
     default: 'bg-yellow-400 border-yellow-400',
   }), []);
 
