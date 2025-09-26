@@ -5,6 +5,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import FloatingButtons from "../../components/FloatingButtons";
 import Footer from "@/components/Footer";
 import Image from "next/image";
+import CustomCursor from "@/components/CustomCursor";
 
 // --- Full countries list ---
 const countries = [
@@ -59,9 +60,10 @@ const countries = [
 
     return (
         <>
+        <CustomCursor />
+        <FloatingButtons />
         <div className="relative min-h-screen bg-gradient-to-br from-gray-950 via-slate-900 to-cyan-950 overflow-hidden text-white">
         {/* Floating Buttons */}
-        <FloatingButtons />
 
         {/* Hero Section with Flags Circle */}
         <section className="relative flex flex-col items-center justify-center text-center px-6 py-32 min-h-screen z-10">

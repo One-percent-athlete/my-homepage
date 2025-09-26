@@ -1,10 +1,12 @@
 @import "tailwindcss";
 @import "flag-icons/css/flag-icons.min.css";
+@tailwind utilities;
 
 
 :root {
-  --background: #ffffff;
+  --background: #171717;
   --foreground: #171717;
+  --neon-highlight-color: #4fd1c5;
 }
 
 @theme inline {
@@ -44,7 +46,6 @@ html {
   100% { transform: translateX(-50%); } /* scroll by half container width */
 }
 
-@tailwind utilities;
 
 /* Custom keyframes for the golden circling dot */
 /* For w-28 buttons (radius of 14px relative to center for a 28px diameter dot) */
@@ -101,4 +102,103 @@ body {
 @keyframes scanlineMove {
   from { background-position: 0 -100%; }
   to   { background-position: 0 100%; }
+}
+
+/* Tailwind Custom Layer for Button */
+@layer utilities {
+  .neon-btn {
+    @apply relative inline-flex items-center justify-center px-8 py-3 font-semibold text-xl rounded-xl transition-all duration-300 overflow-hidden cursor-none ;
+    color: var(--neon-highlight-color);
+    background: transparent;
+    z-index: 10;
+  }
+
+  .neon-btn:hover {
+    background-color: var(--neon-highlight-color);
+    color: white;
+    box-shadow:
+      0 0 8px var(--neon-highlight-color),
+      0 0 30px var(--neon-highlight-color),
+      0 0 60px var(--neon-highlight-color),
+      0 0 150px var(--neon-highlight-color);
+  }
+
+  .neon-btn span {
+    position: absolute;
+    display: block;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .neon-btn span:nth-child(2) {
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, rgba(255,255,255,0), var(--neon-highlight-color));
+    animation: neon-move-right 2s linear infinite;
+    animation-delay: 0s;
+  }
+  
+  .neon-btn span:nth-child(3) {
+    top: -100%;
+    right: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, rgba(255,255,255,0), var(--neon-highlight-color));
+    animation: neon-move-down 2s linear infinite;
+    animation-delay: 0s;
+  }
+  
+  .neon-btn span:nth-child(4) {
+    bottom: 0;
+    right: -100%;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(270deg, rgba(255,255,255,0), var(--neon-highlight-color));
+    animation: neon-move-left 2s linear infinite;
+    animation-delay: 0s;
+  }
+  
+  .neon-btn span:nth-child(5) {
+    bottom: -100%;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(360deg, rgba(255, 255, 255, 0), var(--neon-highlight-color));
+    animation: neon-move-up 2s linear infinite;
+    animation-delay: 0s;
+  }
+
+  @keyframes neon-move-right {
+    0% { left: -100%; }
+    50%, 100% { left: 100%; }
+  }
+
+  @keyframes neon-move-down {
+    0% { top: -100%; }
+    50%, 100% { top: 100%; }
+  }
+
+  @keyframes neon-move-left {
+    0% { right: -100%; }
+    50%, 100% { right: 100%; }
+  }
+
+  @keyframes neon-move-up {
+    0% { bottom: -100%; }
+    50%, 100% { bottom: 100%; }
+  }
+}
+
+.bg-paper-texture {
+  background-image: url('/paper-texture.png'); /* Place the texture file in /public */
+  background-repeat: repeat;
+  background-size: 300px 300px;
+  opacity: 0.98; /* keep text crisp */
+}
+
+/* Pulse & Glow for Active Dot */
+.pulse-dot {
+  animation: pulse-glow 1.5s ease-in-out infinite;
 }

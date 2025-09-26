@@ -34,10 +34,10 @@ const themes = {
     activeText: 'text-white'
   },
   '/web': {
-    border: 'border-teal-500',
-    text: 'text-teal-500',
-    hover: 'hover:text-teal-500',
-    activeBg: 'bg-teal-500',
+    border: 'border-teal-400',
+    text: 'text-teal-400',
+    hover: 'hover:text-teal-400',
+    activeBg: 'bg-teal-400',
     activeText: 'text-white'
   }
 };

@@ -7,15 +7,15 @@ const WebBackground = () => {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return; // Exit if canvas is null
+    if (!canvas) return;
 
     const ctx = canvas.getContext("2d");
-    if (!ctx) return; // Exit if context is null
+    if (!ctx) return;
 
     let animationId: number;
     let particles: Particle[] = [];
-    const NUM_PARTICLES = 100;
-    const LINE_DISTANCE = 100;
+    const NUM_PARTICLES = 30;
+    const LINE_DISTANCE = 300; // slightly longer for neon effect
 
     class Particle {
       x: number;
@@ -27,15 +27,14 @@ const WebBackground = () => {
       constructor(width: number, height: number) {
         this.x = Math.random() * width;
         this.y = Math.random() * height;
-        this.vx = (Math.random() - 0.5) * 0.5;
-        this.vy = (Math.random() - 0.5) * 0.5;
-        this.radius = 0.5 + Math.random();
+        this.vx = (Math.random() - 0.5) * 0.6;
+        this.vy = (Math.random() - 0.5) * 0.6;
+        this.radius = 1.5 + Math.random(); // slightly bigger for neon glow
       }
 
       update(width: number, height: number) {
         this.x += this.vx;
         this.y += this.vy;
-
         if (this.x < 0 || this.x > width) this.vx *= -1;
         if (this.y < 0 || this.y > height) this.vy *= -1;
       }
@@ -43,12 +42,13 @@ const WebBackground = () => {
       draw(ctx: CanvasRenderingContext2D) {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(100, 255, 200, 0.8)";
+        ctx.fillStyle = "rgba(0, 255, 255, 0.8)"; // neon blue
+        ctx.shadowColor = "rgba(0, 255, 255, 0.9)";
+        ctx.shadowBlur = 8;
         ctx.fill();
       }
     }
 
-    // Pass the canvas element as an argument to ensure it's not null.
     function init(c: HTMLCanvasElement) {
       c.width = window.innerWidth;
       c.height = window.innerHeight;
@@ -58,7 +58,6 @@ const WebBackground = () => {
       }
     }
 
-    // Pass canvas and ctx to the animate function.
     function animate(c: HTMLCanvasElement, context: CanvasRenderingContext2D) {
       animationId = requestAnimationFrame(() => animate(c, context));
       context.clearRect(0, 0, c.width, c.height);
@@ -78,26 +77,23 @@ const WebBackground = () => {
             context.beginPath();
             context.moveTo(p.x, p.y);
             context.lineTo(p2.x, p2.y);
-            const opacity = 1 - dist / LINE_DISTANCE;
-            context.strokeStyle = `rgba(100, 255, 200, ${opacity})`;
-            context.lineWidth = 0.5;
+            const opacity = 0.7 - dist / LINE_DISTANCE; // more transparent at edges
+            context.strokeStyle = `rgba(0, 255, 255, ${opacity})`; // neon blue line
+            context.lineWidth = 0.6;
+            context.shadowColor = "rgba(0, 255, 255, 0.9)";
+            context.shadowBlur = 6;
             context.stroke();
           }
         }
       });
     }
 
-    // Initialize and start animation with the non-null canvas and ctx
     init(canvas);
     animate(canvas, ctx);
 
-    // Handle resizing
-    const handleResize = () => {
-      init(canvas);
-    };
+    const handleResize = () => init(canvas);
     window.addEventListener("resize", handleResize);
 
-    // Cleanup
     return () => {
       cancelAnimationFrame(animationId);
       window.removeEventListener("resize", handleResize);

@@ -93,7 +93,7 @@ export default function RippleTransition({
       {/* Counter always centered */}
       <div
         ref={counterRef}
-        className="fixed top-1/2 left-1/2 z-[10000] transform -translate-x-1/2 -translate-y-1/2 font-bold text-6xl text-white pointer-events-none"
+        className="fixed top-1/2 left-1/2 z-[10000] transform -translate-x-1/2 -translate-y-1/2 font-bold text-9xl text-white pointer-events-none"
       >
         {progress}%
       </div>
