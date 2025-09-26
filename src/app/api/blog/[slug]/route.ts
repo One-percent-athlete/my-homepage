@@ -4,8 +4,12 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 // GET /api/blog/[slug]
-export async function GET(req: NextRequest, context: { params: { slug: string } }) {
-  const { slug } = context.params; // correct way
+export async function GET(
+  request: Request,
+  { params }: { params: { slug: string } } // this is the correct type for context
+) {
+  const { slug } = params;
+
   try {
     const post = await prisma.post.findUnique({
       where: { slug },
