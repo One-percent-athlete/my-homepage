@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { CldUploadWidget } from "next-cloudinary";
+import type { CloudinaryUploadWidgetResults, CloudinaryUploadWidgetInfo } from "next-cloudinary";
 import { v4 as uuidv4 } from "uuid";
 import Image from "next/image";
 
@@ -91,19 +92,22 @@ export default function CreatePostPage() {
         <div>
           <label className="block font-semibold mb-1">Cover Image</label>
           <CldUploadWidget
-            uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!}
-            onUpload={(result) => setCoverImage((result.info as any).secure_url)}
-          >
-            {({ open }) => (
-              <button
-                type="button"
-                onClick={() => open()}
-                className="bg-purple-400 text-white py-2 px-4 rounded-md hover:bg-purple-500 transition"
-              >
-                Upload Image
-              </button>
-            )}
-          </CldUploadWidget>
+                uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!}
+                onUpload={(result: CloudinaryUploadWidgetResults) => {
+                    const info = result.info as CloudinaryUploadWidgetInfo;
+                    setCoverImage(info.secure_url);
+                }}
+                >
+                {({ open }) => (
+                    <button
+                    type="button"
+                    onClick={() => open()}
+                    className="bg-purple-400 text-white py-2 px-4 rounded-md hover:bg-purple-500 transition"
+                    >
+                    Upload Image
+                    </button>
+                )}
+                </CldUploadWidget>
           {coverImage && (
             <Image height={400} width={400} src={coverImage} alt="Cover" className="mt-2 w-full rounded-md" />
           )}
