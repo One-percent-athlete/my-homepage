@@ -27,18 +27,22 @@ const LogoShowcase: FC<LogoShowcaseProps> = ({ direction = "left" }) => {
 
   return (
     <div className="overflow-hidden w-full py-4 relative">
-      <div className={`flex ${direction === "left" ? "animate-marquee" : "animate-marquee-reverse"} gap-4 sm:gap-6 md:gap-8`}>
+      <div
+          className={`flex ${
+            direction === "left" ? "animate-marquee" : "animate-marquee-reverse"
+          } gap-2 sm:gap-4 md:gap-6`}
+        >
         {Array(4)
           .fill(flags)
           .flat()
           .map((src, idx) => (
             <Image
-              height={20}
-              width={20}
               key={idx}
               src={src}
               alt="flag"
-              className="object-cover"
+              height={30}
+              width={30}
+              className="object-cover w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10"
             />
           ))}
       </div>
@@ -46,7 +50,7 @@ const LogoShowcase: FC<LogoShowcaseProps> = ({ direction = "left" }) => {
       <style jsx>{`
         @keyframes marquee {
           0% {
-            transform: translateX(10%);
+            transform: translateX(0%);
           }
           100% {
             transform: translateX(-100%);
@@ -55,7 +59,7 @@ const LogoShowcase: FC<LogoShowcaseProps> = ({ direction = "left" }) => {
 
         @keyframes marquee-reverse {
           0% {
-            transform: translateX(-100%);
+            transform: translateX(-50%);
           }
           100% {
             transform: translateX(100%);
@@ -73,7 +77,18 @@ const LogoShowcase: FC<LogoShowcaseProps> = ({ direction = "left" }) => {
           width: max-content;
           animation: marquee-reverse 500s linear infinite;
         }
+
+        /* Mobile adjustments */
+        @media (max-width: 640px) {
+          .animate-marquee {
+            animation-duration: 200s; /* faster */
+          }
+          .animate-marquee-reverse {
+            animation-duration: 200s;
+          }
+        }
       `}</style>
+
     </div>
   );
 };
