@@ -1,34 +1,22 @@
-// app/page.tsx (Updated)
-import React from 'react';
+"use client";
+
+import { useEffect, useState } from "react";
 import HeroSection from "@/components/home/HeroSection";
-import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Ryu - Web App Developer, Ski Instructor & Traveler",
-  description: "Hi, I’m Ryu — Web App Developer, Ski Instructor, and World Traveler. Explore my multilingual website in English, Japanese, or Chinese.",
-  metadataBase: new URL("https://www.37x.jp/"),
-  openGraph: {
-    title: "Ryu - Web App Developer, Ski Instructor & Traveler",
-    description: "Explore my multilingual website in English, Japanese, or Chinese.",
-    url: "https://www.37x.jp/",
-    siteName: "Ryu Portfolio",
-    images: [{ url: "/images/astro.jpg", width: 1200, height: 630, alt: "Ryu - Web App Developer, Ski Instructor & Traveler" }],
-    locale: "en_US",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Ryu - Web App Developer, Ski Instructor & Traveler",
-    description: "Explore my multilingual website in English, Japanese, or Chinese.",
-    images: ["/images/astro.jpg"],
-    creator: "@yourtwitterhandle",
-  },
-};
-
+import CustomCursor from "@/components/CustomCursor";
 
 export default function Home() {
+  const [showCursor, setShowCursor] = useState(false);
+
+  useEffect(() => {
+    // Detect if device has a fine pointer (mouse/trackpad)
+    const isDesktop = window.matchMedia("(pointer: fine)").matches;
+    setShowCursor(isDesktop);
+  }, []);
+
   return (
     <main>
+      {/* Only show on desktop */}
+      {showCursor && <CustomCursor />}
       <HeroSection />
     </main>
   );

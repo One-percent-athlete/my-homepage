@@ -11,10 +11,10 @@ export default function ButtonSection() {
   const [ripple, setRipple] = useState<{ x: number; y: number; href: string } | null>(null);
 
   const services = [
-    { icon: "💻", label: "Multilingual Web Development", href: "/web" },
-    { icon: "🌐", label: "Online Travel Consulting", href: "/travel" },
-    { icon: "⛷️", label: "Ski Lesson & Guide Booking", href: "/ski" },
-    { icon: "✍️", label: "Read My Blog", href: "/blog" },
+    { icon: "💻", label: "Web", href: "/web" },
+    { icon: "🌐", label: "Travel", href: "/travel" },
+    { icon: "⛷️", label: "Ski", href: "/ski" },
+    { icon: "✍️", label: "Blog", href: "/blog" },
   ];
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>, href: string) => {
@@ -38,35 +38,43 @@ export default function ButtonSection() {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           className="relative group
-                     w-28 h-28 md:w-36 md:h-36
-                     flex items-center justify-center rounded-full
-                     border-2 border-yellow-400
-                     bg-transparent text-yellow-400
-                     shadow-[0_0_15px_rgba(255,215,0,0.5)]
-                     overflow-hidden
-                     transition-all duration-300 ease-in-out
-                     cursor-none
-                     hover:shadow-[0_0_25px_rgba(255,223,0,0.8),_0_0_40px_rgba(255,193,7,0.6)]
-                     hover:border-yellow-300"
+                    w-28 h-28 md:w-36 md:h-36
+                    flex items-center justify-center rounded-full
+                    border-2 border-yellow-400
+                    bg-transparent text-yellow-400
+                    shadow-[0_0_15px_rgba(255,215,0,0.5)]
+                    overflow-hidden
+                    transition-all duration-300 ease-in-out
+                    cursor-none
+                    hover:shadow-[0_0_25px_rgba(255,223,0,0.8),_0_0_40px_rgba(255,193,7,0.6)]
+                    hover:border-yellow-300"
         >
-          {/* Icon - disappears on hover */}
-          <span className="relative z-10 text-4xl md:text-5xl transition-opacity duration-300 group-hover:opacity-0">
+          {/* Icon - always visible on mobile, hides on hover for md+ */}
+          <span
+            className="relative z-10 text-3xl md:text-5xl
+                      transition-opacity duration-300
+                      group-hover:opacity-0 md:block"
+          >
             {service.icon}
           </span>
 
-          {/* Hover background and text */}
+          {/* Text - always visible on mobile, hover-revealed on md+ */}
           <span
-            className="absolute inset-0 bg-yellow-300 scale-0 rounded-full
-                       transition-transform duration-300 ease-in-out origin-center
-                       group-hover:scale-100 group-hover:delay-100"
-          ></span>
-          <span
-            className="absolute z-10 text-center text-sm md:text-base font-bold text-black opacity-0
-                       transition-opacity duration-200 ease-in-out
-                       group-hover:opacity-100 group-hover:delay-200"
+            className="absolute z-10 text-center text-3xl
+                      font-bold text-yellow-300 md:text-black
+                      opacity-100 md:opacity-0
+                      transition-opacity duration-200 ease-in-out
+                      group-hover:opacity-100 group-hover:delay-200"
           >
             {service.label}
           </span>
+
+
+          <span
+            className="absolute inset-0 bg-yellow-300 scale-0 rounded-full
+                      transition-transform duration-300 ease-in-out origin-center
+                      group-hover:scale-100 group-hover:delay-100"
+        ></span>
         </motion.button>
       ))}
 
