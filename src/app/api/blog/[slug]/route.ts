@@ -1,14 +1,12 @@
-import { NextRequest, NextResponse } from "next/server";
+// src/app/api/blog/[slug]/route.ts
+import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 // GET /api/blog/[slug]
-export async function GET(
-  request: Request,
-  { params }: { params: { slug: string } } // this is the correct type for context
-) {
-  const { slug } = params;
+export async function GET(req: Request, context: { params: { slug: string } }) {
+  const { slug } = context.params;
 
   try {
     const post = await prisma.post.findUnique({
@@ -20,7 +18,9 @@ export async function GET(
       },
     });
 
-    if (!post) return NextResponse.json({ error: "Post not found" }, { status: 404 });
+    if (!post) {
+      return NextResponse.json({ error: "Post not found" }, { status: 404 });
+    }
 
     return NextResponse.json(post);
   } catch (err) {
@@ -29,19 +29,23 @@ export async function GET(
   }
 }
 
-export async function PUT(req: NextRequest, { params }: { params: { slug: string } }) {
-  try {
-    const { title, content, coverImage, videoUrl, tags } = await req.json();
+// PUT /api/blog/[slug]
+export async function PUT(req: Request, context: { params: { slug: string } }) {
+  const { slug } = context.params;
 
-    const post = await prisma.post.update({
-      where: { slug: params.slug },
+  try {
+    const body = await req.json();
+    const { title, content, coverImage, videoUrl, tags } = body;
+
+    const updatedPost = await prisma.post.update({
+      where: { slug },
       data: {
         title,
         content,
         coverImage,
         videoUrl,
         postTags: {
-          deleteMany: {}, // remove existing tags
+          deleteMany: {}, // remove all previous tags
           create: tags.map((tag: string) => ({
             tag: { connectOrCreate: { where: { name: tag }, create: { name: tag } } },
           })),
@@ -50,16 +54,19 @@ export async function PUT(req: NextRequest, { params }: { params: { slug: string
       include: { postTags: { include: { tag: true } } },
     });
 
-    return NextResponse.json(post);
+    return NextResponse.json(updatedPost);
   } catch (err) {
     console.error(err);
     return NextResponse.json({ error: "Failed to update post" }, { status: 500 });
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { slug: string } }) {
+// DELETE /api/blog/[slug]
+export async function DELETE(req: Request, context: { params: { slug: string } }) {
+  const { slug } = context.params;
+
   try {
-    await prisma.post.delete({ where: { slug: params.slug } });
+    await prisma.post.delete({ where: { slug } });
     return NextResponse.json({ message: "Post deleted successfully" });
   } catch (err) {
     console.error(err);
