@@ -5,12 +5,13 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 // GET /api/blog → list all posts
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     const posts = await prisma.post.findMany({
       orderBy: { createdAt: "desc" },
       include: { author: true, postTags: { include: { tag: true } } },
     });
+    
     return NextResponse.json(posts);
   } catch (err) {
     console.error(err);
