@@ -1,26 +1,25 @@
 // src/app/api/blog/[slug]/route.ts
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 // GET /api/blog/[slug]
-export async function GET(req: Request, context: { params: { slug: string } }) {
+interface Context {
+  params: { slug: string };
+}
+
+// GET
+export async function GET(req: NextRequest, context: Context) {
   const { slug } = context.params;
 
   try {
     const post = await prisma.post.findUnique({
       where: { slug },
-      include: {
-        author: true,
-        comments: true,
-        postTags: { include: { tag: true } },
-      },
+      include: { author: true, comments: true, postTags: { include: { tag: true } } },
     });
 
-    if (!post) {
-      return NextResponse.json({ error: "Post not found" }, { status: 404 });
-    }
+    if (!post) return NextResponse.json({ error: "Post not found" }, { status: 404 });
 
     return NextResponse.json(post);
   } catch (err) {
