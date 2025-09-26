@@ -1,15 +1,26 @@
+// src/app/api/comments/[id]/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+// Helper to extract the comment ID from the URL
+function getId(req: NextRequest) {
+  const url = new URL(req.url);
+  const parts = url.pathname.split("/"); // e.g., /api/comments/<id>
+  return parts[parts.length - 1]; // last part is ID
+}
+
+// GET /api/comments/:id
+export async function GET(req: NextRequest) {
+  const id = getId(req);
   try {
     const comment = await prisma.comment.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: { user: true },
     });
-    if (!comment) return NextResponse.json({ error: "Comment not found" }, { status: 404 });
+    if (!comment)
+      return NextResponse.json({ error: "Comment not found" }, { status: 404 });
     return NextResponse.json(comment);
   } catch (err) {
     console.error(err);
@@ -17,11 +28,13 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+// PUT /api/comments/:id
+export async function PUT(req: NextRequest) {
+  const id = getId(req);
   try {
     const { content } = await req.json();
     const comment = await prisma.comment.update({
-      where: { id: params.id },
+      where: { id },
       data: { content },
     });
     return NextResponse.json(comment);
@@ -31,9 +44,11 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+// DELETE /api/comments/:id
+export async function DELETE(req: NextRequest) {
+  const id = getId(req);
   try {
-    await prisma.comment.delete({ where: { id: params.id } });
+    await prisma.comment.delete({ where: { id } });
     return NextResponse.json({ message: "Comment deleted successfully" });
   } catch (err) {
     console.error(err);
