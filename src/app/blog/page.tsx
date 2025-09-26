@@ -7,6 +7,7 @@ import FloatingButtons from "@/components/FloatingButtons";
 import Footer from "@/components/Footer";
 import CustomCursor from "@/components/CustomCursor";
 
+
 // ---- Types ----
 type Category = "Tech & Business" | "Travel & Culture" | "Ski & Snow";
 
@@ -80,6 +81,7 @@ export default function BlogPage() {
     <>
       <CustomCursor />
       <FloatingButtons />
+
       <div className="container mx-auto px-4 py-8">
         {/* Header with video background */}
         <header className="relative w-full h-[300px] md:h-[400px] rounded-2xl overflow-hidden mb-12">

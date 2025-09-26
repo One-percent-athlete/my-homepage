@@ -52,7 +52,7 @@ export default function TravelPage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.6, duration: 1 }}
-                    className="mt-8 inline-block px-8 py-4 text-lg font-bold rounded-full bg-orange-500 text-white shadow-lg hover:bg-orange-600 transition-colors"
+                    className="mt-8 inline-block px-8 py-4 text-lg font-bold rounded-full bg-orange-500 text-white shadow-lg hover:bg-orange-600 transition-colors cursor-none"
                 >
                     Let&apos;s Go
                 </motion.a>
