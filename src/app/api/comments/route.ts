@@ -41,3 +41,9 @@
 //     return NextResponse.json({ error: "Failed to create comment" }, { status: 500 });
 //   }
 // }
+
+import { NextResponse } from "next/server";
+
+export async function GET() {
+  return NextResponse.json({ message: "Comment routes temporarily disabled" });
+}
