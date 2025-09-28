@@ -28,7 +28,14 @@ model Post {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   comments    Comment[]
+  category    Category
   postTags    PostTag[]
+}
+
+enum Category {
+  TECH_BUSINESS
+  TRAVEL_CULTURE
+  SKI_SNOW
 }
 
 model Comment {

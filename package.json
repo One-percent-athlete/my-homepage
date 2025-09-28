@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@prisma/client": "^6.16.2",
+    "cloudinary": "^2.7.0",
     "flag-icons": "^7.5.0",
     "framer-motion": "^12.23.12",
     "gsap": "^3.13.0",

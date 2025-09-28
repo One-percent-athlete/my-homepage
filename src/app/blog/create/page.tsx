@@ -6,6 +6,8 @@ import { CldUploadWidget } from "next-cloudinary";
 import type { CloudinaryUploadWidgetResults, CloudinaryUploadWidgetInfo } from "next-cloudinary";
 import { v4 as uuidv4 } from "uuid";
 import Image from "next/image";
+import CustomCursor from "@/components/CustomCursor";
+import FloatingButtons from "@/components/FloatingButtons";
 
 export default function CreatePostPage() {
   const router = useRouter();
@@ -51,6 +53,8 @@ export default function CreatePostPage() {
 
   return (
     <div className="max-w-3xl mx-auto p-8">
+        <CustomCursor />
+        <FloatingButtons />
       <h1 className="text-3xl font-bold mb-6 text-purple-500">Create New Blog Post</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
