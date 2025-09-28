@@ -117,7 +117,7 @@ export default function BlogPage() {
             </h1>
             <p className="text-lg md:text-xl max-w-2xl text-pink-400">
               This is where I share my passions for technology, travel, and the mountains. 
-              You'll find practical advice, inspiring stories, and tips for your next adventure.
+              You&apos;ll find practical advice, inspiring stories, and tips for your next adventure.
             </p>
           </div>
         </header>
