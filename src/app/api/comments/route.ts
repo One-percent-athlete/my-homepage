@@ -1,50 +1,43 @@
-import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+// import { NextRequest, NextResponse } from "next/server";
+// import { db } from "@/db";
+// import { comments } from "@/db/schema";
 
-const prisma = new PrismaClient();
+// // GET /api/comments?postId=<id>
+// export async function GET(req: NextRequest) {
+//   try {
+//     const { searchParams } = new URL(req.url);
+//     const postId = searchParams.get("postId");
 
-export async function GET(req: NextRequest) {
-  try {
-    const { searchParams } = new URL(req.url);
-    const postId = searchParams.get("postId");
+//     if (!postId) return NextResponse.json({ error: "postId query parameter is required" }, { status: 400 });
 
-    if (!postId) {
-      return NextResponse.json({ error: "postId query parameter is required" }, { status: 400 });
-    }
+//     const postComments = await db
+//       .select()
+//       .from(comments)
+//       .where(comments.postId, "=", postId)
+//       .all();
 
-    const comments = await prisma.comment.findMany({
-      where: { postId },
-      include: { user: true },
-      orderBy: { createdAt: "desc" },
-    });
+//     return NextResponse.json(postComments);
+//   } catch (err) {
+//     console.error(err);
+//     return NextResponse.json({ error: "Failed to fetch comments" }, { status: 500 });
+//   }
+// }
 
-    return NextResponse.json(comments);
-  } catch (err) {
-    console.error(err);
-    return NextResponse.json({ error: "Failed to fetch comments" }, { status: 500 });
-  }
-}
+// // POST /api/comments
+// export async function POST(req: NextRequest) {
+//   try {
+//     const { postId, content } = await req.json();
 
-export async function POST(req: NextRequest) {
-  try {
-    const { postId, userId, content } = await req.json();
+//     if (!postId || !content) return NextResponse.json({ error: "postId and content are required" }, { status: 400 });
 
-    if (!postId || !content) {
-      return NextResponse.json({ error: "postId and content are required" }, { status: 400 });
-    }
+//     const newComment = await db
+//       .insert(comments)
+//       .values({ postId, content })
+//       .returning();
 
-    const comment = await prisma.comment.create({
-      data: {
-        content,
-        postId,
-        userId: userId || null, // optional for anonymous comments
-      },
-      include: { user: true },
-    });
-
-    return NextResponse.json(comment);
-  } catch (err) {
-    console.error(err);
-    return NextResponse.json({ error: "Failed to create comment" }, { status: 500 });
-  }
-}
+//     return NextResponse.json(newComment[0]);
+//   } catch (err) {
+//     console.error(err);
+//     return NextResponse.json({ error: "Failed to create comment" }, { status: 500 });
+//   }
+// }
