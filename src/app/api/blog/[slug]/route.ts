@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { posts } from "@/db/schema";
-import { eq } from "drizzle-orm";
 
 export async function GET() {
   const allPosts = await db.select().from(posts).orderBy(posts.createdAt);
