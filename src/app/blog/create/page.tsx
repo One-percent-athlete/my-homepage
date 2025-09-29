@@ -136,11 +136,8 @@ export default function CreatePostPage() {
             uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!}
             onSuccess={(result: CloudinaryUploadWidgetResults) => {
               // Only handle successful uploads
-              if (result.event === "success") {
-                const info = result.info as CloudinaryUploadWidgetInfo;
-                setCoverImage(info.secure_url); // ✅ store the URL immediately
-                console.log("Uploaded URL:", info.secure_url);
-              }
+              const info = result.info as CloudinaryUploadWidgetInfo;
+              setCoverImage(info.secure_url); // ✅ store the URL immediately
             }}
           >
             {({ open }) => (
