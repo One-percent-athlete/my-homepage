@@ -22,6 +22,7 @@ export async function POST(req: NextRequest) {
         category,
       })
       .returning();
+      console.log("Incoming body:", { title, slug, content, coverImage, videoUrl, category });
 
     return NextResponse.json(newPost, { status: 201 });
   } catch (error) {

@@ -134,9 +134,13 @@ export default function CreatePostPage() {
           <label className="block font-semibold mb-1">Cover Image</label>
           <CldUploadWidget
             uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!}
-            onUpload={(result: CloudinaryUploadWidgetResults) => {
-              const info = result.info as CloudinaryUploadWidgetInfo;
-              setCoverImage(info.secure_url);
+            onSuccess={(result: CloudinaryUploadWidgetResults) => {
+              // Only handle successful uploads
+              if (result.event === "success") {
+                const info = result.info as CloudinaryUploadWidgetInfo;
+                setCoverImage(info.secure_url); // ✅ store the URL immediately
+                console.log("Uploaded URL:", info.secure_url);
+              }
             }}
           >
             {({ open }) => (
