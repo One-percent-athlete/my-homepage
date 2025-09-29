@@ -3,11 +3,17 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { CldUploadWidget } from "next-cloudinary";
-import type { CloudinaryUploadWidgetResults, CloudinaryUploadWidgetInfo } from "next-cloudinary";
+import type {
+  CloudinaryUploadWidgetResults,
+  CloudinaryUploadWidgetInfo,
+} from "next-cloudinary";
 import { v4 as uuidv4 } from "uuid";
 import Image from "next/image";
 import CustomCursor from "@/components/CustomCursor";
 import FloatingButtons from "@/components/FloatingButtons";
+
+// Match your BlogPage categories
+type CategoryType = "TECH_BUSINESS" | "TRAVEL_CULTURE" | "SKI_SNOW";
 
 export default function CreatePostPage() {
   const router = useRouter();
@@ -19,6 +25,7 @@ export default function CreatePostPage() {
   const [videoUrl, setVideoUrl] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [newTag, setNewTag] = useState("");
+  const [category, setCategory] = useState<CategoryType>("TECH_BUSINESS"); // default category
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleAddTag = () => {
@@ -36,7 +43,15 @@ export default function CreatePostPage() {
       const res = await fetch("/api/blog", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, slug, content, coverImage, videoUrl, tags }),
+        body: JSON.stringify({
+          title,
+          slug,
+          content,
+          coverImage,
+          videoUrl,
+          tags,
+          category, // ✅ added category
+        }),
       });
 
       if (res.ok) {
@@ -53,10 +68,14 @@ export default function CreatePostPage() {
 
   return (
     <div className="max-w-3xl mx-auto p-8">
-        <CustomCursor />
-        <FloatingButtons />
-      <h1 className="text-3xl font-bold mb-6 text-purple-500">Create New Blog Post</h1>
+      <CustomCursor />
+      <FloatingButtons />
+      <h1 className="text-3xl font-bold mb-6 text-purple-500">
+        Create New Blog Post
+      </h1>
+
       <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Title */}
         <div>
           <label className="block font-semibold mb-1">Title</label>
           <input
@@ -71,6 +90,7 @@ export default function CreatePostPage() {
           />
         </div>
 
+        {/* Slug */}
         <div>
           <label className="block font-semibold mb-1">Slug</label>
           <input
@@ -82,6 +102,7 @@ export default function CreatePostPage() {
           />
         </div>
 
+        {/* Content */}
         <div>
           <label className="block font-semibold mb-1">Content</label>
           <textarea
@@ -93,30 +114,54 @@ export default function CreatePostPage() {
           />
         </div>
 
+        {/* Category Dropdown */}
+        <div>
+          <label className="block font-semibold mb-1">Category</label>
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value as CategoryType)}
+            className="w-full border border-gray-300 rounded-md p-2 bg-black"
+            required
+          >
+            <option value="TECH_BUSINESS">Tech & Business</option>
+            <option value="TRAVEL_CULTURE">Travel & Culture</option>
+            <option value="SKI_SNOW">Ski & Snow</option>
+          </select>
+        </div>
+
+        {/* Cover Image */}
         <div>
           <label className="block font-semibold mb-1">Cover Image</label>
           <CldUploadWidget
-                uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!}
-                onUpload={(result: CloudinaryUploadWidgetResults) => {
-                    const info = result.info as CloudinaryUploadWidgetInfo;
-                    setCoverImage(info.secure_url);
-                }}
-                >
-                {({ open }) => (
-                    <button
-                    type="button"
-                    onClick={() => open()}
-                    className="bg-purple-400 text-white py-2 px-4 rounded-md hover:bg-purple-500 transition"
-                    >
-                    Upload Image
-                    </button>
-                )}
-                </CldUploadWidget>
+            uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!}
+            onUpload={(result: CloudinaryUploadWidgetResults) => {
+              const info = result.info as CloudinaryUploadWidgetInfo;
+              setCoverImage(info.secure_url);
+            }}
+          >
+            {({ open }) => (
+              <button
+                type="button"
+                onClick={() => open()}
+                className="bg-purple-400 text-white py-2 px-4 rounded-md hover:bg-purple-500 transition"
+              >
+                Upload Image
+              </button>
+            )}
+          </CldUploadWidget>
+
           {coverImage && (
-            <Image height={400} width={400} src={coverImage} alt="Cover" className="mt-2 w-full rounded-md" />
+            <Image
+              height={400}
+              width={400}
+              src={coverImage}
+              alt="Cover"
+              className="mt-2 w-full rounded-md"
+            />
           )}
         </div>
 
+        {/* Video URL */}
         <div>
           <label className="block font-semibold mb-1">Video URL (Optional)</label>
           <input
@@ -128,6 +173,7 @@ export default function CreatePostPage() {
           />
         </div>
 
+        {/* Tags */}
         <div>
           <label className="block font-semibold mb-1">Tags</label>
           <div className="flex gap-2 mb-2">
@@ -138,19 +184,27 @@ export default function CreatePostPage() {
               className="border border-gray-300 rounded-md p-2 flex-1"
               placeholder="Add tag"
             />
-            <button type="button" onClick={handleAddTag} className="bg-blue-500 text-white px-4 rounded-md">
+            <button
+              type="button"
+              onClick={handleAddTag}
+              className="bg-blue-500 text-white px-4 rounded-md"
+            >
               Add
             </button>
           </div>
           <div className="flex flex-wrap gap-2">
             {tags.map((tag) => (
-              <span key={uuidv4()} className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full">
+              <span
+                key={uuidv4()}
+                className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full"
+              >
                 {tag}
               </span>
             ))}
           </div>
         </div>
 
+        {/* Submit */}
         <button
           type="submit"
           className="bg-purple-500 text-white px-6 py-3 rounded-md font-bold hover:bg-purple-600 transition"
