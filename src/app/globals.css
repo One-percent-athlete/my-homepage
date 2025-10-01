@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @import "flag-icons/css/flag-icons.min.css";
 @tailwind utilities;
+@tailwind base;
+@tailwind components;
 
 
 :root {

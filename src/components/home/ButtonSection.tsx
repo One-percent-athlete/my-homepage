@@ -1,20 +1,31 @@
 "use client";
 
-import React, { useState } from 'react';
+import "@/app/globals.css";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
+import { useLanguage } from "@/app/context/LanguageContext";
 import RippleTransition from "./RippleTransition";
-import '@/app/globals.css';
 
 export default function ButtonSection() {
   const router = useRouter();
+  const { language, setLanguage } = useLanguage();
   const [ripple, setRipple] = useState<{ x: number; y: number; href: string } | null>(null);
 
-  const services = [
-    { icon: "💻", label: "Web", href: "/web" },
-    { icon: "🌐", label: "Travel", href: "/travel" },
-    { icon: "⛷️", label: "Ski", href: "/ski" },
-    { icon: "✍️", label: "Blog", href: "/blog" },
+  type Language = "en" | "ja" | "zh";
+  type ServiceKey = "web" | "travel" | "ski" | "blog";
+
+  const labels: Record<Language, Record<ServiceKey, string>> = {
+    en: { web: "Web", travel: "Travel", ski: "Ski", blog: "Blog" },
+    ja: { web: "ウェブ", travel: "旅行", ski: "スキー", blog: "ブログ" },
+    zh: { web: "网页", travel: "旅行", ski: "滑雪", blog: "博客" },
+  };
+
+  const services: { icon: string; key: ServiceKey; href: string }[] = [
+    { icon: "💻", key: "web", href: "/web" },
+    { icon: "✈️", key: "travel", href: "/travel" },
+    { icon: "⛷️", key: "ski", href: "/ski" },
+    { icon: "✍️", key: "blog", href: "/blog" },
   ];
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>, href: string) => {
@@ -29,56 +40,68 @@ export default function ButtonSection() {
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 1, delay: 0.3, ease: "easeOut" }}
-      className="relative z-20 flex flex-wrap justify-center gap-6 w-full max-w-2xl"
+      className="relative z-20 flex flex-col items-center gap-6 w-full max-w-2xl"
     >
-      {services.map((service) => (
+      {/* Buttons */}
+      <div className="flex flex-wrap justify-center gap-6 w-full">
+        {services.map((service) => (
           <motion.button
-          key={service.href}
-          onClick={(e) => handleClick(e, service.href)}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="relative group
-                    w-28 h-28 md:w-36 md:h-36
-                    flex items-center justify-center rounded-full
-                    border-2 border-yellow-400
-                    bg-transparent text-yellow-400
-                    shadow-[0_0_15px_rgba(255,215,0,0.5)]
-                    overflow-hidden
-                    transition-all duration-300 ease-in-out
-                    cursor-none
-                    hover:shadow-[0_0_25px_rgba(255,223,0,0.8),_0_0_40px_rgba(255,193,7,0.6)]
-                    hover:border-yellow-300"
+            key={service.href}
+            onClick={(e) => handleClick(e, service.href)}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="relative group
+                      w-28 h-28 md:w-36 md:h-36
+                      flex items-center justify-center rounded-full
+                      border-2 border-yellow-400
+                      bg-transparent text-yellow-400
+                      shadow-[0_0_15px_rgba(255,215,0,0.5)]
+                      overflow-hidden
+                      transition-all duration-300 ease-in-out
+                      cursor-none
+                      hover:shadow-[0_0_25px_rgba(255,223,0,0.8),_0_0_40px_rgba(255,193,7,0.6)]
+                      hover:border-yellow-300"
+          >
+            <span
+              className="relative z-10 text-3xl md:text-5xl
+                        transition-opacity duration-300
+                        group-hover:opacity-0 md:block"
+            >
+              {service.icon}
+            </span>
+            <span
+              className="absolute z-10 text-center text-3xl
+                        font-bold text-yellow-300 md:text-black
+                        opacity-100 md:opacity-0
+                        transition-opacity duration-200 ease-in-out
+                        group-hover:opacity-100 group-hover:delay-200"
+            >
+              {labels[language][service.key]}
+            </span>
+            <span
+              className="absolute inset-0 bg-yellow-300 scale-0 rounded-full
+                        transition-transform duration-300 ease-in-out origin-center
+                        group-hover:scale-100 group-hover:delay-100"
+            ></span>
+          </motion.button>
+        ))}
+      </div>
+
+      {/* Language Dropdown */}
+      <div className="mt-4">
+        <select
+          value={language}
+          onChange={(e) => setLanguage(e.target.value as "en" | "ja" | "zh")}
+          className="px-4 py-2 rounded-lg border-2 border-yellow-400 bg-transparent text-yellow-400 font-bold
+                    shadow-[0_0_10px_rgba(255,215,0,0.5)] focus:outline-none focus:ring-2 focus:ring-yellow-300 cursor-none"
         >
-          {/* Icon - always visible on mobile, hides on hover for md+ */}
-          <span
-            className="relative z-10 text-3xl md:text-5xl
-                      transition-opacity duration-300
-                      group-hover:opacity-0 md:block"
-          >
-            {service.icon}
-          </span>
+          <option value="en">English</option>
+          <option value="ja">日本語</option>
+          <option value="zh">中文</option>
+        </select>
+      </div>
 
-          {/* Text - always visible on mobile, hover-revealed on md+ */}
-          <span
-            className="absolute z-10 text-center text-3xl
-                      font-bold text-yellow-300 md:text-black
-                      opacity-100 md:opacity-0
-                      transition-opacity duration-200 ease-in-out
-                      group-hover:opacity-100 group-hover:delay-200"
-          >
-            {service.label}
-          </span>
-
-
-          <span
-            className="absolute inset-0 bg-yellow-300 scale-0 rounded-full
-                      transition-transform duration-300 ease-in-out origin-center
-                      group-hover:scale-100 group-hover:delay-100"
-        ></span>
-        </motion.button>
-      ))}
-
-        {ripple && (
+      {ripple && (
         <RippleTransition
           x={ripple.x}
           y={ripple.y}

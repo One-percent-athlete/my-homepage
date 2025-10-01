@@ -1,21 +1,31 @@
-// components/HeroSection.tsx
 "use client";
 
-import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import React from 'react';
+import { motion } from "framer-motion";
+import { useLanguage } from "@/app/context/LanguageContext";
 import ButtonSection from "./ButtonSection";
 
 const starColors = ["#FFD700", "#FFC107", "#FFB300", "#7EC8E3", "#FFFFFF"];
 
-// Add children prop
 export default function HeroSection() {
+  const { language } = useLanguage();
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+
+  const headings = {
+    en: "Your Global Vision, Realized",
+    ja: "あなたの理想を実現",
+    zh: "实现您的愿景",
+  };
+
+  const subtexts = {
+    en: "From multilingual websites to unforgettable travel, let's turn your ideas into reality.",
+    ja: "多言語ウェブサイトから忘れられない旅行まで、アイデアを形にします。",
+    zh: "从多语言网站到难忘的旅行，让我们把您的想法变为现实。",
+  };
 
   useEffect(() => {
     const updateDimensions = () =>
       setDimensions({ width: window.innerWidth, height: window.innerHeight });
-
     updateDimensions();
     window.addEventListener("resize", updateDimensions);
     return () => window.removeEventListener("resize", updateDimensions);
@@ -65,8 +75,7 @@ export default function HeroSection() {
           className="text-6xl md:text-7xl font-extrabold mb-3 pb-3 text-center tracking-wide text-transparent bg-gradient-to-r from-yellow-400 via-yellow-300 to-white bg-clip-text animate-[shimmer_3s_linear_infinite]"
           style={{ textShadow: "0 0 15px rgba(255,215,0,0.8)" }}
         >
-          Your Global Vision, <br/>
-          Realized
+          {headings[language]}
         </motion.h1>
 
         <motion.p
@@ -75,10 +84,12 @@ export default function HeroSection() {
           transition={{ duration: 1, delay: 0.3 }}
           className="text-xl md:text-2xl text-center max-w-3xl mb-3 text-white drop-shadow-lg"
         >
-          From multilingual websites to unforgettable travel, <br/>let&apos;s turn your ideas into reality.
+          {subtexts[language]}
         </motion.p>
       </div>
+
       <ButtonSection />
+
       {/* Custom shimmer keyframes */}
       <style jsx>{`
         @keyframes shimmer {
