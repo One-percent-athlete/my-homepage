@@ -1,11 +1,33 @@
 "use client";
 
-import Link from "next/link";
-import { FaGithub, FaLinkedin, FaInstagram, FaFacebook, FaLine, FaWeixin, FaEnvelope, FaPhoneAlt } from "react-icons/fa";
+import {
+  FaGithub,
+  FaLinkedin,
+  FaInstagram,
+  FaFacebook,
+  FaLine,
+  FaWeixin,
+  FaEnvelope,
+  FaPhoneAlt,
+} from "react-icons/fa";
 
 export default function Footer() {
+  const contactLinks = [
+    { icon: FaEnvelope, href: "mailto:one.percent.athlete@gmail.com" },
+    { icon: FaPhoneAlt, href: "tel:+8107045618976" },
+  ];
+
+  const socialLinks = [
+    { icon: FaGithub, url: "https://github.com/One-percent-athlete" },
+    { icon: FaLinkedin, url: "https://www.linkedin.com/in/ryu-suzuki-7613a8299/" },
+    { icon: FaInstagram, url: "https://www.instagram.com/ryu.free.spirit/" },
+    { icon: FaFacebook, url: "https://www.facebook.com/ryu.suzuki.super/" },
+    { icon: FaLine, url: "https://line.me/ti/p/hkL8_yg15L" },
+    { icon: FaWeixin, url: "https://wechat/" },
+  ];
+
   return (
-    <footer className="relative w-full text-gray-300 bg-gray-800 border-t-4 border-yellow-400 overflow-hidden pt-8 md:pt-16 md:pb-24 px-6">
+    <footer className="relative w-full text-gray-300 bg-gray-800 border-t-4 border-yellow-400 overflow-x-hidden pt-8 md:pt-16 md:pb-24 px-4">
 
       {/* Background text */}
       <h1
@@ -16,15 +38,17 @@ export default function Footer() {
           lineHeight: 1.1,
         }}
       >
-        ONE PERCENT JOURNEY
+        ONE PERCENT 37X
       </h1>
 
       {/* Main content */}
-      <div className="relative z-10 max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10 pb-10">
-        
-        {/* Navigation links */}
-        <div className="flex flex-row gap-6 text-sm flex-wrap justify-center md:justify-start">
-          {["Skills", "Projects", "Travels", "Contact"].map((label) => (
+      <div className="relative z-10 max-w-7xl mx-auto flex flex-col items-center gap-6 pb-10">
+
+        {/* Links container */}
+        <div className="flex flex-wrap justify-center gap-3 w-full max-w-[220px] sm:max-w-none">
+
+          {/* Contact links */}
+          {contactLinks.map(({ icon: Icon, href }, idx) => (
             <a
               key={label}
               href={`#${label.toLowerCase()}`}
@@ -33,7 +57,7 @@ export default function Footer() {
                         hover:border-yellow-400 hover:text-yellow-300
                         transition transform md:hover:scale-125 md:hover:shadow-[0_0_15px_rgba(255,204,0,0.6)]"
             >
-              {label}
+              <Icon size={18} className="md:w-5 md:h-5" />
             </a>
           ))}
           <Link
