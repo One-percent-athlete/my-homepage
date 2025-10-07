@@ -9,8 +9,7 @@ export default function Footer() {
 
       {/* Background text */}
       <h1
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-extrabold text-[9vw] md:text-[6vw] select-none pointer-events-none
-                   text-center md:whitespace-nowrap whitespace-normal"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-extrabold text-[9vw] md:text-[6vw] select-none pointer-events-none text-center md:whitespace-nowrap whitespace-normal"
         style={{
           color: "rgba(255, 204, 0, 0.15)",
           textShadow: "2px 2px 20px rgba(255,204,0,0.3)",
@@ -30,9 +29,9 @@ export default function Footer() {
               key={label}
               href={`#${label.toLowerCase()}`}
               className="px-3 py-2 rounded-md border border-yellow-400 text-yellow-400
-                         scale-110 shadow-[0_0_15px_rgba(255,204,0,0.5)]
-                         hover:border-yellow-400 hover:text-yellow-300
-                         transition transform md:hover:scale-125 md:hover:shadow-[0_0_15px_rgba(255,204,0,0.6)]"
+                        scale-110 shadow-[0_0_15px_rgba(255,204,0,0.5)]
+                        hover:border-yellow-400 hover:text-yellow-300
+                        transition transform md:hover:scale-125 md:hover:shadow-[0_0_15px_rgba(255,204,0,0.6)]"
             >
               {label}
             </a>
@@ -40,9 +39,9 @@ export default function Footer() {
           <Link
             href="/gallery"
             className="px-3 py-2 rounded-md border border-yellow-400 text-yellow-400
-                       scale-110 shadow-[0_0_15px_rgba(255,204,0,0.5)]
-                       hover:border-yellow-400 hover:text-yellow-300
-                       transition transform md:hover:scale-125 md:hover:shadow-[0_0_15px_rgba(255,204,0,0.6)]"
+                      scale-110 shadow-[0_0_15px_rgba(255,204,0,0.5)]
+                      hover:border-yellow-400 hover:text-yellow-300
+                      transition transform md:hover:scale-125 md:hover:shadow-[0_0_15px_rgba(255,204,0,0.6)]"
           >
             Gallery
           </Link>
@@ -61,9 +60,9 @@ export default function Footer() {
                 key={idx}
                 href={href}
                 className="p-4 rounded-full border border-yellow-400 text-yellow-500
-                           bg-transparent shadow-[0_0_15px_rgba(255,204,0,0.5)]
-                           transition transform hover:scale-125 hover:shadow-[0_0_25px_rgba(255,204,0,0.7)]
-                           md:p-3 md:text-yellow-400 md:hover:scale-110 md:hover:shadow-[0_0_20px_rgba(255,204,0,0.7)]"
+                          bg-transparent shadow-[0_0_15px_rgba(255,204,0,0.5)]
+                          transition transform hover:scale-125 hover:shadow-[0_0_25px_rgba(255,204,0,0.7)]
+                          md:p-3 md:text-yellow-400 md:hover:scale-110 md:hover:shadow-[0_0_20px_rgba(255,204,0,0.7)]"
               >
                 <Icon size={18} />
               </a>
@@ -85,9 +84,9 @@ export default function Footer() {
                 href={url}
                 target="_blank"
                 className="p-4 rounded-full border border-yellow-400 text-yellow-500
-                           bg-transparent shadow-[0_0_15px_rgba(255,204,0,0.5)]
-                           transition transform hover:scale-125 hover:shadow-[0_0_25px_rgba(255,204,0,0.7)]
-                           md:p-3 md:text-yellow-400 md:hover:scale-110 md:hover:shadow-[0_0_20px_rgba(255,204,0,0.7)]"
+                          bg-transparent shadow-[0_0_15px_rgba(255,204,0,0.5)]
+                          transition transform hover:scale-125 hover:shadow-[0_0_25px_rgba(255,204,0,0.7)]
+                          md:p-3 md:text-yellow-400 md:hover:scale-110 md:hover:shadow-[0_0_20px_rgba(255,204,0,0.7)]"
               >
                 <Icon size={18} />
               </a>
@@ -98,7 +97,7 @@ export default function Footer() {
 
       {/* Bottom note */}
       <div className="md:mt-10 text-center text-xs text-gray-400 relative z-10">
-        Built with ❤️ by Ryu • Powered by Next.js & Tailwind CSS
+        Built with ❤️ by One Percent • Powered by Next.js & Tailwind CSS
       </div>
     </footer>
   );
