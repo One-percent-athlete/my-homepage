@@ -11,6 +11,7 @@ export default function ButtonSection() {
   const router = useRouter();
   const { language, setLanguage } = useLanguage();
   const [ripple, setRipple] = useState<{ x: number; y: number; href: string } | null>(null);
+  const [open, setOpen] = useState(false);
 
   type Language = "en" | "ja" | "zh";
   type ServiceKey = "web" | "travel" | "ski" | "blog";
@@ -42,7 +43,7 @@ export default function ButtonSection() {
       transition={{ duration: 1, delay: 0.3, ease: "easeOut" }}
       className="relative z-20 flex flex-col items-center gap-6 w-full max-w-2xl"
     >
-      {/* Buttons */}
+      {/* Main Service Buttons */}
       <div className="flex flex-wrap justify-center gap-6 w-full">
         {services.map((service) => (
           <motion.button
@@ -87,19 +88,22 @@ export default function ButtonSection() {
         ))}
       </div>
 
-      {/* Language Dropdown */}
-      <div className="mt-4">
-        <select
-          value={language}
-          onChange={(e) => setLanguage(e.target.value as "en" | "ja" | "zh")}
-          className="px-4 py-2 rounded-lg border-2 border-yellow-400 bg-transparent text-yellow-400 font-bold
-                    shadow-[0_0_10px_rgba(255,215,0,0.5)] focus:outline-none focus:ring-2 focus:ring-yellow-300 cursor-none"
-        >
-          <option value="en">English</option>
-          <option value="ja">日本語</option>
-          <option value="zh">中文</option>
-        </select>
+      {/* Language Buttons - always visible */}
+      <div className="mt-4 flex flex-col md:flex-row items-center gap-2">
+        {(["en", "ja", "zh"] as const).map((lang) => (
+          <button
+            key={lang}
+            onClick={() => setLanguage(lang)}
+            className={`px-4 py-2 rounded-lg border-2 border-yellow-400 font-bold cursor-none
+                        ${language === lang ? "bg-yellow-400 text-black" : "bg-transparent text-yellow-400"}
+                        transition-colors hover:bg-yellow-400 hover:text-black shadow-[0_0_10px_rgba(255,215,0,0.5)]`}
+          >
+            {lang === "en" ? "English" : lang === "ja" ? "日本語" : "中文"}
+          </button>
+        ))}
       </div>
+
+
 
       {ripple && (
         <RippleTransition
