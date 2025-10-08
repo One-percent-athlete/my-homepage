@@ -217,7 +217,7 @@ export default function Contact() {
             <h3 className="font-bold text-xl mb-2">{contact.label}</h3>
             <a
               href={contact.link}
-              className="text-gray-300 hover:text-yellow-400 transition-colors break-words"
+              className="text-gray-300 hover:text-yellow-400 transition-colors break-words cursor-none"
             >
               {contact.value}
             </a>
@@ -297,7 +297,7 @@ export default function Contact() {
 
         <button
           type="submit"
-          className="w-full py-4 px-6 bg-yellow-400 text-black font-bold rounded-full hover:bg-yellow-500 transition-colors shadow-lg"
+          className="w-full py-4 px-6 bg-yellow-400 text-black font-bold rounded-full hover:bg-yellow-500 transition-colors shadow-lg cursor-none"
           disabled={status === "sending"}
         >
           {status === "sending" ? "Sending..." : "Send Message"}

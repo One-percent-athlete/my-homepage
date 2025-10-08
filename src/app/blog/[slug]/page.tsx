@@ -59,7 +59,7 @@ export default async function BlogPostPage({
         <div className="absolute inset-0 bg-[url('/images/blog-bg.jpg')] bg-cover bg-center opacity-20" />
 
         <div className="relative z-10 max-w-4xl mx-auto">
-          <h1 className="text-5xl font-extrabold mb-6 text-center bg-gradient-to-r from-orange-400 to-pink-500 bg-clip-text text-transparent">
+          <h1 className="text-5xl font-extrabold mb-6 text-center bg-gradient-to-r from-orange-400 to-pink-500 bg-clip-text text-transparent cursor-none">
             {post.title}
           </h1>
 
@@ -80,7 +80,7 @@ export default async function BlogPostPage({
           <div className="mt-12 text-center">
             <Link
               href="/blog"
-              className="inline-block px-8 py-4 text-lg font-semibold rounded-full bg-orange-500 hover:bg-orange-600 text-white shadow-lg transition-transform transform hover:scale-105"
+              className="inline-block px-8 py-4 text-lg font-semibold rounded-full bg-orange-500 hover:bg-orange-600 text-white shadow-lg transition-transform transform hover:scale-105 cursor-none"
             >
               ← Back to Blog
             </Link>

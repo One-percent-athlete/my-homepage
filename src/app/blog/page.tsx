@@ -189,7 +189,7 @@ export default function BlogPage() {
                 <h2 className="text-xl font-bold mt-2 mb-2">
                   <Link
                     href={`/blog/${post.slug}`}
-                    className="text-purple-400 transition-colors"
+                    className="text-purple-400 transition-colors cursor-none"
                   >
                     {post.title}
                   </Link>
@@ -225,11 +225,11 @@ export default function BlogPage() {
              language === "ja" ? "または、メールリストに登録して限定情報を受け取りましょう。" :
              "或加入我的邮件列表获取独家提示和更新。"}
           </p>
-          <button className="bg-lime-400 text-white font-bold py-3 px-6 rounded-full hover:bg-lime-500 transition-colors cursor-none">
+          <Link href="/contact" className="bg-lime-400 text-white font-bold py-3 px-6 rounded-full hover:bg-lime-500 transition-colors cursor-none">
             {language === "en" ? "Join the Newsletter" :
              language === "ja" ? "ニュースレターに参加" :
              "加入通讯"}
-          </button>
+          </Link>
         </section>
       </div>
       <Footer />
