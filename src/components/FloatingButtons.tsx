@@ -12,6 +12,7 @@ const themes = {
   '/travel': { border: 'border-orange-400', text: 'text-orange-400', hover: 'hover:text-orange-400' },
   '/ski': { border: 'border-sky-400', text: 'text-sky-400', hover: 'hover:text-sky-400' },
   '/blog': { border: 'border-purple-400', text: 'text-purple-400', hover: 'hover:text-purple-400' },
+  '/contact': { border: 'border-yellow-400', text: 'text-yellow-400', hover: 'hover:text-yellow-400' },
 };
 
 // Multilingual labels
