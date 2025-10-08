@@ -3,6 +3,7 @@ import FloatingButtons from "@/components/FloatingButtons";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { Metadata } from "next";
+import Link from "next/link";
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.37x.jp";
@@ -37,7 +38,7 @@ interface BlogPostPageProps {
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { slug } = params;
-  
+
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.37x.jp";
 
   const res = await fetch(`${baseUrl}/api/blog/${slug}`, {
@@ -77,12 +78,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         </div>
 
         <div className="mt-12 text-center">
-          <a
+          <Link
             href="/blog"
             className="inline-block px-8 py-4 text-lg font-semibold rounded-full bg-orange-500 hover:bg-orange-600 text-white shadow-lg transition-transform transform hover:scale-105"
           >
             ← Back to Blog
-          </a>
+          </Link>
         </div>
       </div>
     </article>
