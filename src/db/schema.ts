@@ -1,4 +1,4 @@
-import { pgTable, uuid, text, varchar, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, uuid, serial, text, varchar, timestamp } from "drizzle-orm/pg-core";
 
 // Posts table (already exists)
 export const posts = pgTable("posts", {
@@ -18,4 +18,13 @@ export const comments = pgTable("comments", {
   postId: uuid("post_id").notNull(),
   content: text("content").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const contacts = pgTable("contacts", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  email: varchar("email", { length: 255 }).notNull(),
+  phone: varchar("phone", { length: 50 }).notNull(),
+  message: text("message").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
 });

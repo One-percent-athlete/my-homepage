@@ -351,13 +351,14 @@ export default function TravelPage() {
               >
                 {ctaTexts[language].subtitle}
               </motion.p>
-              <motion.button
+              <motion.a
+                href="/contact"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
                 className="mt-8 px-8 py-4 text-lg font-bold rounded-full bg-orange-400 text-white shadow-lg hover:bg-orange-500 cursor-none"
               >
                 {ctaTexts[language].button}
-              </motion.button>
+              </motion.a>
             </div>
           </section>
         <LogoShowcase direction="left" />

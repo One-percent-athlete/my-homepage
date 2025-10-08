@@ -20,6 +20,7 @@ export default function Footer() {
     "/travel": { border: "border-orange-400", text: "text-orange-400", shadow: "shadow-[0_0_10px_rgba(251,146,60,0.5)] hover:shadow-[0_0_20px_rgba(251,146,60,0.7)]" },
     "/ski": { border: "border-sky-400", text: "text-sky-400", shadow: "shadow-[0_0_10px_rgba(56,189,248,0.5)] hover:shadow-[0_0_20px_rgba(56,189,248,0.7)]" },
     "/blog": { border: "border-purple-400", text: "text-purple-400", shadow: "shadow-[0_0_10px_rgba(192,132,252,0.5)] hover:shadow-[0_0_20px_rgba(192,132,252,0.7)]" },
+    "/contact": { border: "border-yellow-400", text: "text-yellow-400", shadow: "shadow-[0_0_10px_rgba(251,146,60,0.5)] hover:shadow-[0_0_20px_rgba(251,146,60,0.7)]" },
   };
 
   const pathname = usePathname();

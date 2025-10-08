@@ -11,6 +11,9 @@ import {
   FaPhoneAlt,
   FaEnvelope,
 } from "react-icons/fa";
+import CustomCursor from "@/components/CustomCursor";
+import FloatingButtons from "@/components/FloatingButtons";
+import Footer from "@/components/Footer";
 
 // Map icon strings to React components
 const iconMap = {
@@ -116,11 +119,44 @@ export default function Contact() {
     setParticles(particleData);
   }, []);
 
+   // --- Form state ---
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [message, setMessage] = useState("");
+  const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus("sending");
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, phone, message }),
+      });
+
+      if (res.ok) {
+        setStatus("success");
+        setName("");
+        setEmail("");
+        setMessage("");
+      } else {
+        setStatus("error");
+      }
+    } catch (err) {
+      setStatus("error");
+    }
+  };
+
   return (
     <section
       id="contact"
       className="relative bg-transparent pt-24 pb-12 px-6 text-center overflow-hidden text-white"
-    >
+    > 
+      <CustomCursor />
+      <FloatingButtons />
       {/* Particles */}
       {particles.map((p, i) => (
         <motion.div
@@ -147,7 +183,7 @@ export default function Contact() {
         initial={{ opacity: 0, y: -40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
-        className="text-5xl font-extrabold mb-6 relative z-10"
+        className="text-5xl font-extrabold mb-6 relative z-10 text-yellow-400"
       >
         {contactData.title}
       </motion.h2>
@@ -215,6 +251,62 @@ export default function Contact() {
           </motion.div>
         ))}
       </motion.div>
+
+      {/* Contact Form */}
+      <motion.form
+        onSubmit={handleSubmit}
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.2, duration: 0.8 }}
+        className="max-w-xl mx-auto mt-12 p-8 bg-gray-900/80 rounded-3xl backdrop-blur-lg shadow-lg"
+      >
+        <h3 className="text-2xl font-bold mb-6 text-yellow-400">Send a Message</h3>
+
+        <input
+          type="text"
+          placeholder="Your Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="w-full p-4 mb-4 rounded-lg bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+          required
+        />
+        <input
+          type="email"
+          placeholder="Your Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full p-4 mb-4 rounded-lg bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+          required
+        />
+        <input
+          type="tel"
+          placeholder="Your Phone Number"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          className="w-full p-4 mb-4 rounded-lg bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+          required
+        />
+        <textarea
+          placeholder="Your Message"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          className="w-full p-4 mb-4 rounded-lg bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+          rows={6}
+          required
+        ></textarea>
+
+        <button
+          type="submit"
+          className="w-full py-4 px-6 bg-yellow-400 text-black font-bold rounded-full hover:bg-yellow-500 transition-colors shadow-lg"
+          disabled={status === "sending"}
+        >
+          {status === "sending" ? "Sending..." : "Send Message"}
+        </button>
+
+        {status === "success" && <p className="mt-4 text-green-400 font-semibold">Message sent successfully!</p>}
+        {status === "error" && <p className="mt-4 text-red-500 font-semibold">Failed to send message. Try again.</p>}
+      </motion.form>
+      <Footer />
     </section>
   );
 }
