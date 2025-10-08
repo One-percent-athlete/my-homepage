@@ -1,5 +1,6 @@
 import CustomCursor from "@/components/CustomCursor";
 import FloatingButtons from "@/components/FloatingButtons";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 
 interface BlogPost {
@@ -30,7 +31,13 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
     <FloatingButtons />
     <main className="container mx-auto px-6 py-16">
       <h1 className="text-4xl font-bold mb-6">{post.title}</h1>
-      {post.coverImage && <img src={post.coverImage} alt={post.title} className="rounded-lg mb-6" />}
+      <Image
+        src={post.coverImage || "/images/placeholder.jpg"} // fallback if undefined
+        alt={post.title}
+        width={800}  // set based on design
+        height={500} // set based on design
+        className="rounded-lg object-cover"
+        />
       <p className="text-gray-700">{post.content}</p>
     </main>
     </>

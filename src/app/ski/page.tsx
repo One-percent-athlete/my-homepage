@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import { motion, type Variants } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import { useLanguage } from "@/app/context/LanguageContext";
+import Image from "next/image";
 
 // Animation Variants
 const containerVariants: Variants = {
@@ -144,7 +145,8 @@ export default function Ski() {
 
     videoEl.addEventListener("ended", handleEnded);
     return () => videoEl.removeEventListener("ended", handleEnded);
-  }, [currentVideo]);
+  }, [currentVideo, videos.length]);
+
 
   return (
     <>
@@ -152,10 +154,12 @@ export default function Ski() {
       <div className="bg-white min-h-screen text-gray-800">
         {/* Hero Section */}
         <header className="relative w-full h-[28rem] bg-cover bg-center">
-          <img
+          <Image
             src="/images/ski.jpg"
             alt="Ski Hero Fallback"
-            className="absolute inset-0 w-full h-full object-cover"
+            fill
+            style={{ objectFit: "cover" }}
+            className="absolute inset-0"
           />
           <video
             ref={videoRef}

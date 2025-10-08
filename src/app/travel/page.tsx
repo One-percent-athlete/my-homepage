@@ -20,9 +20,6 @@ export default function TravelPage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const { scrollYProgress } = useScroll();
-  const yParallax = useTransform(scrollYProgress, [0, 1], [0, -600]);
-
   // Multilingual content
   const heroTexts = {
     en: {
@@ -175,10 +172,12 @@ export default function TravelPage() {
         >
           <source src="/videos/bogota.mp4" type="video/mp4" />
           {/* Fallback image for browsers that don't support <video> */}
-          <img
+          <Image
             src="/images/dahab.jpg"
-            alt="Travel background"
-            className="absolute inset-0 w-full h-full object-cover"
+            alt="Travel Hero"
+            fill
+            style={{ objectFit: "cover" }}
+            className="absolute inset-0"
           />
         </video>
 

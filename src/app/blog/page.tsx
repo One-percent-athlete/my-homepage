@@ -74,13 +74,12 @@ export default function BlogPage() {
     if (!videoEl) return;
 
     const handleEnded = () => {
-      const nextIndex = (currentVideo + 1) % videos.length;
-      setCurrentVideo(nextIndex);
+      setCurrentVideo((prev) => (prev + 1) % videos.length);
     };
 
     videoEl.addEventListener("ended", handleEnded);
     return () => videoEl.removeEventListener("ended", handleEnded);
-  }, [currentVideo]);
+  }, [videos.length]);
 
 
   useEffect(() => {
@@ -111,10 +110,12 @@ export default function BlogPage() {
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <header className="relative w-full h-[300px] md:h-[400px] rounded-2xl overflow-hidden mb-12">
-          <img
+          <Image
             src="/images/astro.jpg"
             alt="Ski Hero Fallback"
-            className="absolute inset-0 w-full h-full object-cover"
+            fill
+            style={{ objectFit: "cover" }}
+            className="absolute inset-0 object-cover"
           />
           <video
             ref={videoRef}
