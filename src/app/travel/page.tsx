@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import FloatingButtons from "../../components/FloatingButtons";
 import Footer from "@/components/Footer";
 import Image from "next/image";
@@ -318,50 +318,48 @@ export default function TravelPage() {
 
 
         {/* Call to Action */}
-<section
-  id="cta-section"
-  className="relative text-center px-6 py-24 overflow-hidden bg-gradient-to-r from-cyan-700 to-indigo-800"
->
-  {/* Background image */}
-  <div
-    className="absolute inset-0 bg-cover bg-center bg-fixed"
-    style={{
-      backgroundImage: "url('/images/japan1.jpg')", // <-- replace with your image path
-    }}
-  />
+          <section
+            id="cta-section"
+            className="relative text-center px-6 py-24 overflow-hidden bg-gradient-to-r from-cyan-700 to-indigo-800"
+          >
+            {/* Background image */}
+            <div
+              className="absolute inset-0 bg-cover bg-center bg-fixed"
+              style={{
+                backgroundImage: "url('/images/japan1.jpg')", // <-- replace with your image path
+              }}
+            />
 
-  {/* Optional overlay to keep text readable */}
-  <div className="absolute inset-0 bg-black/40"></div>
+            {/* Optional overlay to keep text readable */}
+            <div className="absolute inset-0 bg-black/40"></div>
 
-  {/* Content */}
-  <div className="relative z-10">
-    <motion.h2
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 1 }}
-      className="text-4xl font-extrabold drop-shadow-md text-orange-400"
-    >
-      {ctaTexts[language].title}
-    </motion.h2>
-    <motion.p
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      transition={{ delay: 0.5, duration: 1 }}
-      className="mt-4 text-lg text-gray-300"
-    >
-      {ctaTexts[language].subtitle}
-    </motion.p>
-    <motion.button
-      whileHover={{ scale: 1.1 }}
-      whileTap={{ scale: 0.95 }}
-      className="mt-8 px-8 py-4 text-lg font-bold rounded-full bg-orange-400 text-white shadow-lg hover:bg-orange-500 cursor-none"
-    >
-      {ctaTexts[language].button}
-    </motion.button>
-  </div>
-</section>
-
-      
+            {/* Content */}
+            <div className="relative z-10">
+              <motion.h2
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1 }}
+                className="text-4xl font-extrabold drop-shadow-md text-orange-400"
+              >
+                {ctaTexts[language].title}
+              </motion.h2>
+              <motion.p
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ delay: 0.5, duration: 1 }}
+                className="mt-4 text-lg text-gray-300"
+              >
+                {ctaTexts[language].subtitle}
+              </motion.p>
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                className="mt-8 px-8 py-4 text-lg font-bold rounded-full bg-orange-400 text-white shadow-lg hover:bg-orange-500 cursor-none"
+              >
+                {ctaTexts[language].button}
+              </motion.button>
+            </div>
+          </section>
         <LogoShowcase direction="left" />
       </div>
 
