@@ -1,31 +1,26 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { db } from "@/db";
 import { posts } from "@/db/schema";
+import { eq } from "drizzle-orm";
 
-export async function GET() {
-  const allPosts = await db.select().from(posts).orderBy(posts.createdAt);
-  return NextResponse.json(allPosts);
+interface Params {
+  params: { slug: string };
 }
 
-export async function POST(req: NextRequest) {
-  try {
-    const { title, slug, content, coverImage, videoUrl, category } = await req.json();
+export async function GET(req: Request, context: Params) {
+  // Await context.params if using Next.js 13 App Router dynamic APIs
+  const { params } = context;
+  const { slug } = params;
 
-    const [newPost] = await db
-      .insert(posts)
-      .values({
-        title,
-        slug,
-        content,
-        coverImage,
-        videoUrl,
-        category,
-      })
-      .returning();
+  const post = await db
+    .select()
+    .from(posts)
+    .where(eq(posts.slug, slug))
+    .limit(1);
 
-    return NextResponse.json(newPost, { status: 201 });
-  } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error: "Failed to create post" }, { status: 500 });
+  if (!post || post.length === 0) {
+    return NextResponse.json({ error: "Post not found" }, { status: 404 });
   }
+
+  return NextResponse.json(post[0]);
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import FloatingButtons from "@/components/FloatingButtons";
@@ -46,7 +46,7 @@ function mapPost(post: BlogPostAPI): BlogPost {
     title: post.title,
     excerpt: createExcerpt(post.content),
     date: post.createdAt,
-    image: post.coverImage || "/images/_test.jpg",
+    image: post.coverImage || "/images/astro.jpg",
     category: post.category,
     tags: post.postTags?.map((pt) => pt.tag.name) || [],
   };
@@ -63,22 +63,28 @@ async function getBlogPosts(): Promise<BlogPost[]> {
 export default function BlogPage() {
   const { language } = useLanguage();
   const [posts, setPosts] = useState<BlogPost[]>([]);
-  const [activeTab, setActiveTab] = useState("TECH_BUSINESS");
-
+  const [activeTab, setActiveTab] = useState<CategoryType | null>(null);
   // For cycling hero videos
-  const videoSources = ["/videos/tech.mp4", "/videos/travel.mp4", "/videos/ski.mp4"];
-  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const videos = ["/videos/ski-video2.mp4", "/videos/travel_hero.mp4", "/videos/bogota.mp4"];
+  const [currentVideo, setCurrentVideo] = useState(0);
+
+  useEffect(() => {
+    const videoEl = videoRef.current;
+    if (!videoEl) return;
+
+    const handleEnded = () => {
+      const nextIndex = (currentVideo + 1) % videos.length;
+      setCurrentVideo(nextIndex);
+    };
+
+    videoEl.addEventListener("ended", handleEnded);
+    return () => videoEl.removeEventListener("ended", handleEnded);
+  }, [currentVideo]);
+
 
   useEffect(() => {
     getBlogPosts().then(setPosts);
-  }, []);
-
-  // Cycle video every 8 seconds (adjust as needed)
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentVideoIndex((prev) => (prev + 1) % videoSources.length);
-    }, 8000);
-    return () => clearInterval(interval);
   }, []);
 
   // Multilingual category labels
@@ -90,8 +96,13 @@ export default function BlogPage() {
 
   const categories = Object.keys(categoryLabels) as CategoryType[];
 
-  const filteredPosts = posts.filter((post) => post.category === activeTab);
+  const sortedPosts = [...posts].sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  );
 
+  const filteredPosts = activeTab 
+    ? sortedPosts.filter((post) => post.category === activeTab)
+    : sortedPosts;
   return (
     <>
       <CustomCursor />
@@ -100,17 +111,24 @@ export default function BlogPage() {
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <header className="relative w-full h-[300px] md:h-[400px] rounded-2xl overflow-hidden mb-12">
+          <img
+            src="/images/astro.jpg"
+            alt="Ski Hero Fallback"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
           <video
-            key={currentVideoIndex} // ensures re-render to change video
-            className="absolute top-0 left-0 w-full h-full object-cover"
+            ref={videoRef}
+            key={currentVideo}
             autoPlay
-            loop
             muted
             playsInline
+            className="absolute inset-0 w-full h-full object-cover"
+            poster="/images/ski.jpg"
           >
-            <source src={videoSources[currentVideoIndex]} type="video/mp4" />
+            <source src={videos[currentVideo]} type="video/mp4" />
+            Your browser does not support the video tag.
           </video>
-          <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center text-center px-6">
+          <div className="absolute inset-0 bg-opacity-50 flex flex-col items-center justify-center text-center px-6">
             <h1 className="text-4xl md:text-5xl font-bold mb-4 drop-shadow-lg text-purple-400">
               {language === "en" && "Stories, Guides, & Insights: The Blog"}
               {language === "ja" && "ブログ：ストーリー・ガイド・インサイト"}
