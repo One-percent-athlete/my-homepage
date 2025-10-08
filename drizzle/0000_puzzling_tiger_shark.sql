@@ -9,3 +9,12 @@ CREATE TABLE "posts" (
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "posts_slug_unique" UNIQUE("slug")
 );
+
+CREATE TABLE "contacts" (
+	"id" serial PRIMARY KEY,
+	"name" varchar(255) NOT NULL,
+	"email" varchar(255) NOT NULL,
+	"phone" varchar(50) NOT NULL,
+	"message" text NOT NULL,
+"created_at" timestamp DEFAULT now() NOT NULL
+);

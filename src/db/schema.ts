@@ -26,5 +26,5 @@ export const contacts = pgTable("contacts", {
   email: varchar("email", { length: 255 }).notNull(),
   phone: varchar("phone", { length: 50 }).notNull(),
   message: text("message").notNull(),
-  createdAt: timestamp("created_at").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
