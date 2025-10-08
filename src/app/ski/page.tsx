@@ -1,9 +1,11 @@
+
 "use client";
 
 import CustomCursor from "@/components/CustomCursor";
 import FloatingButtons from "@/components/FloatingButtons";
 import Footer from "@/components/Footer";
 import { motion, type Variants } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
 import { useLanguage } from "@/app/context/LanguageContext";
 
 // Animation Variants
@@ -124,15 +126,51 @@ export default function Ski() {
     },
   };
 
+
   const { heroTitle, heroSubtitle, heroButton, intro, expertise, packages, testimonials, bookingSteps, faqs, ctaButton, sections } = content[language];
+
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const videos = ["/videos/ski-video2.mp4", "/videos/ski-video3.mp4"];
+  const [currentVideo, setCurrentVideo] = useState(0);
+
+  useEffect(() => {
+    const videoEl = videoRef.current;
+    if (!videoEl) return;
+
+    const handleEnded = () => {
+      const nextIndex = (currentVideo + 1) % videos.length;
+      setCurrentVideo(nextIndex);
+    };
+
+    videoEl.addEventListener("ended", handleEnded);
+    return () => videoEl.removeEventListener("ended", handleEnded);
+  }, [currentVideo]);
 
   return (
     <>
       <CustomCursor />
       <div className="bg-white min-h-screen text-gray-800">
         {/* Hero Section */}
-        <header className="relative w-full h-[28rem] bg-cover bg-center" style={{ backgroundImage: "url('/images/ski-hero.jpg')" }}>
-          <div className="absolute inset-0 bg-white/70 backdrop-blur-sm flex items-center justify-center">
+        <header className="relative w-full h-[28rem] bg-cover bg-center">
+          <img
+            src="/images/ski.jpg"
+            alt="Ski Hero Fallback"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          <video
+            ref={videoRef}
+            key={currentVideo}
+            autoPlay
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover"
+            poster="/images/ski.jpg"
+          >
+            <source src={videos[currentVideo]} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+
+          <div className="absolute inset-0 bg-white/30 flex items-center justify-center">
             <motion.div initial="hidden" animate="visible" variants={containerVariants} className="text-center px-4">
               <motion.h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-sky-700 drop-shadow-xl tracking-tight" variants={itemVariants}>
                 {heroTitle}
@@ -141,8 +179,8 @@ export default function Ski() {
                 {heroSubtitle}
               </motion.p>
               <motion.a
-                href="#booking-form"
-                className="mt-8 inline-block bg-gradient-to-r from-sky-300 to-sky-700 text-white font-bold text-lg py-3 px-8 rounded-full shadow-lg hover:scale-105 transition transform"
+                href="/contact"
+                className="mt-8 inline-block bg-gradient-to-r from-sky-300 to-sky-700 text-white font-bold text-lg py-3 px-8 rounded-full shadow-lg hover:scale-105 transition transform cursor-none"
                 variants={itemVariants}
               >
                 {heroButton}
@@ -158,32 +196,50 @@ export default function Ski() {
             <p className="text-lg sm:text-xl leading-relaxed">{intro}</p>
           </motion.section>
 
-          {/* Expertise */}
-          <motion.section className="bg-sky-50 p-10 rounded-2xl shadow-xl" initial="hidden" animate="visible" variants={containerVariants}>
-            <motion.h2 className="text-3xl sm:text-4xl font-extrabold text-sky-700 mb-10 text-center" variants={itemVariants}>
+          {/* Expertise Section with Fixed Background */}
+          <motion.section
+            className="bg-cover bg-center bg-no-repeat bg-fixed p-10 rounded-2xl shadow-xl relative"
+            style={{ backgroundImage: "url('/images/ski1.jpg')" }}
+            initial="hidden"
+            animate="visible"
+            variants={containerVariants}
+          >
+            <div className="absolute inset-0 bg-black/30 rounded-2xl pointer-events-none"></div>
+
+            <motion.h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-10 text-center relative z-10" variants={itemVariants}>
               {sections.expertise}
             </motion.h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-10 text-center">
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-10 text-center relative z-10 text-white">
               {expertise.map((exp, i) => (
                 <motion.div key={i} variants={itemVariants}>
-                  <h3 className="text-xl font-semibold mb-3 text-gray-900">{exp.title}</h3>
-                  <ul className="text-gray-600 space-y-1">{exp.content.map((item, j) => <li key={j}>{item}</li>)}</ul>
+                  <h3 className="text-xl font-semibold mb-3">{exp.title}</h3>
+                  <ul className="space-y-1">{exp.content.map((item, j) => <li key={j}>{item}</li>)}</ul>
                 </motion.div>
               ))}
             </div>
           </motion.section>
 
-          {/* Packages */}
-          <motion.section initial="hidden" animate="visible" variants={containerVariants}>
-            <motion.h2 className="text-3xl sm:text-4xl font-extrabold text-sky-700 mb-12 text-center" variants={itemVariants}>
+          {/* Packages Section with Fixed Background */}
+          <motion.section
+            className="bg-cover bg-center bg-no-repeat bg-fixed p-10 rounded-2xl shadow-xl relative"
+            style={{ backgroundImage: "url('/images/ski2.jpg')" }}
+            initial="hidden"
+            animate="visible"
+            variants={containerVariants}
+          >
+            <div className="absolute inset-0 bg-black/30 rounded-2xl pointer-events-none"></div>
+
+            <motion.h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-12 text-center relative z-10" variants={itemVariants}>
               {sections.packages}
             </motion.h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-10 relative z-10">
               {packages.map((pkg, i) => (
-                <motion.div key={i} className="bg-white p-8 rounded-2xl shadow-xl border border-gray-100 hover:shadow-2xl hover:scale-105 transition-all duration-300" variants={cardVariants}>
+                <motion.div key={i} className="bg-white/80 p-8 rounded-2xl shadow-xl border border-gray-100 hover:shadow-2xl hover:scale-105 transition-all duration-300" variants={cardVariants}>
                   <h3 className="text-2xl font-bold text-gray-900 mb-4">{pkg.title}</h3>
                   <p className="text-gray-700 mb-6">{pkg.desc}</p>
-                  <a href="#booking-form" className="inline-block bg-gradient-to-r from-sky-500 to-sky-400 text-white font-bold py-2 px-6 rounded-full shadow-md hover:shadow-lg hover:scale-105 transition">
+                  <a href="/contact" className="inline-block bg-gradient-to-r from-sky-500 to-sky-400 text-white font-bold py-2 px-6 rounded-full shadow-md hover:shadow-lg hover:scale-105 transition cursor-none">
                     {heroButton}
                   </a>
                 </motion.div>
@@ -191,14 +247,24 @@ export default function Ski() {
             </div>
           </motion.section>
 
-          {/* Testimonials */}
-          <motion.section className="bg-sky-50 p-10 rounded-2xl shadow-lg" initial="hidden" animate="visible" variants={containerVariants}>
-            <motion.h2 className="text-3xl sm:text-4xl font-extrabold text-sky-700 mb-8 text-center" variants={itemVariants}>
+
+          {/* Testimonials Section with Fixed Background */}
+          <motion.section
+            className="bg-cover bg-center bg-no-repeat bg-fixed p-10 rounded-2xl shadow-lg relative"
+            style={{ backgroundImage: "url('/images/ski3.jpg')" }}
+            initial="hidden"
+            animate="visible"
+            variants={containerVariants}
+          >
+            <div className="absolute inset-0 bg-black/30 rounded-2xl pointer-events-none"></div>
+
+            <motion.h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-8 text-center relative z-10" variants={itemVariants}>
               {sections.testimonials}
             </motion.h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
               {testimonials.map((t, i) => (
-                <motion.blockquote key={i} className="p-6 bg-white rounded-xl shadow-md italic text-gray-700" variants={itemVariants}>
+                <motion.blockquote key={i} className="p-6 bg-white/80 rounded-xl shadow-md italic text-gray-700" variants={itemVariants}>
                   {t.quote}
                   <footer className="mt-4 text-sm font-semibold text-sky-700">— {t.author}</footer>
                 </motion.blockquote>
@@ -206,31 +272,49 @@ export default function Ski() {
             </div>
           </motion.section>
 
-          {/* Booking Steps */}
-          <motion.section className="bg-sky-50 p-10 rounded-2xl shadow-lg" initial="hidden" animate="visible" variants={containerVariants}>
-            <motion.h2 className="text-3xl sm:text-4xl font-extrabold text-sky-700 mb-10 text-center" variants={itemVariants}>
+          {/* Booking Steps Section with Fixed Background */}
+          <motion.section
+            className="bg-cover bg-center bg-no-repeat bg-fixed p-10 rounded-2xl shadow-lg relative"
+            style={{ backgroundImage: "url('/images/ski4.jpg')" }}
+            initial="hidden"
+            animate="visible"
+            variants={containerVariants}
+          >
+            <div className="absolute inset-0 bg-black/30 rounded-2xl pointer-events-none"></div>
+
+            <motion.h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-10 text-center relative z-10" variants={itemVariants}>
               {sections.booking}
             </motion.h2>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-10 text-center">
+
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-10 text-center relative z-10">
               {bookingSteps.map((step, i) => (
                 <motion.div key={i} className="flex flex-col items-center" variants={itemVariants}>
                   <div className="w-14 h-14 flex items-center justify-center bg-sky-600 text-white rounded-full mb-4 text-lg font-bold shadow-md">{i + 1}</div>
-                  <p className="text-gray-700 font-medium">{step}</p>
+                  <p className="text-white font-medium">{step}</p>
                 </motion.div>
               ))}
             </div>
           </motion.section>
 
-          {/* FAQ */}
-          <motion.section className="max-w-3xl mx-auto" initial="hidden" animate="visible" variants={containerVariants}>
-            <motion.h2 className="text-3xl sm:text-4xl font-extrabold text-sky-700 mb-10 text-center" variants={itemVariants}>
+          {/* FAQ Section with Fixed Background */}
+          <motion.section
+            className="bg-cover bg-center bg-no-repeat bg-fixed p-10 rounded-2xl shadow-lg relative"
+            style={{ backgroundImage: "url('/images/ski.jpg')" }}
+            initial="hidden"
+            animate="visible"
+            variants={containerVariants}
+          >
+            <div className="absolute inset-0 bg-black/30 rounded-2xl pointer-events-none"></div>
+
+            <motion.h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-10 text-center relative z-10" variants={itemVariants}>
               {sections.faq}
             </motion.h2>
-            <div className="space-y-6">
+
+            <div className="space-y-6 relative z-10">
               {faqs.map((faq, i) => (
-                <motion.div key={i} className="bg-white p-6 rounded-xl shadow-md" variants={itemVariants}>
+                <motion.div key={i} className="bg-white/80 p-6 rounded-xl shadow-md" variants={itemVariants}>
                   <h3 className="font-bold text-gray-900">{faq.q}</h3>
-                  <p className="text-gray-600 mt-2">{faq.a}</p>
+                  <p className="text-gray-700 mt-2">{faq.a}</p>
                 </motion.div>
               ))}
             </div>
@@ -238,7 +322,7 @@ export default function Ski() {
 
           {/* Call to Action */}
           <motion.section className="text-center" initial="hidden" animate="visible" variants={itemVariants}>
-            <a href="#booking-form" className="inline-block bg-gradient-to-r from-sky-500 to-sky-400 text-white font-extrabold text-xl py-5 px-12 rounded-full shadow-lg hover:scale-110 hover:shadow-2xl transition transform">
+            <a href="/contact" className="inline-block bg-gradient-to-r from-sky-500 to-sky-400 text-white font-extrabold text-xl py-5 px-12 rounded-full shadow-lg hover:scale-110 hover:shadow-2xl transition transform cursor-none">
               {ctaButton}
             </a>
           </motion.section>

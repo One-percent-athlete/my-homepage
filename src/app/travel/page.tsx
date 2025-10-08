@@ -49,51 +49,51 @@ export default function TravelPage() {
     en: [
       {
         title: "Tropical Paradise",
-        img: "/images/beach.jpg",
+        img: "/images/stairs.jpg",
         desc: "Soak up the sun, feel the sand between your toes, and sip on fresh coconut water.",
       },
       {
         title: "Mountain Escape",
-        img: "/images/mountain.jpg",
+        img: "/images/patagonia.jpg",
         desc: "Breathe in crisp air, chase waterfalls, and find peace among majestic peaks.",
       },
       {
         title: "City Lights",
-        img: "/images/city.jpg",
+        img: "/images/equador.jpg",
         desc: "Get lost in buzzing streets, taste local delights, and dance the night away.",
       },
     ],
     ja: [
       {
         title: "トロピカルパラダイス",
-        img: "/images/beach.jpg",
+        img: "/images/stairs.jpg",
         desc: "太陽を浴び、砂の感触を楽しみ、新鮮なココナッツウォーターを味わおう。",
       },
       {
         title: "山の隠れ家",
-        img: "/images/mountain.jpg",
+        img: "/images/patagonia.jpg",
         desc: "澄んだ空気を吸い、滝を追い、雄大な山々の中で安らぎを見つけよう。",
       },
       {
         title: "都市の光",
-        img: "/images/city.jpg",
+        img: "/images/equador.jpg",
         desc: "賑やかな街を散策し、地元の味を楽しみ、夜を踊って過ごそう。",
       },
     ],
     zh: [
       {
         title: "热带天堂",
-        img: "/images/beach.jpg",
+        img: "/images/stairs.jpg",
         desc: "沐浴阳光，感受脚下的沙滩，品尝新鲜的椰子水。",
       },
       {
         title: "山间秘境",
-        img: "/images/mountain.jpg",
+        img: "/images/patagonia.jpg",
         desc: "呼吸清新的空气，追逐瀑布，在雄伟的山峰中找到宁静。",
       },
       {
         title: "城市之光",
-        img: "/images/city.jpg",
+        img: "/images/equador.jpg",
         desc: "迷失在热闹的街道中，品尝当地美食，尽情享受夜晚。",
       },
     ],
@@ -155,45 +155,73 @@ export default function TravelPage() {
     },
   };
 
+
   return (
     <>
       <CustomCursor />
       <FloatingButtons />
       <div className="relative min-h-screen bg-gradient-to-br from-gray-950 via-slate-900 to-cyan-950 overflow-hidden">
 
-        {/* Hero Section */}
-        <section className="relative flex flex-col items-center justify-center text-center px-6 py-32 min-h-screen z-20">
-          <FlagCanvasCircle scrollY={scrollY} />
+      {/* Hero Section with Background Video */}
+      <section className="relative flex flex-col items-center justify-center text-center px-6 py-32 min-h-screen overflow-hidden z-20">
+        {/* Background Video */}
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover opacity-60"
+          poster="/images/dahab.jpg" // <-- shows before video loads
+        >
+          <source src="/videos/bogota.mp4" type="video/mp4" />
+          {/* Fallback image for browsers that don't support <video> */}
+          <img
+            src="/images/dahab.jpg"
+            alt="Travel background"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        </video>
 
-          <motion.h1
-            initial={{ opacity: 0, y: -50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1 }}
-            className="text-6xl font-extrabold drop-shadow-lg text-orange-400 z-10"
-          >
-            {heroTexts[language].title}
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 1 }}
-            className="mt-6 text-xl text-gray-300 max-w-2xl z-10"
-          >
-            {heroTexts[language].subtitle}
-          </motion.p>
-          <motion.a
-            href="/contact"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 1 }}
-            className="mt-8 inline-block px-8 py-4 text-lg font-bold rounded-full bg-orange-500 text-white shadow-lg hover:bg-orange-600 transition-colors cursor-none"
-          >
-            {heroTexts[language].button}
-          </motion.a>
-        </section>
+        {/* Optional dark overlay */}
+        <div className="absolute inset-0 bg-black/20"></div>
+
+        {/* Flags Canvas (on top of video) */}
+        <FlagCanvasCircle scrollY={scrollY} />
+
+        {/* Hero Text */}
+        <motion.h1
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+          className="text-6xl font-extrabold drop-shadow-lg text-orange-400 z-10"
+        >
+          {heroTexts[language].title}
+        </motion.h1>
+
+        <motion.p
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 1 }}
+          className="mt-6 text-xl text-gray-300 max-w-2xl z-10"
+        >
+          {heroTexts[language].subtitle}
+        </motion.p>
+
+        <motion.a
+          href="/contact"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6, duration: 1 }}
+          className="mt-8 inline-block px-8 py-4 text-lg font-bold rounded-full bg-orange-500 text-white shadow-lg hover:bg-orange-600 transition-colors cursor-none z-10"
+        >
+          {heroTexts[language].button}
+        </motion.a>
+      </section>
+
 
         {/* Destinations Grid */}
         <section className="max-w-6xl mx-auto px-6 py-24 grid md:grid-cols-3 gap-10">
+          
           {destinations[language].map((place, index) => (
             <motion.div
               key={index}
@@ -201,7 +229,7 @@ export default function TravelPage() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.2, duration: 0.8 }}
-              className="bg-white/10 backdrop-blur-md rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl hover:scale-105 transition-transform cursor-pointer"
+              className="bg-white/10 backdrop-blur-md rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl hover:scale-105 transition-transform cursor-none"
             >
               <Image
                 src={place.img}
@@ -221,10 +249,9 @@ export default function TravelPage() {
         {/* Parallax Showcase */}
         <section className="relative h-[80vh] flex items-center justify-center overflow-hidden">
           <motion.div
-            className="absolute inset-0 bg-cover bg-center"
+            className="absolute inset-0 bg-cover bg-center bg-fixed"
             style={{
-              backgroundImage: "url('/images/nature.jpg')",
-              y: yParallax,
+              backgroundImage: "url('/images/petra.jpg')",
             }}
           />
           <div className="relative z-10 text-center">
@@ -234,32 +261,51 @@ export default function TravelPage() {
         </section>
 
         {/* Testimonials / Why Me */}
-        <section className="max-w-6xl mx-auto px-6 py-24">
-          <h2 className="text-4xl font-bold text-center mb-12 text-orange-400">❤️ {language === "ja" ? "なぜ私？" : language === "zh" ? "为什么选择我？" : "Why Me ?"}</h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            {testimonials[language].map((item, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.2 }}
-                className="bg-white/10 backdrop-blur-md rounded-xl shadow-lg p-6 flex flex-col items-center justify-center text-center"
-              >
-                <div className="text-4xl mb-4">{item.icon}</div>
-                <h4 className="mt-2 font-semibold text-orange-400 text-lg">{item.name}</h4>
-              </motion.div>
-            ))}
+        <section
+          className="relative mx-auto px-6 py-24 overflow-hidden"
+        >
+          {/* Background image */}
+          <div
+            className="absolute inset-0 bg-cover bg-center bg-fixed"
+            style={{
+              backgroundImage: "url('/images/whale.jpg')", // ← change to your image
+              opacity: 0.5, // makes it subtle
+            }}
+          />
+
+          {/* Content */}
+          <div className="relative z-10">
+            <h2 className="text-4xl font-bold text-center mb-12 text-orange-400">
+              ❤️ {language === "ja" ? "なぜ私？" : language === "zh" ? "为什么选择我？" : "Why Me ?"}
+            </h2>
+
+            <div className="grid md:grid-cols-3 gap-8">
+              {testimonials[language].map((item, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.2 }}
+                  className="bg-white/10 backdrop-blur-md rounded-xl shadow-lg p-6 flex flex-col items-center justify-center text-center"
+                >
+                  <div className="text-4xl mb-4">{item.icon}</div>
+                  <h4 className="mt-2 font-semibold text-orange-400 text-lg">
+                    {item.name}
+                  </h4>
+                </motion.div>
+              ))}
+            </div>
           </div>
         </section>
+
 
         {/* Extra Parallax Section */}
         <section className="relative h-[70vh] flex items-center justify-center overflow-hidden">
           <motion.div
-            className="absolute inset-0 bg-cover bg-center"
+            className="absolute inset-0 bg-cover bg-center bg-fixed"
             style={{
-              backgroundImage: "url('/images/adventure.jpg')",
-              y: yParallax,
+              backgroundImage: "url('/images/srilanka.jpg')",
             }}
           />
           <div className="relative z-10 text-center">
@@ -269,37 +315,54 @@ export default function TravelPage() {
         </section>
 
         <LogoShowcase direction="right" />
+        
+
 
         {/* Call to Action */}
-        <section
-          id="cta-section"
-          className="text-center px-6 py-24 bg-gradient-to-r from-cyan-700 to-indigo-800"
-        >
-          <motion.h2
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1 }}
-            className="text-4xl font-extrabold drop-shadow-md text-orange-400"
-          >
-            {ctaTexts[language].title}
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ delay: 0.5, duration: 1 }}
-            className="mt-4 text-lg text-gray-300"
-          >
-            {ctaTexts[language].subtitle}
-          </motion.p>
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-            className="mt-8 px-8 py-4 text-lg font-bold rounded-full bg-orange-400 text-white shadow-lg hover:bg-orange-500 cursor-none"
-          >
-            {ctaTexts[language].button}
-          </motion.button>
-        </section>
+<section
+  id="cta-section"
+  className="relative text-center px-6 py-24 overflow-hidden bg-gradient-to-r from-cyan-700 to-indigo-800"
+>
+  {/* Background image */}
+  <div
+    className="absolute inset-0 bg-cover bg-center bg-fixed"
+    style={{
+      backgroundImage: "url('/images/japan1.jpg')", // <-- replace with your image path
+    }}
+  />
 
+  {/* Optional overlay to keep text readable */}
+  <div className="absolute inset-0 bg-black/40"></div>
+
+  {/* Content */}
+  <div className="relative z-10">
+    <motion.h2
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 1 }}
+      className="text-4xl font-extrabold drop-shadow-md text-orange-400"
+    >
+      {ctaTexts[language].title}
+    </motion.h2>
+    <motion.p
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      transition={{ delay: 0.5, duration: 1 }}
+      className="mt-4 text-lg text-gray-300"
+    >
+      {ctaTexts[language].subtitle}
+    </motion.p>
+    <motion.button
+      whileHover={{ scale: 1.1 }}
+      whileTap={{ scale: 0.95 }}
+      className="mt-8 px-8 py-4 text-lg font-bold rounded-full bg-orange-400 text-white shadow-lg hover:bg-orange-500 cursor-none"
+    >
+      {ctaTexts[language].button}
+    </motion.button>
+  </div>
+</section>
+
+      
         <LogoShowcase direction="left" />
       </div>
 

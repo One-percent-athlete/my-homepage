@@ -53,7 +53,7 @@ export default function FlagCanvasCircle({ scrollY }: FlagCanvasCircleProps) {
     if (!ctx) return;
 
     const images: HTMLImageElement[] = [];
-    const radiusBase = 400;
+    const radiusBase = 250;
     let rotation = 0;
     let animationFrameId: number;
 

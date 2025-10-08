@@ -9,6 +9,11 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 
 export const metadata: Metadata = {
   title: "Ryu | Adventurer & Engineer | Freelance Web Developer",
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/onepercentlogo.png",
+    shortcut: "/favicon.ico",
+  },
   description: "Ryu is a freelance engineer, web app developer, and adventurer who has visited 80+ countries.",
   metadataBase: new URL("https://www.37x.jp/"),
   openGraph: {
