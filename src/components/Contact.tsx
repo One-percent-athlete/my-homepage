@@ -145,7 +145,7 @@ export default function Contact() {
       } else {
         setStatus("error");
       }
-    } catch {
+    } catch (err) {
       setStatus("error");
     }
   };
