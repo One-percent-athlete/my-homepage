@@ -187,7 +187,7 @@ export default function SkiTestimonials({ language }: SkiTestimonialsProps) {
                   className="text-3xl mb-4 text-yellow-400"
                   whileHover={{ scale: 1.1 }}
                 >
-                  "
+                  &ldquo;
                 </motion.div>
 
                 {/* Quote Text */}
