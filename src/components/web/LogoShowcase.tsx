@@ -36,12 +36,7 @@ const coloredLogos = [
   { Icon: SiPostgresql, color: "#336791" },
 ];
 
-
-
-
-
 const LogoShowcase: FC = () => {
-
   const [particles, setParticles] = useState<{ x: number; y: number; size: number; delay: number }[]>([]);
 
   useEffect(() => {
@@ -56,13 +51,12 @@ const LogoShowcase: FC = () => {
   }, []);
   
   return (
-    <div className="overflow-hidden w-full py-2 pt-12">
-
-       {/* Floating particles, very subtle */}
+    <div className="overflow-hidden w-full py-2 pt-12 cursor-none">
+      {/* Enhanced Floating particles with better colors */}
       {particles.map((p, i) => (
         <div
           key={i}
-          className="absolute rounded-full bg-yellow-400 opacity-10 blur-sm"
+          className="absolute rounded-full bg-gradient-to-r from-teal-400/30 to-cyan-400/30 opacity-15 blur-[1px]"
           style={{
             width: p.size,
             height: p.size,
@@ -72,32 +66,42 @@ const LogoShowcase: FC = () => {
           }}
         ></div>
       ))}
-      {/* Top row */}
-        <div className="flex animate-marquee gap-8 sm:gap-12 md:gap-16">
-        {Array(4) // repeat logos 4 times for smooth infinite scroll
-            .fill(coloredLogos)
-            .flat()
-            .map(({ Icon, color }, idx) => (
-            <div key={idx} className="flex-shrink-0 w-18 sm:w-14 h-18 sm:h-14 flex items-center justify-center text-4xl">
-                <Icon style={{ color }} />
-            </div>
-        ))}
-        </div>
 
-        {/* Bottom row */}
-        <div className="flex animate-marquee-reverse gap-8 sm:gap-12 md:gap-16">
+      {/* Subtle gradient overlay */}
+      <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent via-teal-500/5 to-transparent" />
+
+      {/* Top row - Enhanced with hover effects */}
+      <div className="flex animate-marquee gap-8 sm:gap-12 md:gap-16 mb-6">
         {Array(4)
-            .fill(coloredLogos)
-            .flat()
-            .map(({ Icon, color }, idx) => (
-            <div key={idx} className="flex-shrink-0 w-18 sm:w-14 h-18 sm:h-14 flex items-center justify-center text-4xl">
-                <Icon style={{ color }} />
+          .fill(coloredLogos)
+          .flat()
+          .map(({ Icon, color }, idx) => (
+            <div 
+              key={idx} 
+              className="flex-shrink-0 w-18 sm:w-14 h-18 sm:h-14 flex items-center justify-center text-4xl transition-all duration-300 hover:scale-110 hover:drop-shadow-lg cursor-none"
+            >
+              <Icon style={{ color }} />
             </div>
-        ))}
-        </div>
+          ))}
+      </div>
+
+      {/* Bottom row - Enhanced with hover effects */}
+      <div className="flex animate-marquee-reverse gap-8 sm:gap-12 md:gap-16">
+        {Array(4)
+          .fill(coloredLogos)
+          .flat()
+          .map(({ Icon, color }, idx) => (
+            <div 
+              key={idx} 
+              className="flex-shrink-0 w-18 sm:w-14 h-18 sm:h-14 flex items-center justify-center text-4xl transition-all duration-300 hover:scale-110 hover:drop-shadow-lg cursor-none"
+            >
+              <Icon style={{ color }} />
+            </div>
+          ))}
+      </div>
 
       <style jsx>{`
-        /* Top row animation */
+        /* Keep original animations exactly the same */
         @keyframes marquee {
           0% { transform: translateX(0%); }
           20% { transform: translateX(-20%); }
@@ -110,7 +114,6 @@ const LogoShowcase: FC = () => {
           100% { transform: translateX(-100%); }
         }
 
-        /* Bottom row animation in opposite direction, starting fully visible */
         @keyframes marquee-reverse {
           0% { transform: translateX(0%); }
           20% { transform: translateX(20%); }
@@ -124,21 +127,33 @@ const LogoShowcase: FC = () => {
         }
 
         @keyframes marquee-reverse {
-            0% { transform: translateX(-50%); } /* start offset to align with top row */
-            100% { transform: translateX(0%); }
-            }
+          0% { transform: translateX(-50%); }
+          100% { transform: translateX(0%); }
+        }
 
-            .animate-marquee {
-            display: flex;
-            width: max-content;
-            animation: marquee 120s linear infinite;
-            }
+        .animate-marquee {
+          display: flex;
+          width: max-content;
+          animation: marquee 120s linear infinite;
+        }
 
-            .animate-marquee-reverse {
-            display: flex;
-            width: max-content;
-            animation: marquee-reverse 90s linear infinite;
-            }
+        .animate-marquee-reverse {
+          display: flex;
+          width: max-content;
+          animation: marquee-reverse 90s linear infinite;
+        }
+
+        /* Enhanced particle animation */
+        @keyframes floatParticle {
+          0%, 100% { 
+            transform: translateY(0px);
+            opacity: 0.1;
+          }
+          50% { 
+            transform: translateY(-15px);
+            opacity: 0.2;
+          }
+        }
       `}</style>
     </div>
   );
