@@ -3,7 +3,6 @@
 import CustomCursor from "@/components/CustomCursor";
 import FloatingButtons from "@/components/FloatingButtons";
 import Footer from "@/components/Footer";
-import { motion } from "framer-motion";
 import { useLanguage } from "@/app/context/LanguageContext";
 
 // Component imports

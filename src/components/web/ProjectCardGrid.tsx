@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, type Variants, AnimatePresence } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { useLanguage } from "@/app/context/LanguageContext";
 import { useState, useRef, useEffect } from "react";
 import { FiExternalLink, FiGithub, FiEye, FiEyeOff } from "react-icons/fi";

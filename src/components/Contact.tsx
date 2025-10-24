@@ -10,7 +10,6 @@ import {
   FaLinkedin,
   FaPhoneAlt,
   FaEnvelope,
-  FaPaperPlane,
 } from "react-icons/fa";
 import CustomCursor from "@/components/CustomCursor";
 import FloatingButtons from "@/components/FloatingButtons";
@@ -155,18 +154,10 @@ export default function Contact() {
     <>
     <section
       id="contact"
-      className="relative min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 pt-24 pb-12 px-6 text-center overflow-hidden text-white"
+      className="relative bg-transparent pt-24 pb-12 px-6 text-center overflow-hidden text-white"
     > 
       <CustomCursor />
       <FloatingButtons />
-      
-      {/* Enhanced Background Elements */}
-      <div className="fixed inset-0 -z-10">
-        {/* Subtle gradient overlays for depth */}
-        <div className="absolute top-0 left-0 w-1/2 h-1/2 bg-gradient-to-br from-yellow-400/5 to-transparent rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-0 w-1/2 h-1/2 bg-gradient-to-tl from-cyan-500/5 to-transparent rounded-full blur-3xl" />
-      </div>
-
       {/* Particles */}
       {particles.map((p, i) => (
         <motion.div
@@ -188,190 +179,136 @@ export default function Contact() {
         />
       ))}
 
-      {/* Enhanced Header Section */}
-      <div className="max-w-6xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: -40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
-        >
-          <motion.h2
-            className="text-5xl sm:text-6xl font-black mb-6 relative z-10 text-yellow-400"
+      {/* Title & Subtitle */}
+      <motion.h2
+        initial={{ opacity: 0, y: -40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        className="text-5xl font-extrabold mb-6 relative z-10 text-yellow-400"
+      >
+        {contactData.title}
+      </motion.h2>
+      <motion.p
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3, duration: 0.8 }}
+        className="text-lg mb-12 text-gray-300 max-w-xl mx-auto relative z-10"
+      >
+        {contactData.subtitle}
+      </motion.p>
+
+      {/* Contacts */}
+      <motion.ul
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.6, duration: 0.8 }}
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-4xl mx-auto mb-12 relative z-10"
+      >
+        {contactData.contacts.map((contact) => (
+          <motion.li
+            key={contact.label}
+            whileHover={{ scale: 1.05, y: -5 }}
+            className="flex flex-col items-center bg-gray-800/80 hover:bg-gray-700/80 rounded-3xl p-6 backdrop-blur-lg transition-all duration-300 hover:ring-4 hover:ring-yellow-400 hover:ring-opacity-50 hover:shadow-[0_0_40px_cyan] sm:hover:scale-105
+              md:border-yellow-400 md:hover:border-yellow-400 md:hover:shadow-[0_0_40px_orange]
+              shadow-[0_0_30px_orange] md:shadow-none border-1 border-yellow-400"
           >
-            {contactData.title}
-          </motion.h2>
+            <span className="text-4xl mb-4 text-yellow-400">
+              {iconMap[contact.icon]}
+            </span>
+            <h3 className="font-bold text-xl mb-2">{contact.label}</h3>
+            <a
+              href={contact.link}
+              className="text-gray-300 hover:text-yellow-400 transition-colors break-words cursor-none"
+            >
+              {contact.value}
+            </a>
+          </motion.li>
+        ))}
+      </motion.ul>
+
+      {/* QR Codes */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.0, duration: 0.8 }}
+        className="flex flex-wrap justify-center gap-10 relative z-10"
+      >
+        {contactData.qrcodes.map((qr) => (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.8 }}
-            className="relative z-10"
+            key={qr.label}
+            whileHover={{ scale: 1.1 }}
+            className="flex flex-col items-center bg-gray-800/80 rounded-3xl p-4 backdrop-blur-lg hover:ring-4 hover:ring-yellow-400 hover:ring-opacity-50 hover:shadow-[0_0_40px_cyan] sm:hover:scale-105
+              md:border-yellow-400 md:hover:border-yellow-400 md:hover:shadow-[0_0_40px_orange]
+              shadow-[0_0_30px_orange] md:shadow-none border-1 border-yellow-400"
           >
-            <p className="text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed mb-4">
-              {contactData.subtitle}
-            </p>
-            <div className="h-1 w-24 bg-gradient-to-r from-yellow-400 to-cyan-400 mx-auto rounded-full" />
+            <Image
+              src={qr.src}
+              alt={`${qr.label} QR code`}
+              className="mb-2 object-cover"
+              width={128}
+              height={128}
+            />
+            <span className="text-gray-300">{qr.label}</span>
           </motion.div>
-        </motion.div>
+        ))}
+      </motion.div>
 
-        {/* Enhanced Contacts Grid */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.6, duration: 0.8 }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16"
+      {/* Contact Form */}
+      <motion.form
+        onSubmit={handleSubmit}
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.2, duration: 0.8 }}
+        className="max-w-xl mx-auto mt-12 p-8 bg-gray-900/80 rounded-3xl backdrop-blur-lg shadow-lg"
+      >
+        <h3 className="text-2xl font-bold mb-6 text-yellow-400">Send a Message</h3>
+
+        <input
+          type="text"
+          placeholder="Your Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="w-full p-4 mb-4 rounded-lg bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+          required
+        />
+        <input
+          type="email"
+          placeholder="Your Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full p-4 mb-4 rounded-lg bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+          required
+        />
+        <input
+          type="tel"
+          placeholder="Your Phone Number"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          className="w-full p-4 mb-4 rounded-lg bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+          required
+        />
+        <textarea
+          placeholder="Your Message"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          className="w-full p-4 mb-4 rounded-lg bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+          rows={6}
+          required
+        ></textarea>
+
+        <button
+          type="submit"
+          className="w-full py-4 px-6 bg-yellow-400 text-black font-bold rounded-full hover:bg-yellow-500 transition-colors shadow-lg cursor-none"
+          disabled={status === "sending"}
         >
-          {contactData.contacts.map((contact) => (
-            <motion.div
-              key={contact.label}
-              whileHover={{ scale: 1.02, y: -2 }}
-              className="flex flex-col items-center bg-gray-800/90 backdrop-blur-xl rounded-2xl p-8 border border-yellow-400/30 transition-all duration-300 hover:border-yellow-400/60 hover:shadow-2xl hover:shadow-yellow-400/20 group"
-            >
-              <div className="text-4xl mb-4 text-yellow-400 group-hover:scale-110 transition-transform duration-300">
-                {iconMap[contact.icon]}
-              </div>
-              <h3 className="font-bold text-xl mb-3 text-white">{contact.label}</h3>
-              <a
-                href={contact.link}
-                className="text-gray-300 hover:text-yellow-400 transition-colors break-words text-center cursor-none group-hover:underline"
-              >
-                {contact.value}
-              </a>
-            </motion.div>
-          ))}
-        </motion.div>
+          {status === "sending" ? "Sending..." : "Send Message"}
+        </button>
 
-        {/* Enhanced QR Codes */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.0, duration: 0.8 }}
-          className="flex flex-wrap justify-center gap-8 mb-16"
-        >
-          {contactData.qrcodes.map((qr) => (
-            <motion.div
-              key={qr.label}
-              whileHover={{ scale: 1.05 }}
-              className="flex flex-col items-center bg-gray-800/90 backdrop-blur-xl rounded-2xl p-6 border border-yellow-400/30 transition-all duration-300 hover:border-yellow-400/60 hover:shadow-2xl hover:shadow-yellow-400/20"
-            >
-              <div className="bg-white rounded-xl p-3 mb-4 shadow-inner">
-                <Image
-                  src={qr.src}
-                  alt={`${qr.label} QR code`}
-                  className="object-cover"
-                  width={120}
-                  height={120}
-                />
-              </div>
-              <span className="text-gray-300 font-medium">{qr.label}</span>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* Enhanced Contact Form */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.2, duration: 0.8 }}
-          className="max-w-xl mx-auto"
-        >
-          <div className="bg-gray-800/90 backdrop-blur-xl rounded-3xl p-8 border border-yellow-400/30 shadow-2xl">
-            <div className="text-center mb-8">
-              <motion.h3 
-                className="text-3xl font-bold mb-2 text-yellow-400"
-                whileHover={{ scale: 1.05 }}
-              >
-                Send a Message
-              </motion.h3>
-              <p className="text-gray-400">Let's start a conversation</p>
-            </div>
-
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <input
-                  type="text"
-                  placeholder="Your Name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full p-4 rounded-xl bg-gray-700/50 border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 transition-all duration-300"
-                  required
-                />
-                <input
-                  type="email"
-                  placeholder="Your Email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full p-4 rounded-xl bg-gray-700/50 border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 transition-all duration-300"
-                  required
-                />
-              </div>
-
-              <input
-                type="tel"
-                placeholder="Your Phone Number"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                className="w-full p-4 rounded-xl bg-gray-700/50 border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 transition-all duration-300"
-                required
-              />
-
-              <textarea
-                placeholder="Your Message"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                className="w-full p-4 rounded-xl bg-gray-700/50 border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 transition-all duration-300 resize-none"
-                rows={6}
-                required
-              ></textarea>
-
-              <motion.button
-                type="submit"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="w-full py-4 px-6 bg-gradient-to-r from-yellow-400 to-yellow-500 text-black font-bold rounded-xl hover:from-yellow-500 hover:to-yellow-600 transition-all duration-300 shadow-lg cursor-none disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
-                disabled={status === "sending"}
-              >
-                {status === "sending" ? (
-                  <>
-                    <motion.div
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                      className="w-5 h-5 border-2 border-black border-t-transparent rounded-full"
-                    />
-                    Sending...
-                  </>
-                ) : (
-                  <>
-                    <FaPaperPlane />
-                    Send Message
-                  </>
-                )}
-              </motion.button>
-
-              {status === "success" && (
-                <motion.p
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="text-green-400 font-semibold text-center p-3 bg-green-400/10 rounded-xl border border-green-400/30"
-                >
-                  Message sent successfully!
-                </motion.p>
-              )}
-              {status === "error" && (
-                <motion.p
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="text-red-400 font-semibold text-center p-3 bg-red-400/10 rounded-xl border border-red-400/30"
-                >
-                  Failed to send message. Try again.
-                </motion.p>
-              )}
-            </form>
-          </div>
-        </motion.div>
-      </div>
-
+        {status === "success" && <p className="mt-4 text-green-400 font-semibold">Message sent successfully!</p>}
+        {status === "error" && <p className="mt-4 text-red-500 font-semibold">Failed to send message. Try again.</p>}
+      </motion.form>
     </section>
-      <Footer /></>
+      <Footer />
+      </>
   );
 }

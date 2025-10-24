@@ -9,7 +9,7 @@ const content = {
     },
     testimonials: [
       { 
-        quote: "Ryu is the best instructor I've ever had. Patient, fun, and helped me finally conquer black runs!", 
+        quote: "Ryu is the best instructor I&quot;ve ever had. Patient, fun, and helped me finally conquer black runs!", 
         author: "Sarah, USA",
         rating: 5
       },

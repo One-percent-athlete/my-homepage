@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import FloatingButtons from "../../components/FloatingButtons";
 import Footer from "@/components/Footer";
 import CustomCursor from "@/components/CustomCursor";
