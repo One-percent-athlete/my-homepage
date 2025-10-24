@@ -90,13 +90,13 @@ export default function Web() {
         {/* Hero Section */}
         <section className="snap-start w-full min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 md:p-8 text-center relative z-10">
           <motion.header
-            className="text-center mb-16 max-w-6xl mx-auto"
+            className="text-center mb-16 max-w-4xl mx-auto"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
             <motion.h1 
-              className="text-5xl sm:text-7xl md:text-8xl font-black text-teal-400 mb-6 tracking-tight leading-tight"
+              className="text-5xl sm:text-6xl md:text-7xl font-black text-teal-400 mb-6 tracking-tight leading-tight"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
