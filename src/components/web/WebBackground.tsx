@@ -134,7 +134,7 @@ const WebBackground = () => {
       }
     }
 
-    function drawConnections(context: CanvasRenderingContext2D, particles: Particle[], width: number, height: number) {
+    function drawConnections(context: CanvasRenderingContext2D, particles: Particle[]) {
       const time = Date.now() * 0.001; // Smooth time for animations
       
       particles.forEach((p, i) => {
@@ -208,7 +208,7 @@ const WebBackground = () => {
       });
 
       // Draw connections
-      drawConnections(context, particles, c.width, c.height);
+      drawConnections(context, particles);
     }
 
     // Initialize and start animation
