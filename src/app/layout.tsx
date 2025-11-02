@@ -50,13 +50,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </Script>
 
         {/* Google Analytics */}
-        <Script async src="https://www.googletagmanager.com/gtag/js?id=G-WQVTT6KTM3" />
+        <Script async src="https://www.googletagmanager.com/gtag/js?id=G-EHNC14Q4CJ" />
         <Script id="ga" strategy="afterInteractive">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', 'G-WQVTT6KTM3');
+            gtag('config', 'G-EHNC14Q4CJ');
           `}
         </Script>
 
