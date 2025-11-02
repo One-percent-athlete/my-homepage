@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import Script from "next/script";
 import FloatingButtons from "@/components/FloatingButtons";
 import Footer from "@/components/Footer";
 import CustomCursor from "@/components/CustomCursor";
@@ -103,7 +104,17 @@ export default function BlogPage() {
     ? sortedPosts.filter((post) => post.category === activeTab)
     : sortedPosts;
   return (
-    <>
+    <>  
+          {/*<!-- Google tag (gtag.js) --> */}
+          <Script async src="https://www.googletagmanager.com/gtag/js?id=G-EHNC14Q4CJ" />
+          <Script id="ga" strategy="afterInteractive">
+            {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-EHNC14Q4CJ');
+            `}
+          </Script>
       <CustomCursor />
       <FloatingButtons />
 

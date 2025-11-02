@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Script from "next/script";
 
 export const metadata: Metadata = {
   title: 'Bridges to a Global Audience | Multilingual Web Development',
@@ -41,5 +42,17 @@ interface WebLayoutProps {
 }
 
 export default function WebLayout({ children }: WebLayoutProps) {
-  return <>{children}</>;
+  return <>
+          {/*<!-- Google tag (gtag.js) --> */}
+          <Script async src="https://www.googletagmanager.com/gtag/js?id=G-EHNC14Q4CJ" />
+          <Script id="ga" strategy="afterInteractive">
+            {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-EHNC14Q4CJ');
+            `}
+          </Script>
+          {children}
+        </>;
 }

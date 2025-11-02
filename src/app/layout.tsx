@@ -49,7 +49,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           `}
         </Script>
 
-        {/* Google Analytics */}
+        {/*<!-- Google tag (gtag.js) --> */}
         <Script async src="https://www.googletagmanager.com/gtag/js?id=G-EHNC14Q4CJ" />
         <Script id="ga" strategy="afterInteractive">
           {`

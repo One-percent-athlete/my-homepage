@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import styles from './Gallery.module.css';
+import Script from "next/script";
 
 // This is a mock data set. In a real-world app, you would
 // fetch this from a database, CMS, or a local data source.
@@ -46,6 +47,18 @@ const artworks = [
 
 export default function GalleryPage() {
   return (
+    <>
+      {/*<!-- Google tag (gtag.js) --> */}
+      <Script async src="https://www.googletagmanager.com/gtag/js?id=G-EHNC14Q4CJ" />
+      <Script id="ga" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-EHNC14Q4CJ');
+        `}
+      </Script>
+    
     <div className={styles.galleryContainer}>
       <header className={styles.galleryHeader}>
         <h1 className={styles.galleryTitle}>The Digital Collection</h1>
@@ -73,5 +86,6 @@ export default function GalleryPage() {
         ))}
       </main>
     </div>
+    </>
   );
 }
