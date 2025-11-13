@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import CustomCursor from "@/components/CustomCursor";
+import Script from "next/script";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,12 +28,12 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Ryu" }],
   creator: "Ryu",
-  metadataBase: new URL("https://www.one-percent-journey.com/"),
+  metadataBase: new URL("https://www.37x.jp/"),
   openGraph: {
     title: "Ryu — Adventurer & Engineer",
     description:
       "Freelance engineer, web app developer, and adventurer. Building modern apps while exploring 80+ countries.",
-    url: "https://www.one-percent-journey.com/",
+    url: "https://www.37x.jp/",
     siteName: "Ryu Portfolio",
     images: [
       {
@@ -54,7 +55,7 @@ export const metadata: Metadata = {
     creator: "@yourtwitterhandle",
   },
   alternates: {
-    canonical: "https://www.one-percent-journey.com/",
+    canonical: "https://www.37x.jp/",
   },
   icons: {
     icon: "/images/favicon.ico",
@@ -70,25 +71,40 @@ export default function RootLayout({
   return (
     <html lang="en" data-scroll-behavior="smooth">
       <head>
+        {/* Google tag (gtag.js) */}
+        <Script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-WQVTT6KTM3"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-WQVTT6KTM3');
+          `}
+        </Script>
+        
         <script type="application/ld+json" dangerouslySetInnerHTML={{
-        __html: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "Person",
-          name: "Ryu",
-          url: "https://www.one-percent-journey.com/",
-          image: "https://www.one-percent-journey.com/images/main.jpg",
-          sameAs: [
-            "https://twitter.com/yourhandle",
-            "https://www.linkedin.com/in/yourhandle",
-            "https://github.com/yourhandle"
-          ],
-          jobTitle: "Freelance Engineer & Web Developer",
-          worksFor: {
-            "@type": "Organization",
-            name: "Self-Employed"
-          }
-        })
-      }} />
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Person",
+            name: "Ryu",
+            url: "https://www.37x.jp/",
+            image: "https://www.37x.jp/images/main.jpg",
+            sameAs: [
+              "https://twitter.com/yourhandle",
+              "https://www.linkedin.com/in/yourhandle",
+              "https://github.com/yourhandle"
+            ],
+            jobTitle: "Freelance Engineer & Web Developer",
+            worksFor: {
+              "@type": "Organization",
+              name: "Self-Employed"
+            }
+          })
+        }} />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
