@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, useTransform, useScroll, useAnimation } from "framer-motion";
 import { useInView } from "framer-motion";
+import Image from 'next/image';
 
 interface QuoteProps {
   data: {
@@ -78,6 +79,10 @@ export default function Quote({ data }: QuoteProps) {
       className="relative py-24 px-6 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-center overflow-hidden"
       onMouseMove={handleMouseMove}
     >
+      <Image src="/images/_test.jpg" alt="Hero Image" className="bg-transparent" width={300} height={300} priority />
+      <Image src="/images/astro_noback.png" alt="Hero Image" className="bg-transparent" width={300} height={300} priority />
+      <Image src="/images/astro_noback2.png" alt="Hero Image" className="bg-transparent" width={500} height={500} priority />
+
       {/* Animated gradient overlay */}
       <motion.div
         className="absolute inset-0 bg-gradient-to-r from-yellow-900 via-pink-900 to-cyan-900 opacity-20"

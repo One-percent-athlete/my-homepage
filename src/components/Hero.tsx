@@ -3,6 +3,7 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 const videos = ["/videos/vid1.mp4", "/videos/vid2.mp4", "/videos/vid3.mp4"];
 
@@ -73,12 +74,14 @@ export default function Hero({ data }: HeroProps) {
         <h1 className="text-5xl md:text-6xl font-extrabold mb-4 text-white">{data.title}</h1>
         <h2 className="text-xl md:text-2xl font-semibold mb-2 text-yellow-300">{data.subtitle}</h2>
         <p className="text-lg md:text-xl mb-6 text-white max-w-xl">{data.description}</p>
-        <a
+        <Link
           href="#contact"
-          className="inline-block mt-4 px-8 py-4 bg-gradient-to-r from-yellow-400 to-yellow-300 text-gray-900 font-bold rounded-2xl shadow-xl hover:scale-105 transition-transform"
+          className="inline-block mt-4 px-8 py-4 bg-gradient-to-r from-yellow-400 to-yellow-300 text-gray-900 font-bold rounded-2xl shadow-xl cursor-none
+          hover:from-white hover:to-white hover:scale-125 hover:shadow-lg
+          transition-all duration-300"
         >
           {data.button}
-        </a>
+        </Link>
       </motion.div>
 
       {/* Right Image Section */}
