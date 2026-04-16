@@ -159,7 +159,7 @@ export default function ButtonSection() {
                 
                 {/* Hover Text - Only shows on hover (desktop) */}
                 <motion.span
-                  className="absolute z-10 text-center text-lg font-bold text-yellow-300 opacity-0"
+                  className="absolute z-10 text-center text-lg font-bold text-black opacity-0"
                   animate={{ 
                     opacity: hoveredButton === service.key ? 1 : 0
                   }}

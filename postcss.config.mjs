@@ -1,5 +1,9 @@
+// postcss.config.mjs - ES Module syntax
 const config = {
-  plugins: ["@tailwindcss/postcss"],
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+  },
 };
 
 export default config;
