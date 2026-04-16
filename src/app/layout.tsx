@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
 import { LanguageProvider } from "./context/LanguageContext";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
@@ -36,17 +35,17 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" data-scroll-behavior="smooth">
+    <html lang="en">
       <head>
-        {/* Google Tag Manager - Head Section */}
+        {/* ✅ Google Tag Manager (only this – it can send to GA4) */}
         <Script
-          id="gtm-head"
+          id="gtm-script"
           strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               (function(w,d,s,l,i){
                 w[l]=w[l]||[];
-                w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});
+                w[l].push({'gtm.start': new Date().getTime(), event:'gtm.js'});
                 var f=d.getElementsByTagName(s)[0],
                 j=d.createElement(s),
                 dl=l!='dataLayer'?'&l='+l:'';
@@ -59,7 +58,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        {/* Google Tag Manager (noscript) */}
+        {/* ✅ GTM Noscript Fallback */}
         <noscript>
           <iframe
             src="https://www.googletagmanager.com/ns.html?id=GTM-P3NZ4WT7"
@@ -69,9 +68,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           />
         </noscript>
 
-        {/* Google Analytics gtag.js - Keep this for direct GA4 tracking */}
-        <Script async src="https://www.googletagmanager.com/gtag/js?id=G-EHNC14Q4CJ" />
-        <Script id="ga" strategy="afterInteractive">
+        {/* ❌ REMOVE this entire GA block if you're using GTM */}
+        {/* If you really need direct GA4, keep it but fix strategy:
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-EHNC14Q4CJ"
+          strategy="afterInteractive"
+        />
+        <Script id="ga4-config" strategy="afterInteractive">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
@@ -79,6 +82,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             gtag('config', 'G-EHNC14Q4CJ');
           `}
         </Script>
+        */}
 
         <LanguageProvider>
           {children}
