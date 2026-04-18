@@ -69,10 +69,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           />
         </noscript>
 
-        {/* ❌ REMOVE this entire GA block if you're using GTM */}
-        {/* If you really need direct GA4, keep it but fix strategy:
+        {/* If you really need direct GA4, keep it but fix strategy: */}
         <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-EHNC14Q4CJ"
+          src="https://www.googletagmanager.com/gtag/js?id=G-WQVTT6KTM3"
           strategy="afterInteractive"
         />
         <Script id="ga4-config" strategy="afterInteractive">
@@ -80,10 +79,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', 'G-EHNC14Q4CJ');
+            gtag('config', 'G-WQVTT6KTM3');
           `}
         </Script>
-        */}
 
         <LanguageProvider>
           {children}
