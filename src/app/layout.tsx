@@ -58,6 +58,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
       </head>
+      <meta name="google-site-verification" content="C0k8OsoXitZWwJedeoF1dNc6Qhwwv1xOrToWZCmZzEw" />
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {/* ✅ GTM Noscript Fallback */}
         <noscript>
