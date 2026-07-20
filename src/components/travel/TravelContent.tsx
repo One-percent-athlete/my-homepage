@@ -2,7 +2,6 @@
 
 import FloatingButtons from "../../components/FloatingButtons";
 import Footer from "@/components/Footer";
-import CustomCursor from "@/components/CustomCursor";
 import { useLanguage } from "@/app/context/LanguageContext";
 
 // Component imports
@@ -22,10 +21,9 @@ export default function TravelContent({ scrollY }: TravelContentProps) {
 
   return (
     <>
-      <CustomCursor />
       <FloatingButtons />
       
-      <div className="relative min-h-screen bg-gradient-to-br from-gray-950 via-slate-900 to-cyan-950 overflow-hidden">
+      <div className="travel-world relative min-h-screen overflow-hidden">
         {/* Hero Section */}
         <TravelHero scrollY={scrollY} language={language} />
 

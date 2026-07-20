@@ -11,7 +11,6 @@ import {
   FaPhoneAlt,
   FaEnvelope,
 } from "react-icons/fa";
-import CustomCursor from "@/components/CustomCursor";
 import FloatingButtons from "@/components/FloatingButtons";
 import Footer from "@/components/Footer";
 
@@ -155,9 +154,8 @@ export default function Contact() {
     <>
     <section
       id="contact"
-      className="relative bg-transparent pt-24 pb-12 px-6 text-center overflow-hidden text-white"
+      className="contact-world relative pt-24 pb-12 px-6 text-center overflow-hidden text-white"
     > 
-      <CustomCursor />
       <FloatingButtons />
       {/* Particles */}
       {particles.map((p, i) => (

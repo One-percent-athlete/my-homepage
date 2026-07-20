@@ -1,4 +1,3 @@
-import CustomCursor from "@/components/CustomCursor";
 import FloatingButtons from "@/components/FloatingButtons";
 import { notFound } from "next/navigation";
 import Image from "next/image";
@@ -52,14 +51,14 @@ export default async function BlogPostPage({
 
   return (
     <>
-      <CustomCursor />
       <FloatingButtons />
-      <article className="relative bg-gradient-to-b from-gray-900 via-purple-950 to-black text-white min-h-screen pt-20 pb-32 px-6">
+      <article className="journal-entry relative text-white min-h-screen pt-20 pb-32 px-6">
         {/* Background overlay */}
         <div className="absolute inset-0 bg-[url('/images/blog-bg.jpg')] bg-cover bg-center opacity-20" />
 
         <div className="relative z-10 max-w-4xl mx-auto">
-          <h1 className="text-5xl font-extrabold mb-6 text-center bg-gradient-to-r from-orange-400 to-pink-500 bg-clip-text text-transparent cursor-none">
+          <p className="journal-entry-kicker">DECODED FIELD NOTE</p>
+          <h1 className="text-5xl font-extrabold mb-6 text-center">
             {post.title}
           </h1>
 
@@ -69,7 +68,7 @@ export default async function BlogPostPage({
               alt={post.title}
               width={1200}
               height={600}
-              className="rounded-2xl shadow-2xl mb-10 w-full object-cover"
+              className="journal-entry-cover shadow-2xl mb-10 w-full object-cover"
             />
           )}
 
@@ -80,7 +79,7 @@ export default async function BlogPostPage({
           <div className="mt-12 text-center">
             <Link
               href="/blog"
-              className="inline-block px-8 py-4 text-lg font-semibold rounded-full bg-orange-500 hover:bg-orange-600 text-white shadow-lg transition-transform transform hover:scale-105 cursor-none"
+              className="journal-entry-back inline-block px-8 py-4 text-lg font-semibold text-white shadow-lg transition-transform transform hover:scale-105"
             >
               ← Back to Blog
             </Link>

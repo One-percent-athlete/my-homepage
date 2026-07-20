@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowDownRight, ArrowUpRight, Code2, Compass, Globe2, Menu, MountainSnow, Radio, X } from "lucide-react";
+import FloatingButtons from "@/components/FloatingButtons";
 
 const missions = [
   {
@@ -67,6 +68,7 @@ export default function Home() {
 
   return (
     <main className="mission-site">
+      <FloatingButtons />
       <div className="star-field" aria-hidden="true" />
       <header className="mission-nav">
         <Link href="/" className="wordmark" aria-label="Ryu home"><span>R</span> RYU / 37°N</Link>

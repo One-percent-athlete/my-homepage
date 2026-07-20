@@ -1,6 +1,5 @@
 "use client";
 
-import CustomCursor from "@/components/CustomCursor";
 import FloatingButtons from "@/components/FloatingButtons";
 import Footer from "@/components/Footer";
 import { useLanguage } from "@/app/context/LanguageContext";
@@ -19,8 +18,7 @@ export default function SkiContent() {
 
   return (
     <>
-      <CustomCursor />
-      <div className="min-h-screen text-gray-800">
+      <div className="ski-world min-h-screen text-gray-800">
         {/* Rich Depth Background */}
         <div className="fixed inset-0 -z-10">
           {/* Base Gradient */}
