@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { BookOpen, Code2, Compass, Contact, Globe2, Home, Images, Languages, MountainSnow, X } from "lucide-react";
+import { BookOpen, Code2, Compass, Contact, Globe2, Home, Images, Languages, MountainSnow, Orbit, X } from "lucide-react";
 import { useLanguage } from "@/app/context/LanguageContext";
+import { getFragments } from "@/lib/exploration";
 
 const worlds = [
   { href: "/", label: "Base", icon: Home, color: "#c8ff42" },
@@ -15,13 +16,16 @@ const worlds = [
   { href: "/gallery", label: "Archive", icon: Images, color: "#ffcf6a" },
   { href: "/contact", label: "Signal", icon: Contact, color: "#c8ff42" },
 ];
+const hiddenWorld = { href: "/between", label: "The Between", icon: Orbit, color: "#ff67d4" };
 
 export default function FloatingButtons() {
   const pathname = usePathname();
   const { language, setLanguage } = useLanguage();
   const [expanded, setExpanded] = useState(false);
   const [visited, setVisited] = useState<string[]>([]);
-  const current = worlds.find((world) => pathname === world.href || (world.href !== "/" && pathname.startsWith(`${world.href}/`))) ?? worlds[0];
+  const [fragmentCount,setFragmentCount]=useState(0);
+  const availableWorlds = fragmentCount >= 3 || pathname === "/between" ? [...worlds, hiddenWorld] : worlds;
+  const current = availableWorlds.find((world) => pathname === world.href || (world.href !== "/" && pathname.startsWith(`${world.href}/`))) ?? worlds[0];
 
   useEffect(() => {
     try {
@@ -35,18 +39,24 @@ export default function FloatingButtons() {
     }
   }, [current.href]);
 
+  useEffect(()=>{
+    const refresh=()=>setFragmentCount(getFragments().length);
+    refresh();window.addEventListener("ryu-progress",refresh);window.addEventListener("storage",refresh);
+    return()=>{window.removeEventListener("ryu-progress",refresh);window.removeEventListener("storage",refresh)};
+  },[]);
+
   return (
     <aside className={expanded ? "world-dock expanded" : "world-dock"} aria-label="Explore Ryu's worlds">
       <button className="dock-trigger" onClick={() => setExpanded(!expanded)} aria-expanded={expanded} aria-label={expanded ? "Close world navigator" : "Open world navigator"} style={{ "--dock-accent": current.color } as React.CSSProperties}>
         {expanded ? <X size={20} /> : <Compass size={20} />}
         <span>{expanded ? "Close map" : current.label}</span>
-        {!expanded && <b>{visited.length}/{worlds.length}</b>}
+        {!expanded && <b>{fragmentCount < 3 && fragmentCount > 0 ? `${fragmentCount}F` : `${visited.length}/${availableWorlds.length}`}</b>}
       </button>
 
       <div className="dock-panel">
-        <div className="dock-heading"><span>WORLD NAVIGATOR</span><small>{visited.length === worlds.length ? "ALL WORLDS DISCOVERED" : `${visited.length} OF ${worlds.length} DISCOVERED`}</small></div>
+        <div className="dock-heading"><span>{fragmentCount > 0 && fragmentCount < 3 ? "ANOMALOUS SIGNAL DETECTED" : "WORLD NAVIGATOR"}</span><small>{fragmentCount > 0 && fragmentCount < 3 ? `${fragmentCount} OF 3 FRAGMENTS RECOVERED` : visited.length === availableWorlds.length ? "ALL WORLDS DISCOVERED" : `${visited.length} OF ${availableWorlds.length} DISCOVERED`}</small></div>
         <nav className="dock-tabs">
-          {worlds.map((world) => {
+          {availableWorlds.map((world) => {
             const Icon = world.icon;
             const active = current.href === world.href;
             const found = visited.includes(world.href);

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { posts } from "@/db/schema";
+import { ADMIN_COOKIE, verifyAdminSession } from "@/lib/admin-auth";
 
 export async function GET() {
   const allPosts = await db.select().from(posts).orderBy(posts.createdAt);
@@ -10,7 +11,9 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     const token = req.headers.get("authorization")?.replace(/^Bearer\s+/i, "");
-    if (!process.env.BLOG_ADMIN_TOKEN || token !== process.env.BLOG_ADMIN_TOKEN) {
+    const cookieAuthorized = await verifyAdminSession(req.cookies.get(ADMIN_COOKIE)?.value);
+    const legacyAuthorized = Boolean(process.env.BLOG_ADMIN_TOKEN && token === process.env.BLOG_ADMIN_TOKEN);
+    if (!cookieAuthorized && !legacyAuthorized) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     const { title, slug, content, coverImage, videoUrl, category } = await req.json();
