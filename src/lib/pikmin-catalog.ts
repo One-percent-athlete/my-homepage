@@ -18,6 +18,7 @@ export const STANDARD_PIKMIN_SETS: SetDefinition[] = [
   {category:"Bakery",decor:"Baguette",colors:PIKMIN_COLORS},{category:"Bakery",decor:"Baguette (Rare)",colors:classic},{category:"Hair Salon",decor:"Scissors",colors:classic},{category:"Hair Salon",decor:"Scissors (Rare)",colors:classic},
   {category:"Clothes Store",decor:"Hair Tie",colors:classic},{category:"Park",decor:"Clover",colors:PIKMIN_COLORS},{category:"Park",decor:"Four-Leaf Clover",colors:PIKMIN_COLORS},{category:"Park",decor:"Clover (Rare)",colors:PIKMIN_COLORS},{category:"Park",decor:"Four-Leaf Clover (Rare)",colors:PIKMIN_COLORS},
   {category:"Library & Bookstore",decor:"Tiny Book",colors:classic},{category:"Sushi Restaurant",decor:"Sushi",colors:classic},{category:"Mountain",decor:"Mountain Pin Badge",colors:classic},
+  {category:"Rainy Day",decor:"Leaf Hat 1",colors:["Blue"]},{category:"Rainy Day",decor:"Leaf Hat 2",colors:["Blue"]},{category:"Rainy Day",decor:"Leaf Hat 3",colors:["Blue"]},
   {category:"Stadium",decor:"Ball Keychain",colors:classic},{category:"Stadium",decor:"Ball Keychain (Rare)",colors:classic},
   {category:"Theme Park",decor:"Ferris Wheel Ticket",colors:rgb},{category:"Theme Park",decor:"Pirate Ship Ticket",colors:rgb},{category:"Bus Stop",decor:"Bus Papercraft",colors:classic},
   {category:"Italian Restaurant",decor:"Pizza",colors:classic},{category:"Italian Restaurant",decor:"Pasta",colors:classic},{category:"Ramen Restaurant",decor:"Ramen Keychain",colors:classic},
