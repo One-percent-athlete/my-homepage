@@ -124,6 +124,7 @@ export default function Contact() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [message, setMessage] = useState("");
+  const [website, setWebsite] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -134,7 +135,7 @@ export default function Contact() {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, phone, message }),
+        body: JSON.stringify({ name, email, phone, message, website }),
       });
 
       if (res.ok) {
@@ -145,7 +146,7 @@ export default function Contact() {
       } else {
         setStatus("error");
       }
-    } catch (err) {
+    } catch {
       setStatus("error");
     }
   };
@@ -262,6 +263,10 @@ export default function Contact() {
         className="max-w-xl mx-auto mt-12 p-8 bg-gray-900/80 rounded-3xl backdrop-blur-lg shadow-lg"
       >
         <h3 className="text-2xl font-bold mb-6 text-yellow-400">Send a Message</h3>
+        <div className="absolute -left-[10000px]" aria-hidden="true">
+          <label htmlFor="website">Website</label>
+          <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" value={website} onChange={(e) => setWebsite(e.target.value)} />
+        </div>
 
         <input
           type="text"

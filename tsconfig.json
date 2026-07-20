@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2017",
-    "jsx": "react-jsx", // Important for React 17+ with Next.js
+    "jsx": "preserve", // Important for React 17+ with Next.js
     "types": [
       "react",
       "node"

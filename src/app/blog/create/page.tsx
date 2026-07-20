@@ -27,6 +27,7 @@ export default function CreatePostPage() {
   const [newTag, setNewTag] = useState("");
   const [category, setCategory] = useState<CategoryType>("TECH_BUSINESS"); // default category
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [adminToken, setAdminToken] = useState("");
 
   const handleAddTag = () => {
     if (newTag && !tags.includes(newTag)) {
@@ -42,7 +43,10 @@ export default function CreatePostPage() {
     try {
       const res = await fetch("/api/blog", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${adminToken}`,
+        },
         body: JSON.stringify({
           title,
           slug,
@@ -75,6 +79,18 @@ export default function CreatePostPage() {
       </h1>
 
       <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block font-semibold mb-1" htmlFor="admin-token">Admin publishing key</label>
+          <input
+            id="admin-token"
+            type="password"
+            value={adminToken}
+            onChange={(e) => setAdminToken(e.target.value)}
+            className="w-full border border-gray-300 rounded-md p-2 bg-black"
+            autoComplete="current-password"
+            required
+          />
+        </div>
         {/* Title */}
         <div>
           <label className="block font-semibold mb-1">Title</label>
