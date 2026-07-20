@@ -62,15 +62,17 @@ export default async function BlogPostPage({
             {post.title}
           </h1>
 
-          {post.coverImage && (
+          <figure className="journal-entry-figure">
             <Image
-              src={post.coverImage}
-              alt={post.title}
+              src={post.coverImage || "/images/astro.jpg"}
+              alt={`Cover image for ${post.title}`}
               width={1200}
-              height={600}
-              className="journal-entry-cover shadow-2xl mb-10 w-full object-cover"
+              height={675}
+              priority
+              className="journal-entry-cover shadow-2xl w-full object-cover"
             />
-          )}
+            <figcaption>FIELD IMAGE / {post.category?.replaceAll("_", " ") || "JOURNAL ARCHIVE"}</figcaption>
+          </figure>
 
           <div className="prose prose-invert prose-lg max-w-none leading-relaxed text-gray-200">
             <p>{post.content}</p>
