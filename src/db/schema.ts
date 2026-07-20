@@ -1,4 +1,4 @@
-import { pgTable, uuid, serial, text, varchar, timestamp } from "drizzle-orm/pg-core";
+import { boolean, pgTable, uuid, serial, text, uniqueIndex, varchar, timestamp } from "drizzle-orm/pg-core";
 
 // Posts table (already exists)
 export const posts = pgTable("posts", {
@@ -28,3 +28,14 @@ export const contacts = pgTable("contacts", {
   message: text("message").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
+
+export const pikminDecorItems = pgTable("pikmin_decor_items", {
+  id: serial("id").primaryKey(),
+  category: varchar("category", { length: 120 }).notNull(),
+  decor: varchar("decor", { length: 160 }).notNull(),
+  color: varchar("color", { length: 20 }).notNull(),
+  owned: boolean("owned").default(false).notNull(),
+  event: boolean("event").default(false).notNull(),
+  active: boolean("active").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => [uniqueIndex("pikmin_decor_identity").on(table.category, table.decor, table.color)]);

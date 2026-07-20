@@ -17,6 +17,14 @@ const worlds = [
   { href: "/contact", label: "Signal", icon: Contact, color: "#c8ff42" },
 ];
 const hiddenWorld = { href: "/between", label: "The Between", icon: Orbit, color: "#ff67d4" };
+const worldLabels: Record<string, Record<"en" | "ja" | "zh", string>> = {
+  "/": { en: "Base", ja: "基地", zh: "基地" }, "/web": { en: "Build", ja: "開発", zh: "开发" }, "/travel": { en: "Explore", ja: "旅", zh: "探索" }, "/ski": { en: "Summit", ja: "雪山", zh: "雪山" }, "/blog": { en: "Journal", ja: "記録", zh: "日志" }, "/gallery": { en: "Archive", ja: "写真", zh: "影像" }, "/contact": { en: "Signal", ja: "通信", zh: "联络" }, "/between": { en: "The Between", ja: "狭間", zh: "间界" },
+};
+const dockCopy = {
+  en: { close: "Close map", navigator: "World navigator", anomaly: "Anomalous signal detected", fragments: "fragments recovered", current: "Current", visited: "Visited", unknown: "Unknown", signal: "Signal language" },
+  ja: { close: "マップを閉じる", navigator: "ワールドナビ", anomaly: "未知の信号を検出", fragments: "個の断片を回収", current: "現在地", visited: "訪問済み", unknown: "未発見", signal: "表示言語" },
+  zh: { close: "关闭地图", navigator: "世界导航", anomaly: "检测到异常信号", fragments: "个碎片已回收", current: "当前", visited: "已访问", unknown: "未知", signal: "显示语言" },
+};
 
 export default function FloatingButtons() {
   const pathname = usePathname();
@@ -26,6 +34,7 @@ export default function FloatingButtons() {
   const [fragmentCount,setFragmentCount]=useState(0);
   const availableWorlds = fragmentCount >= 3 || pathname === "/between" ? [...worlds, hiddenWorld] : worlds;
   const current = availableWorlds.find((world) => pathname === world.href || (world.href !== "/" && pathname.startsWith(`${world.href}/`))) ?? worlds[0];
+  const copy = dockCopy[language];
 
   useEffect(() => {
     try {
@@ -49,12 +58,12 @@ export default function FloatingButtons() {
     <aside className={expanded ? "world-dock expanded" : "world-dock"} aria-label="Explore Ryu's worlds">
       <button className="dock-trigger" onClick={() => setExpanded(!expanded)} aria-expanded={expanded} aria-label={expanded ? "Close world navigator" : "Open world navigator"} style={{ "--dock-accent": current.color } as React.CSSProperties}>
         {expanded ? <X size={20} /> : <Compass size={20} />}
-        <span>{expanded ? "Close map" : current.label}</span>
+        <span>{expanded ? copy.close : worldLabels[current.href][language]}</span>
         {!expanded && <b>{fragmentCount < 3 && fragmentCount > 0 ? `${fragmentCount}F` : `${visited.length}/${availableWorlds.length}`}</b>}
       </button>
 
       <div className="dock-panel">
-        <div className="dock-heading"><span>{fragmentCount > 0 && fragmentCount < 3 ? "ANOMALOUS SIGNAL DETECTED" : "WORLD NAVIGATOR"}</span><small>{fragmentCount > 0 && fragmentCount < 3 ? `${fragmentCount} OF 3 FRAGMENTS RECOVERED` : visited.length === availableWorlds.length ? "ALL WORLDS DISCOVERED" : `${visited.length} OF ${availableWorlds.length} DISCOVERED`}</small></div>
+        <div className="dock-heading"><span>{fragmentCount > 0 && fragmentCount < 3 ? copy.anomaly : copy.navigator}</span><small>{fragmentCount > 0 && fragmentCount < 3 ? `${fragmentCount}/3 ${copy.fragments}` : `${visited.length}/${availableWorlds.length}`}</small></div>
         <nav className="dock-tabs">
           {availableWorlds.map((world) => {
             const Icon = world.icon;
@@ -63,13 +72,13 @@ export default function FloatingButtons() {
             return (
               <Link key={world.href} href={world.href} onClick={() => setExpanded(false)} className={active ? "active" : ""} style={{ "--dock-accent": world.color } as React.CSSProperties} aria-current={active ? "page" : undefined}>
                 <span className="dock-icon"><Icon size={19} />{found && <i />}</span>
-                <strong>{world.label}</strong>
-                <small>{active ? "CURRENT" : found ? "VISITED" : "UNKNOWN"}</small>
+                <strong>{worldLabels[world.href][language]}</strong>
+                <small>{active ? copy.current : found ? copy.visited : copy.unknown}</small>
               </Link>
             );
           })}
         </nav>
-        <div className="dock-languages"><Languages size={16} /><span>Signal language</span>{(["en", "ja", "zh"] as const).map((lang) => <button key={lang} className={language === lang ? "active" : ""} onClick={() => setLanguage(lang)}>{lang.toUpperCase()}</button>)}</div>
+        <div className="dock-languages"><Languages size={16} /><span>{copy.signal}</span>{(["en", "ja", "zh"] as const).map((lang) => <button key={lang} className={language === lang ? "active" : ""} onClick={() => setLanguage(lang)}>{lang.toUpperCase()}</button>)}</div>
       </div>
     </aside>
   );

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowDownRight, ArrowUpRight, Code2, Compass, Globe2, Menu, MountainSnow, Radio, X } from "lucide-react";
 import FloatingButtons from "@/components/FloatingButtons";
+import { useLanguage } from "@/app/context/LanguageContext";
 
 const missions = [
   {
@@ -40,8 +41,15 @@ const missions = [
 ];
 
 const capabilities = ["Product strategy", "UI / UX systems", "Next.js & React", "Full-stack development", "Multilingual experiences", "Storytelling", "Global perspective", "Ski instruction"];
+const homeCopy = {
+  en: { eyebrow:"Independent builder · Global explorer · Based in Japan", line1:"I build digital worlds.", line2:"Then I explore the real one.", intro:"I’m Ryu—an engineer, creator and adventurer turning ambitious ideas into experiences people remember.", begin:"Begin the expedition", contact:"Have a mission for me?", route:"Choose your route", worlds:"Three worlds. One way of thinking." },
+  ja: { eyebrow:"独立系エンジニア · 世界を旅する探究者 · 日本拠点", line1:"デジタルの世界を創り、", line2:"現実の世界を旅する。", intro:"Ryuです。エンジニア、クリエイター、冒険家として、アイデアを記憶に残る体験へ変えています。", begin:"探検を始める", contact:"一緒に挑戦しませんか？", route:"ルートを選ぶ", worlds:"三つの世界。一つの思考。" },
+  zh: { eyebrow:"独立开发者 · 全球探索者 · 常驻日本", line1:"我创造数字世界，", line2:"也探索真实世界。", intro:"我是 Ryu——工程师、创作者与冒险者，把大胆的想法变成人们记得住的体验。", begin:"开始探索", contact:"有任务想和我聊吗？", route:"选择路线", worlds:"三个世界。一种思考方式。" },
+};
 
 export default function Home() {
+  const { language } = useLanguage();
+  const t = homeCopy[language];
   const [menuOpen, setMenuOpen] = useState(false);
   const [discovered, setDiscovered] = useState<string[]>([]);
 
@@ -86,12 +94,12 @@ export default function Home() {
       <section className="mission-hero" id="about">
         <div className="hero-orbit" aria-hidden="true"><span /><span /><span /></div>
         <div className="hero-copy">
-          <p className="eyebrow"><span className="live-dot" /> Independent builder · Global explorer · Based in Japan</p>
-          <h1>I build digital worlds.<br /><em>Then I explore the real one.</em></h1>
-          <p className="hero-intro">I’m Ryu—an engineer, creator and adventurer turning ambitious ideas into experiences people remember.</p>
+          <p className="eyebrow"><span className="live-dot" /> {t.eyebrow}</p>
+          <h1>{t.line1}<br /><em>{t.line2}</em></h1>
+          <p className="hero-intro">{t.intro}</p>
           <div className="hero-actions">
-            <a href="#missions" className="primary-action">Begin the expedition <ArrowDownRight size={18} /></a>
-            <Link href="/contact" className="text-action">Have a mission for me? <ArrowUpRight size={17} /></Link>
+            <a href="#missions" className="primary-action">{t.begin} <ArrowDownRight size={18} /></a>
+            <Link href="/contact" className="text-action">{t.contact} <ArrowUpRight size={17} /></Link>
           </div>
         </div>
         <div className="hero-portrait">
@@ -113,7 +121,7 @@ export default function Home() {
 
       <section className="missions-section" id="missions">
         <div className="section-heading">
-          <div><p className="eyebrow">Choose your route</p><h2>Three worlds.<br />One way of thinking.</h2></div>
+          <div><p className="eyebrow">{t.route}</p><h2>{t.worlds}</h2></div>
           <p>Every discipline teaches the others: engineering brings structure, travel brings perspective, and the mountain demands clarity.</p>
         </div>
         <div className="mission-grid">

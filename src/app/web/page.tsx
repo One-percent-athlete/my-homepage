@@ -11,14 +11,17 @@ import SkillCardGrid from "@/components/web/SkillCardGrid";
 import ProjectCardGrid from "@/components/web/ProjectCardGrid";
 import Footer from "@/components/Footer";
 import { recordWorldStep } from "@/lib/exploration";
+import { useLanguage } from "@/app/context/LanguageContext";
 
 const modes = [
   { id: "strategy", label: "01 / Think", icon: Sparkles, title: "Find the signal", copy: "Clarify the real problem, the audience and the smallest valuable version worth building.", output: ["problem: identified", "audience: mapped", "direction: aligned"] },
   { id: "design", label: "02 / Shape", icon: Layers3, title: "Design the system", copy: "Turn the idea into a distinctive interface with a practical, reusable interaction system.", output: ["flows: simplified", "interface: prototyped", "experience: memorable"] },
   { id: "build", label: "03 / Launch", icon: Braces, title: "Ship the product", copy: "Build a fast, secure product and keep refining it with evidence from real people.", output: ["frontend: responsive", "backend: connected", "status: ready to launch"] },
 ];
+const webCopy={en:{kicker:"WORLD 01 · THE BUILD LAB",line1:"Ideas enter.",line2:"Working products leave.",intro:"I design and build digital experiences that make complicated things feel clear, useful and unexpectedly fun.",start:"Start a build",run:"Run the system"},ja:{kicker:"WORLD 01 · 開発ラボ",line1:"アイデアが入り、",line2:"動くプロダクトが生まれる。",intro:"複雑なものを分かりやすく、便利で、少し驚きのあるデジタル体験へ設計・開発します。",start:"開発を相談する",run:"システムを起動"},zh:{kicker:"WORLD 01 · 开发实验室",line1:"想法进入，",line2:"产品诞生。",intro:"我设计并开发数字体验，让复杂的事情变得清晰、实用，而且充满惊喜。",start:"开始合作",run:"启动系统"}};
 
 export default function Web() {
+  const {language}=useLanguage();const t=webCopy[language];
   const [activeMode, setActiveMode] = useState(0);
   const mode = modes[activeMode];
   const Icon = mode.icon;
@@ -31,10 +34,10 @@ export default function Web() {
       <div className="web-world-bg"><WebBackground /></div>
       <section className="web-lab-hero">
         <div className="web-lab-copy">
-          <p className="world-kicker"><span /> WORLD 01 · THE BUILD LAB</p>
-          <h1>Ideas enter.<br /><em>Working products leave.</em></h1>
-          <p>I design and build digital experiences that make complicated things feel clear, useful and unexpectedly fun.</p>
-          <div className="web-lab-actions"><Link href="/contact">Start a build <ArrowUpRight size={18} /></Link><a href="#process">Run the system <ArrowDown size={18} /></a></div>
+          <p className="world-kicker"><span /> {t.kicker}</p>
+          <h1>{t.line1}<br /><em>{t.line2}</em></h1>
+          <p>{t.intro}</p>
+          <div className="web-lab-actions"><Link href="/contact">{t.start} <ArrowUpRight size={18} /></Link><a href="#process">{t.run} <ArrowDown size={18} /></a></div>
         </div>
         <div className="build-console" id="process">
           <div className="build-console-head"><span><i /> RYU_BUILD_SYSTEM</span><small>INTERACTIVE</small></div>
