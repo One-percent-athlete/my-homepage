@@ -150,6 +150,7 @@ export default function Contact() {
         setStatus("success");
         setName("");
         setEmail("");
+        setPhone("");
         setMessage("");
       } else {
         setStatus("error");
@@ -275,7 +276,10 @@ export default function Contact() {
           <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" value={website} onChange={(e) => setWebsite(e.target.value)} />
         </div>
 
+        <label className="sr-only" htmlFor="contact-name">{t.name}</label>
         <input
+          id="contact-name"
+          name="name"
           type="text"
           placeholder={t.name}
           value={name}
@@ -283,7 +287,10 @@ export default function Contact() {
           className="w-full p-4 mb-4 rounded-lg bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400"
           required
         />
+        <label className="sr-only" htmlFor="contact-email">{t.email}</label>
         <input
+          id="contact-email"
+          name="email"
           type="email"
           placeholder={t.email}
           value={email}
@@ -291,7 +298,10 @@ export default function Contact() {
           className="w-full p-4 mb-4 rounded-lg bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400"
           required
         />
+        <label className="sr-only" htmlFor="contact-phone">{t.phonePlaceholder}</label>
         <input
+          id="contact-phone"
+          name="phone"
           type="tel"
           placeholder={t.phonePlaceholder}
           value={phone}
@@ -299,7 +309,10 @@ export default function Contact() {
           className="w-full p-4 mb-4 rounded-lg bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400"
           required
         />
+        <label className="sr-only" htmlFor="contact-message">{t.message}</label>
         <textarea
+          id="contact-message"
+          name="message"
           placeholder={t.message}
           value={message}
           onChange={(e) => setMessage(e.target.value)}
@@ -316,8 +329,10 @@ export default function Contact() {
           {status === "sending" ? t.sending : t.send}
         </button>
 
-        {status === "success" && <p className="mt-4 text-green-400 font-semibold">{t.success}</p>}
-        {status === "error" && <p className="mt-4 text-red-500 font-semibold">{t.error}</p>}
+        <div aria-live="polite">
+          {status === "success" && <p className="mt-4 text-green-400 font-semibold">{t.success}</p>}
+          {status === "error" && <p className="mt-4 text-red-500 font-semibold">{t.error}</p>}
+        </div>
       </motion.form>
     </section>
       <Footer />

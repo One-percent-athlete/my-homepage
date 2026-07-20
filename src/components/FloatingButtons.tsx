@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BookOpen, Code2, Compass, Contact, Globe2, Home, Images, Languages, MountainSnow, Orbit, X } from "lucide-react";
 import { useLanguage } from "@/app/context/LanguageContext";
 import { getFragments } from "@/lib/exploration";
@@ -27,6 +27,7 @@ const dockCopy = {
 };
 
 export default function FloatingButtons() {
+  const dockRef = useRef<HTMLElement>(null);
   const pathname = usePathname();
   const { language, setLanguage } = useLanguage();
   const [expanded, setExpanded] = useState(false);
@@ -54,15 +55,24 @@ export default function FloatingButtons() {
     return()=>{window.removeEventListener("ryu-progress",refresh);window.removeEventListener("storage",refresh)};
   },[]);
 
+  useEffect(() => {
+    if (!expanded) return;
+    const closeOnEscape = (event: KeyboardEvent) => { if (event.key === "Escape") setExpanded(false); };
+    const closeOutside = (event: PointerEvent) => { if (!dockRef.current?.contains(event.target as Node)) setExpanded(false); };
+    document.addEventListener("keydown", closeOnEscape);
+    document.addEventListener("pointerdown", closeOutside);
+    return () => { document.removeEventListener("keydown", closeOnEscape); document.removeEventListener("pointerdown", closeOutside); };
+  }, [expanded]);
+
   return (
-    <aside className={expanded ? "world-dock expanded" : "world-dock"} aria-label="Explore Ryu's worlds">
-      <button className="dock-trigger" onClick={() => setExpanded(!expanded)} aria-expanded={expanded} aria-label={expanded ? "Close world navigator" : "Open world navigator"} style={{ "--dock-accent": current.color } as React.CSSProperties}>
+    <aside ref={dockRef} className={expanded ? "world-dock expanded" : "world-dock"} aria-label={copy.navigator}>
+      <button className="dock-trigger" onClick={() => setExpanded(!expanded)} aria-expanded={expanded} aria-controls="world-navigator-panel" aria-label={expanded ? copy.close : copy.navigator} style={{ "--dock-accent": current.color } as React.CSSProperties}>
         {expanded ? <X size={20} /> : <Compass size={20} />}
         <span>{expanded ? copy.close : worldLabels[current.href][language]}</span>
         {!expanded && <b>{fragmentCount < 3 && fragmentCount > 0 ? `${fragmentCount}F` : `${visited.length}/${availableWorlds.length}`}</b>}
       </button>
 
-      <div className="dock-panel">
+      <div className="dock-panel" id="world-navigator-panel" aria-hidden={!expanded}>
         <div className="dock-heading"><span>{fragmentCount > 0 && fragmentCount < 3 ? copy.anomaly : copy.navigator}</span><small>{fragmentCount > 0 && fragmentCount < 3 ? `${fragmentCount}/3 ${copy.fragments}` : `${visited.length}/${availableWorlds.length}`}</small></div>
         <nav className="dock-tabs">
           {availableWorlds.map((world) => {
