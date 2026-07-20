@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ADMIN_COOKIE, createAdminSession, passwordMatches } from "@/lib/admin-auth";
+import { isSameOrigin } from "@/lib/request-security";
 
 const attempts = new Map<string, { count: number; reset: number }>();
 
 export async function POST(request: NextRequest) {
-  const origin = request.headers.get("origin");
-  if (origin && origin !== request.nextUrl.origin) return NextResponse.json({ error: "Invalid origin" }, { status: 403 });
+  if (!isSameOrigin(request)) return NextResponse.json({ error: "Invalid origin" }, { status: 403 });
 
   const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "local";
   const now = Date.now();

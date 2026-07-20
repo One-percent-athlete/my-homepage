@@ -3,8 +3,7 @@ import { and, asc, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { pikminDecorItems } from "@/db/schema";
 import { expandPikminSets, PIKMIN_COLORS, STANDARD_PIKMIN_SETS } from "@/lib/pikmin-catalog";
-
-const sameOrigin = (request: NextRequest) => !request.headers.get("origin") || request.headers.get("origin") === request.nextUrl.origin;
+import { isSameOrigin } from "@/lib/request-security";
 
 export async function GET() {
   let items = await db.select().from(pikminDecorItems).orderBy(asc(pikminDecorItems.category), asc(pikminDecorItems.decor), asc(pikminDecorItems.id));
@@ -16,15 +15,16 @@ export async function GET() {
 }
 
 export async function PUT(request: NextRequest) {
-  if (!sameOrigin(request)) return NextResponse.json({ error: "Invalid origin" }, { status: 403 });
+  if (!isSameOrigin(request)) return NextResponse.json({ error: "Invalid origin" }, { status: 403 });
   const body = await request.json().catch(() => ({}));
   if (!Number.isInteger(body.id) || typeof body.owned !== "boolean") return NextResponse.json({ error: "Invalid update" }, { status: 400 });
   const [item] = await db.update(pikminDecorItems).set({ owned: body.owned }).where(eq(pikminDecorItems.id, body.id)).returning();
+  if (!item) return NextResponse.json({ error: "Pikmin item not found" }, { status: 404 });
   return NextResponse.json(item);
 }
 
 export async function POST(request: NextRequest) {
-  if (!sameOrigin(request)) return NextResponse.json({ error: "Invalid origin" }, { status: 403 });
+  if (!isSameOrigin(request)) return NextResponse.json({ error: "Invalid origin" }, { status: 403 });
   const body = await request.json().catch(() => ({}));
   const category = typeof body.category === "string" ? body.category.trim() : "";
   const decor = typeof body.decor === "string" ? body.decor.trim() : "";
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
-  if (!sameOrigin(request)) return NextResponse.json({ error: "Invalid origin" }, { status: 403 });
+  if (!isSameOrigin(request)) return NextResponse.json({ error: "Invalid origin" }, { status: 403 });
   const category = request.nextUrl.searchParams.get("category") || "";
   const decor = request.nextUrl.searchParams.get("decor") || "";
   if (!category || !decor) return NextResponse.json({ error: "Category and decor are required" }, { status: 400 });
