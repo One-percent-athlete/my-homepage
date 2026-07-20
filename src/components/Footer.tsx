@@ -11,8 +11,11 @@ import {
   FaPhoneAlt,
 } from "react-icons/fa";
 import { usePathname } from "next/navigation";
+import { useLanguage } from "@/app/context/LanguageContext";
 
 export default function Footer() {
+  const { language } = useLanguage();
+  const footerNote = { en:"Built with love · Powered by Next.js & Tailwind CSS", ja:"心を込めて制作 · Next.js & Tailwind CSS で構築", zh:"用心打造 · 基于 Next.js 与 Tailwind CSS" }[language];
   // Same color themes as FloatingButtons
   const themes = {
     "/": { border: "border-blue-500", text: "text-blue-500", shadow: "shadow-[0_0_10px_rgba(59,130,246,0.5)] hover:shadow-[0_0_20px_rgba(59,130,246,0.7)]" },
@@ -96,7 +99,7 @@ export default function Footer() {
 
       {/* Bottom note */}
       <div className="text-center text-xs sm:text-sm text-gray-400 md:mt-10 relative z-10">
-        Built with ❤️ • Powered by Next.js & Tailwind CSS
+        {footerNote}
       </div>
     </footer>
   );

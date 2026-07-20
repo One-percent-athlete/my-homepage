@@ -72,6 +72,11 @@ interface DestinationsGridProps {
 
 export default function DestinationsGrid({ language }: DestinationsGridProps) {
   const currentDestinations = destinations[language];
+  const ui = {
+    en: { title:"Your Next Journey Awaits", subtitle:"Discover destinations that ignite your wanderlust and create memories that last a lifetime", action:"Explore More" },
+    ja: { title:"次の旅が待っている", subtitle:"旅心に火をつけ、一生残る記憶を生む場所を見つけよう", action:"もっと探索する" },
+    zh: { title:"下一段旅程正在等待", subtitle:"发现能点燃旅行欲望、创造长久回忆的目的地", action:"继续探索" },
+  }[language];
 
   return (
     <section className="max-w-7xl mx-auto px-6 py-24">
@@ -83,11 +88,11 @@ export default function DestinationsGrid({ language }: DestinationsGridProps) {
         className="text-center mb-16"
       >
         <h2 className="text-4xl md:text-5xl font-black text-orange-400 mb-4">
-          🌍 Your Next Journey Awaits
+          🌍 {ui.title}
         </h2>
         <div className="w-24 h-1 bg-gradient-to-r from-orange-400 to-amber-400 mx-auto rounded-full mb-4" />
         <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-          Discover destinations that will ignite your wanderlust and create memories to last a lifetime
+          {ui.subtitle}
         </p>
       </motion.div>
 
@@ -134,7 +139,7 @@ export default function DestinationsGrid({ language }: DestinationsGridProps) {
                 whileTap={{ scale: 0.95 }}
                 className="mt-4 px-6 py-2 bg-orange-500/20 text-orange-300 rounded-full text-sm font-semibold border border-orange-500/30 hover:bg-orange-500/30 transition-all duration-300"
               >
-                Explore More →
+                {ui.action} →
               </motion.button>
             </div>
           </motion.div>

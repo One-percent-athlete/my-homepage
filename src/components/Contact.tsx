@@ -13,6 +13,7 @@ import {
 } from "react-icons/fa";
 import FloatingButtons from "@/components/FloatingButtons";
 import Footer from "@/components/Footer";
+import { useLanguage } from "@/app/context/LanguageContext";
 
 // Map icon strings to React components
 const iconMap = {
@@ -93,7 +94,15 @@ const contactData: {
   ],
 };
 
+const contactCopy = {
+  en: { title:"Get in Touch", subtitle:"Open for freelance projects, collaborations, or just a chat about your next big idea. Reach me through any method below.", phone:"Phone", form:"Send a Message", name:"Your Name", email:"Your Email", phonePlaceholder:"Your Phone Number", message:"Your Message", sending:"Sending...", send:"Send Message", success:"Message sent successfully!", error:"Failed to send message. Try again." },
+  ja: { title:"お問い合わせ", subtitle:"フリーランス案件、コラボレーション、次の大きなアイデアについての相談を歓迎しています。下記の方法から気軽にご連絡ください。", phone:"電話", form:"メッセージを送る", name:"お名前", email:"メールアドレス", phonePlaceholder:"電話番号", message:"メッセージ", sending:"送信中...", send:"送信する", success:"メッセージを送信しました。", error:"送信できませんでした。もう一度お試しください。" },
+  zh: { title:"联系我", subtitle:"欢迎自由职业项目、合作，或聊聊你的下一个大胆想法。可以通过以下任一方式联系我。", phone:"电话", form:"发送消息", name:"姓名", email:"电子邮箱", phonePlaceholder:"电话号码", message:"留言内容", sending:"发送中...", send:"发送消息", success:"消息发送成功！", error:"发送失败，请重试。" },
+};
+
 export default function Contact() {
+  const { language } = useLanguage();
+  const t = contactCopy[language];
   // Particle effect
   type Particle = {
     startX: number;
@@ -185,7 +194,7 @@ export default function Contact() {
         transition={{ duration: 0.8 }}
         className="text-5xl font-extrabold mb-6 relative z-10 text-yellow-400"
       >
-        {contactData.title}
+        {t.title}
       </motion.h2>
       <motion.p
         initial={{ opacity: 0, y: 20 }}
@@ -193,7 +202,7 @@ export default function Contact() {
         transition={{ delay: 0.3, duration: 0.8 }}
         className="text-lg mb-12 text-gray-300 max-w-xl mx-auto relative z-10"
       >
-        {contactData.subtitle}
+        {t.subtitle}
       </motion.p>
 
       {/* Contacts */}
@@ -214,7 +223,7 @@ export default function Contact() {
             <span className="text-4xl mb-4 text-yellow-400">
               {iconMap[contact.icon]}
             </span>
-            <h3 className="font-bold text-xl mb-2">{contact.label}</h3>
+            <h3 className="font-bold text-xl mb-2">{contact.icon === "phone" ? t.phone : contact.label}</h3>
             <a
               href={contact.link}
               className="text-gray-300 hover:text-yellow-400 transition-colors break-words cursor-none"
@@ -260,7 +269,7 @@ export default function Contact() {
         transition={{ delay: 1.2, duration: 0.8 }}
         className="max-w-xl mx-auto mt-12 p-8 bg-gray-900/80 rounded-3xl backdrop-blur-lg shadow-lg"
       >
-        <h3 className="text-2xl font-bold mb-6 text-yellow-400">Send a Message</h3>
+        <h3 className="text-2xl font-bold mb-6 text-yellow-400">{t.form}</h3>
         <div className="absolute -left-[10000px]" aria-hidden="true">
           <label htmlFor="website">Website</label>
           <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" value={website} onChange={(e) => setWebsite(e.target.value)} />
@@ -268,7 +277,7 @@ export default function Contact() {
 
         <input
           type="text"
-          placeholder="Your Name"
+          placeholder={t.name}
           value={name}
           onChange={(e) => setName(e.target.value)}
           className="w-full p-4 mb-4 rounded-lg bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400"
@@ -276,7 +285,7 @@ export default function Contact() {
         />
         <input
           type="email"
-          placeholder="Your Email"
+          placeholder={t.email}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="w-full p-4 mb-4 rounded-lg bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400"
@@ -284,14 +293,14 @@ export default function Contact() {
         />
         <input
           type="tel"
-          placeholder="Your Phone Number"
+          placeholder={t.phonePlaceholder}
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
           className="w-full p-4 mb-4 rounded-lg bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400"
           required
         />
         <textarea
-          placeholder="Your Message"
+          placeholder={t.message}
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           className="w-full p-4 mb-4 rounded-lg bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400"
@@ -304,11 +313,11 @@ export default function Contact() {
           className="w-full py-4 px-6 bg-yellow-400 text-black font-bold rounded-full hover:bg-yellow-500 transition-colors shadow-lg cursor-none"
           disabled={status === "sending"}
         >
-          {status === "sending" ? "Sending..." : "Send Message"}
+          {status === "sending" ? t.sending : t.send}
         </button>
 
-        {status === "success" && <p className="mt-4 text-green-400 font-semibold">Message sent successfully!</p>}
-        {status === "error" && <p className="mt-4 text-red-500 font-semibold">Failed to send message. Try again.</p>}
+        {status === "success" && <p className="mt-4 text-green-400 font-semibold">{t.success}</p>}
+        {status === "error" && <p className="mt-4 text-red-500 font-semibold">{t.error}</p>}
       </motion.form>
     </section>
       <Footer />

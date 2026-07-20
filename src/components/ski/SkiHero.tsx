@@ -1,40 +1,9 @@
 "use client";
-
-import { useEffect, useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { motion } from "framer-motion";
-import { ArrowDown, ArrowUpRight, Gauge, MountainSnow, Wind } from "lucide-react";
-import { recordWorldStep } from "@/lib/exploration";
-
-const runs = [
-  { level:"FIRST TRACKS", title:"Find your balance", copy:"Calm, clear private instruction for first turns and confident foundations.", steep:"18°", pace:"EASY", skill:28 },
-  { level:"ALL MOUNTAIN", title:"Own the whole resort", copy:"Sharper technique, better decisions and more fun across changing terrain.", steep:"32°", pace:"FLOW", skill:62 },
-  { level:"POWDER MODE", title:"Read the mountain", copy:"Guided adventure for experienced skiers chasing deep snow and better lines.", steep:"44°", pace:"WILD", skill:91 },
-];
-const skiCopy={en:{kicker:"WORLD 03 · THE SUMMIT",line1:"Choose your line.",line2:"Trust your edges.",intro:"Private ski coaching and guided mountain days built around your level, your goals, and the feeling you came for.",select:"Select your run"},ja:{kicker:"WORLD 03 · 雪山",line1:"ラインを選び、",line2:"エッジを信じる。",intro:"あなたのレベルと目標、そして求める感覚に合わせたプライベートレッスンと雪山ガイド。",select:"コースを選ぶ"},zh:{kicker:"WORLD 03 · 雪山",line1:"选择路线，",line2:"相信你的雪板。",intro:"根据你的水平、目标和期待，提供私人滑雪教学与雪山向导体验。",select:"选择路线"}};
-
-interface SkiHeroProps { language: "en" | "ja" | "zh"; }
-
-export default function SkiHero({language}: SkiHeroProps) {
-  const [activeRun,setActiveRun]=useState(1);
-  const run=runs[activeRun];
-  const t=skiCopy[language];
-  useEffect(()=>{recordWorldStep("summit",1,runs.length)},[]);
-  const selectRun=(index:number)=>{setActiveRun(index);recordWorldStep("summit",index,runs.length)};
-  return (
-    <header className="ski-game-hero">
-      <Image src="/images/ski.jpg" alt="Mountain ski terrain" fill priority className="ski-fallback" />
-      <video autoPlay muted loop playsInline poster="/images/ski.jpg"><source src="/videos/ski-video2.mp4" type="video/mp4"/></video>
-      <div className="ski-game-shade"/><div className="ski-speed-lines" aria-hidden="true"/>
-      <div className="ski-game-copy"><p className="ski-kicker"><MountainSnow size={15}/> {t.kicker}</p><h1>{t.line1}<br/><em>{t.line2}</em></h1><p>{t.intro}</p><a href="#select-run">{t.select} <ArrowDown size={18}/></a></div>
-      <div className="ski-run-console" id="select-run">
-        <div className="ski-console-head"><span><Gauge size={16}/> RUN SELECT</span><small>CONDITIONS / READY</small></div>
-        <div className="ski-run-tabs">{runs.map((item,index)=><button key={item.level} className={index===activeRun?"active":""} onClick={()=>selectRun(index)}><span>0{index+1}</span>{item.level}</button>)}</div>
-        <motion.div key={run.level} initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} className="ski-run-output"><span>SELECTED EXPERIENCE</span><h2>{run.title}</h2><p>{run.copy}</p><div className="ski-stats"><div><small>SLOPE</small><strong>{run.steep}</strong></div><div><small>PACE</small><strong>{run.pace}</strong></div><div><small>LEVEL</small><strong>{run.skill}%</strong></div></div><div className="ski-level"><i style={{width:`${run.skill}%`}}/></div></motion.div>
-        <Link href="/contact">Book this experience <ArrowUpRight size={17}/></Link>
-      </div>
-      <div className="wind-status"><Wind size={17}/><span>LIVE FEEL</span><strong>CRISP / FAST / ALIVE</strong></div>
-    </header>
-  );
-}
+import { useEffect,useState } from "react";import Image from "next/image";import Link from "next/link";import { motion } from "framer-motion";import { ArrowDown,ArrowUpRight,Gauge,MountainSnow,Wind } from "lucide-react";import { recordWorldStep } from "@/lib/exploration";
+const copy={
+ en:{kicker:"WORLD 03 · THE SUMMIT",line1:"Choose your line.",line2:"Trust your edges.",intro:"Private ski coaching and guided mountain days built around your level, your goals, and the feeling you came for.",select:"Select your run",runSelect:"RUN SELECT",conditions:"CONDITIONS / READY",selected:"SELECTED EXPERIENCE",slope:"SLOPE",pace:"PACE",level:"LEVEL",book:"Book this experience",live:"LIVE FEEL",feel:"CRISP / FAST / ALIVE",runs:[{level:"FIRST TRACKS",title:"Find your balance",copy:"Calm, clear private instruction for first turns and confident foundations.",steep:"18°",pace:"EASY",skill:28},{level:"ALL MOUNTAIN",title:"Own the whole resort",copy:"Sharper technique, better decisions and more fun across changing terrain.",steep:"32°",pace:"FLOW",skill:62},{level:"POWDER MODE",title:"Read the mountain",copy:"Guided adventure for experienced skiers chasing deep snow and better lines.",steep:"44°",pace:"WILD",skill:91}]},
+ ja:{kicker:"WORLD 03 · 雪山",line1:"ラインを選び、",line2:"エッジを信じる。",intro:"あなたのレベルと目標、そして求める感覚に合わせたプライベートレッスンと雪山ガイド。",select:"コースを選ぶ",runSelect:"コース選択",conditions:"コンディション / 良好",selected:"選択中の体験",slope:"斜度",pace:"ペース",level:"レベル",book:"この体験を予約する",live:"現在の感覚",feel:"澄んだ空気 / スピード / 躍動",runs:[{level:"はじめの一歩",title:"バランスを見つける",copy:"初めてのターンと確かな基礎を、落ち着いて分かりやすく個別指導します。",steep:"18°",pace:"やさしい",skill:28},{level:"オールマウンテン",title:"ゲレンデ全体を楽しむ",copy:"変化する地形で技術と判断を磨き、もっと自由に楽しみます。",steep:"32°",pace:"フロー",skill:62},{level:"パウダーモード",title:"山を読む",copy:"深雪とより良いラインを求める経験者向けのガイド体験。",steep:"44°",pace:"ワイルド",skill:91}]},
+ zh:{kicker:"WORLD 03 · 雪山",line1:"选择路线，",line2:"相信你的雪板。",intro:"根据你的水平、目标和期待，提供私人滑雪教学与雪山向导体验。",select:"选择路线",runSelect:"路线选择",conditions:"雪况 / 就绪",selected:"已选体验",slope:"坡度",pace:"节奏",level:"等级",book:"预约这项体验",live:"实时感受",feel:"清冽 / 快速 / 鲜活",runs:[{level:"初次雪道",title:"找到平衡",copy:"以平静清晰的一对一教学，练习第一个转弯并建立信心。",steep:"18°",pace:"轻松",skill:28},{level:"全山模式",title:"掌握整座雪场",copy:"在变化地形中提升技术与判断，让滑行更有乐趣。",steep:"32°",pace:"流畅",skill:62},{level:"粉雪模式",title:"读懂雪山",copy:"为追逐深雪与更好路线的经验滑雪者提供向导体验。",steep:"44°",pace:"狂野",skill:91}]}
+};
+interface SkiHeroProps{language:"en"|"ja"|"zh"}
+export default function SkiHero({language}:SkiHeroProps){const [activeRun,setActiveRun]=useState(1);const t=copy[language];const run=t.runs[activeRun];useEffect(()=>{recordWorldStep("summit",1,t.runs.length)},[t.runs.length]);const selectRun=(index:number)=>{setActiveRun(index);recordWorldStep("summit",index,t.runs.length)};return <header className="ski-game-hero"><Image src="/images/ski.jpg" alt="Mountain ski terrain" fill priority className="ski-fallback"/><video autoPlay muted loop playsInline poster="/images/ski.jpg"><source src="/videos/ski-video2.mp4" type="video/mp4"/></video><div className="ski-game-shade"/><div className="ski-speed-lines" aria-hidden="true"/><div className="ski-game-copy"><p className="ski-kicker"><MountainSnow size={15}/> {t.kicker}</p><h1>{t.line1}<br/><em>{t.line2}</em></h1><p>{t.intro}</p><a href="#select-run">{t.select} <ArrowDown size={18}/></a></div><div className="ski-run-console" id="select-run"><div className="ski-console-head"><span><Gauge size={16}/> {t.runSelect}</span><small>{t.conditions}</small></div><div className="ski-run-tabs">{t.runs.map((item,index)=><button key={item.level} className={index===activeRun?"active":""} onClick={()=>selectRun(index)}><span>0{index+1}</span>{item.level}</button>)}</div><motion.div key={`${language}-${run.level}`} initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} className="ski-run-output"><span>{t.selected}</span><h2>{run.title}</h2><p>{run.copy}</p><div className="ski-stats"><div><small>{t.slope}</small><strong>{run.steep}</strong></div><div><small>{t.pace}</small><strong>{run.pace}</strong></div><div><small>{t.level}</small><strong>{run.skill}%</strong></div></div><div className="ski-level"><i style={{width:`${run.skill}%`}}/></div></motion.div><Link href="/contact">{t.book} <ArrowUpRight size={17}/></Link></div><div className="wind-status"><Wind size={17}/><span>{t.live}</span><strong>{t.feel}</strong></div></header>}

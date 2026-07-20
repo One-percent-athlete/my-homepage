@@ -250,6 +250,11 @@ export default function ProjectCardGrid({
 }: ProjectCardGridProps) {
   const { language } = useLanguage();
   const currentProjects = projects[language];
+  const ui = {
+    en:{live:"Live Demo",code:"Code",details:"Project Details",description:"Description",stack:"Technology Stack",category:"Category",status:"Status",view:"View Project",source:"Source Code"},
+    ja:{live:"デモを見る",code:"コード",details:"プロジェクト詳細",description:"説明",stack:"使用技術",category:"カテゴリー",status:"状態",view:"プロジェクトを見る",source:"ソースコード"},
+    zh:{live:"在线演示",code:"代码",details:"项目详情",description:"说明",stack:"技术栈",category:"类别",status:"状态",view:"查看项目",source:"源代码"},
+  }[language];
   const [flippedCards, setFlippedCards] = useState<number[]>([]);
   const [isVisible, setIsVisible] = useState(false);
   const gridRef = useRef<HTMLDivElement>(null);
@@ -397,7 +402,7 @@ export default function ProjectCardGrid({
                     onClick={(e) => e.stopPropagation()}
                   >
                     <FiExternalLink size={16} />
-                    Live Demo
+                    {ui.live}
                   </a>
                   <a 
                     href={project.github}
@@ -405,7 +410,7 @@ export default function ProjectCardGrid({
                     onClick={(e) => e.stopPropagation()}
                   >
                     <FiGithub size={16} />
-                    Code
+                    {ui.code}
                   </a>
                 </div>
               </div>
@@ -413,7 +418,7 @@ export default function ProjectCardGrid({
               {/* Back of Card - Detailed View */}
               <div className={`back face w-full h-full backface-hidden p-6 flex flex-col cursor-none ${flippedCards.includes(index) ? 'block' : 'hidden'}`}>
                 <div className="flex items-start justify-between mb-6 cursor-none">
-                  <h3 className="text-xl font-bold text-white cursor-none">Project Details</h3>
+                  <h3 className="text-xl font-bold text-white cursor-none">{ui.details}</h3>
                   <button 
                     className="text-neutral-400 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-lg cursor-none"
                     onClick={(e) => {
@@ -428,7 +433,7 @@ export default function ProjectCardGrid({
                 <div className="flex-grow space-y-6 cursor-none">
                   {/* Full Description */}
                   <div className="cursor-none">
-                    <h4 className="text-white font-semibold mb-2 text-sm uppercase tracking-wide text-neutral-400 cursor-none">Description</h4>
+                    <h4 className="text-white font-semibold mb-2 text-sm uppercase tracking-wide text-neutral-400 cursor-none">{ui.description}</h4>
                     <p className="text-neutral-300 text-sm leading-relaxed cursor-none">
                       {project.description}
                     </p>
@@ -436,7 +441,7 @@ export default function ProjectCardGrid({
 
                   {/* Full Tech Stack */}
                   <div className="cursor-none">
-                    <h4 className="text-white font-semibold mb-3 text-sm uppercase tracking-wide text-neutral-400 cursor-none">Technology Stack</h4>
+                    <h4 className="text-white font-semibold mb-3 text-sm uppercase tracking-wide text-neutral-400 cursor-none">{ui.stack}</h4>
                     <div className="flex flex-wrap gap-2 cursor-none">
                       {project.tech.map((tech, techIndex) => (
                         <span
@@ -452,11 +457,11 @@ export default function ProjectCardGrid({
                   {/* Project Metadata */}
                   <div className="grid grid-cols-2 gap-4 text-sm cursor-none">
                     <div className="cursor-none">
-                      <span className="text-neutral-400 block mb-1 cursor-none">Category:</span>
+                      <span className="text-neutral-400 block mb-1 cursor-none">{ui.category}:</span>
                       <p className="text-white font-medium cursor-none">{project.category}</p>
                     </div>
                     <div className="cursor-none">
-                      <span className="text-neutral-400 block mb-1 cursor-none">Status:</span>
+                      <span className="text-neutral-400 block mb-1 cursor-none">{ui.status}:</span>
                       <p className={`font-medium cursor-none ${
                         project.status === "Completed" ? "text-green-400" : "text-yellow-400"
                       }`}>
@@ -474,7 +479,7 @@ export default function ProjectCardGrid({
                     onClick={(e) => e.stopPropagation()}
                   >
                     <FiExternalLink size={16} />
-                    View Project
+                    {ui.view}
                   </a>
                   <a 
                     href={project.github}
@@ -482,7 +487,7 @@ export default function ProjectCardGrid({
                     onClick={(e) => e.stopPropagation()}
                   >
                     <FiGithub size={16} />
-                    Source Code
+                    {ui.source}
                   </a>
                 </div>
               </div>

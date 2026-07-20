@@ -31,6 +31,7 @@ export async function POST(request: NextRequest) {
   const colors = Array.isArray(body.colors) ? body.colors.filter((color: unknown): color is string => typeof color === "string" && PIKMIN_COLORS.includes(color as typeof PIKMIN_COLORS[number])) : [];
   if (!category || category.length > 120 || !decor || decor.length > 160 || !colors.length) return NextResponse.json({ error: "Category, decor name, and at least one valid color are required" }, { status: 400 });
   const created = await db.insert(pikminDecorItems).values(colors.map((color: string) => ({ category, decor, color, event: body.event !== false, owned: false, active: true }))).onConflictDoNothing().returning();
+  if (!created.length) return NextResponse.json({ error: "This decor set already contains all selected colors" }, { status: 409 });
   return NextResponse.json(created, { status: 201 });
 }
 

@@ -13,47 +13,19 @@ import Footer from "@/components/Footer";
 import { recordWorldStep } from "@/lib/exploration";
 import { useLanguage } from "@/app/context/LanguageContext";
 
-const modes = [
-  { id: "strategy", label: "01 / Think", icon: Sparkles, title: "Find the signal", copy: "Clarify the real problem, the audience and the smallest valuable version worth building.", output: ["problem: identified", "audience: mapped", "direction: aligned"] },
-  { id: "design", label: "02 / Shape", icon: Layers3, title: "Design the system", copy: "Turn the idea into a distinctive interface with a practical, reusable interaction system.", output: ["flows: simplified", "interface: prototyped", "experience: memorable"] },
-  { id: "build", label: "03 / Launch", icon: Braces, title: "Ship the product", copy: "Build a fast, secure product and keep refining it with evidence from real people.", output: ["frontend: responsive", "backend: connected", "status: ready to launch"] },
-];
-const webCopy={en:{kicker:"WORLD 01 · THE BUILD LAB",line1:"Ideas enter.",line2:"Working products leave.",intro:"I design and build digital experiences that make complicated things feel clear, useful and unexpectedly fun.",start:"Start a build",run:"Run the system"},ja:{kicker:"WORLD 01 · 開発ラボ",line1:"アイデアが入り、",line2:"動くプロダクトが生まれる。",intro:"複雑なものを分かりやすく、便利で、少し驚きのあるデジタル体験へ設計・開発します。",start:"開発を相談する",run:"システムを起動"},zh:{kicker:"WORLD 01 · 开发实验室",line1:"想法进入，",line2:"产品诞生。",intro:"我设计并开发数字体验，让复杂的事情变得清晰、实用，而且充满惊喜。",start:"开始合作",run:"启动系统"}};
+const icons=[Sparkles,Layers3,Braces];
+const copy={
+  en:{kicker:"WORLD 01 · THE BUILD LAB",line1:"Ideas enter.",line2:"Working products leave.",intro:"I design and build digital experiences that make complicated things feel clear, useful and unexpectedly fun.",start:"Start a build",run:"Run the system",interactive:"INTERACTIVE",active:"ACTIVE MODULE",next:"Run next module",tools:"TOOLS IN ORBIT",matrix:"CAPABILITY MATRIX",skills:"What the system can do",skillsSub:"A practical toolkit for turning an ambitious idea into a dependable product",files:"MISSION FILES",projects:"Selected builds",projectsSub:"Current project placeholders—ready to be replaced with your real case studies",slot:"BUILD SLOT AVAILABLE",final1:"Have a stubborn idea?",final2:"Good. I like those.",channel:"Open a project channel",modes:[{id:"strategy",label:"01 / Think",title:"Find the signal",copy:"Clarify the real problem, the audience and the smallest valuable version worth building.",output:["problem: identified","audience: mapped","direction: aligned"]},{id:"design",label:"02 / Shape",title:"Design the system",copy:"Turn the idea into a distinctive interface with a practical, reusable interaction system.",output:["flows: simplified","interface: prototyped","experience: memorable"]},{id:"build",label:"03 / Launch",title:"Ship the product",copy:"Build a fast, secure product and keep refining it with evidence from real people.",output:["frontend: responsive","backend: connected","status: ready to launch"]}]},
+  ja:{kicker:"WORLD 01 · 開発ラボ",line1:"アイデアが入り、",line2:"動くプロダクトが生まれる。",intro:"複雑なものを分かりやすく、便利で、少し驚きのあるデジタル体験へ設計・開発します。",start:"開発を相談する",run:"システムを起動",interactive:"操作可能",active:"実行中のモジュール",next:"次のモジュールを実行",tools:"軌道上のツール",matrix:"能力マトリクス",skills:"このシステムでできること",skillsSub:"大胆なアイデアを信頼できるプロダクトへ変える実践的な技術セット",files:"ミッション記録",projects:"開発事例",projectsSub:"現在は仮の事例です。実際のケーススタディへ順次更新します",slot:"開発枠 受付中",final1:"手強いアイデアがありますか？",final2:"いいですね。そういうのが好きです。",channel:"プロジェクト回線を開く",modes:[{id:"strategy",label:"01 / 考える",title:"本質を見つける",copy:"本当の課題、対象ユーザー、最小で価値のある形を明確にします。",output:["課題：特定済み","対象：整理済み","方向：合意済み"]},{id:"design",label:"02 / 形にする",title:"システムを設計する",copy:"アイデアを、実用的で再利用できる操作設計を備えた独自のUIへ変えます。",output:["導線：簡素化","画面：試作済み","体験：記憶に残る"]},{id:"build",label:"03 / 公開する",title:"プロダクトを届ける",copy:"高速で安全なプロダクトを構築し、実際の利用データから改善を続けます。",output:["画面：レスポンシブ","裏側：接続済み","状態：公開可能"]}]},
+  zh:{kicker:"WORLD 01 · 开发实验室",line1:"想法进入，",line2:"产品诞生。",intro:"我设计并开发数字体验，让复杂的事情变得清晰、实用，而且充满惊喜。",start:"开始合作",run:"启动系统",interactive:"可交互",active:"当前模块",next:"运行下一模块",tools:"轨道工具",matrix:"能力矩阵",skills:"系统能做什么",skillsSub:"把大胆想法变成可靠产品的一套实用工具",files:"任务档案",projects:"精选项目",projectsSub:"目前为项目占位内容，之后会替换为真实案例",slot:"开发档期开放",final1:"有一个难搞的想法？",final2:"很好，我就喜欢这种挑战。",channel:"开启项目频道",modes:[{id:"strategy",label:"01 / 思考",title:"找到核心信号",copy:"明确真正的问题、目标用户，以及最小但有价值的产品版本。",output:["问题：已确认","用户：已梳理","方向：已对齐"]},{id:"design",label:"02 / 塑造",title:"设计系统",copy:"把想法变成独特界面，并建立实用、可复用的交互体系。",output:["流程：已简化","界面：已原型化","体验：令人难忘"]},{id:"build",label:"03 / 发布",title:"交付产品",copy:"构建快速、安全的产品，并根据真实用户反馈持续优化。",output:["前端：响应式","后端：已连接","状态：可发布"]}]}
+};
 
-export default function Web() {
-  const {language}=useLanguage();const t=webCopy[language];
-  const [activeMode, setActiveMode] = useState(0);
-  const mode = modes[activeMode];
-  const Icon = mode.icon;
-  useEffect(()=>{ recordWorldStep("build",0,modes.length); },[]);
-  const selectMode=(index:number)=>{setActiveMode(index);recordWorldStep("build",index,modes.length)};
-
-  return (
-    <div className="web-world">
-      <FloatingButtons />
-      <div className="web-world-bg"><WebBackground /></div>
-      <section className="web-lab-hero">
-        <div className="web-lab-copy">
-          <p className="world-kicker"><span /> {t.kicker}</p>
-          <h1>{t.line1}<br /><em>{t.line2}</em></h1>
-          <p>{t.intro}</p>
-          <div className="web-lab-actions"><Link href="/contact">{t.start} <ArrowUpRight size={18} /></Link><a href="#process">{t.run} <ArrowDown size={18} /></a></div>
-        </div>
-        <div className="build-console" id="process">
-          <div className="build-console-head"><span><i /> RYU_BUILD_SYSTEM</span><small>INTERACTIVE</small></div>
-          <div className="build-mode-tabs">{modes.map((item,index)=><button key={item.id} onClick={()=>selectMode(index)} className={index===activeMode?"active":""}>{item.label}</button>)}</div>
-          <motion.div key={mode.id} initial={{opacity:0,y:12}} animate={{opacity:1,y:0}} className="build-output">
-            <Icon size={34}/><span>ACTIVE MODULE</span><h2>{mode.title}</h2><p>{mode.copy}</p>
-            <div className="terminal-output">{mode.output.map((line,index)=><code key={line}><b>{String(index+1).padStart(2,"0")}</b> {line}<i>✓</i></code>)}</div>
-          </motion.div>
-          <button className="console-next" onClick={()=>selectMode((activeMode+1)%modes.length)}><Play size={14} fill="currentColor"/> Run next module</button>
-        </div>
-      </section>
-      <section className="web-toolbelt"><p>TOOLS IN ORBIT</p><LogoShowcase /></section>
-      <section className="web-deep-section"><div className="section-chip"><Cpu size={16}/> CAPABILITY MATRIX</div><SkillCardGrid sectionTitle="What the system can do" sectionSubtitle="A practical toolkit for turning an ambitious idea into a dependable product" /></section>
-      <section className="web-deep-section projects"><div className="section-chip"><Braces size={16}/> MISSION FILES</div><ProjectCardGrid sectionTitle="Selected builds" sectionSubtitle="Current project placeholders—ready to be replaced with your real case studies" /></section>
-      <section className="web-final"><p className="world-kicker">BUILD SLOT AVAILABLE</p><h2>Have a stubborn idea?<br /><em>Good. I like those.</em></h2><Link href="/contact">Open a project channel <ArrowUpRight size={19}/></Link></section>
-      <Footer />
-    </div>
-  );
+export default function Web(){
+  const {language}=useLanguage();const t=copy[language];const [activeMode,setActiveMode]=useState(0);const mode=t.modes[activeMode];const Icon=icons[activeMode];
+  useEffect(()=>{recordWorldStep("build",0,t.modes.length)},[t.modes.length]);
+  const selectMode=(index:number)=>{setActiveMode(index);recordWorldStep("build",index,t.modes.length)};
+  return <div className="web-world"><FloatingButtons/><div className="web-world-bg"><WebBackground/></div>
+    <section className="web-lab-hero"><div className="web-lab-copy"><p className="world-kicker"><span/> {t.kicker}</p><h1>{t.line1}<br/><em>{t.line2}</em></h1><p>{t.intro}</p><div className="web-lab-actions"><Link href="/contact">{t.start} <ArrowUpRight size={18}/></Link><a href="#process">{t.run} <ArrowDown size={18}/></a></div></div><div className="build-console" id="process"><div className="build-console-head"><span><i/> RYU_BUILD_SYSTEM</span><small>{t.interactive}</small></div><div className="build-mode-tabs">{t.modes.map((item,index)=><button key={item.id} onClick={()=>selectMode(index)} className={index===activeMode?"active":""}>{item.label}</button>)}</div><motion.div key={`${language}-${mode.id}`} initial={{opacity:0,y:12}} animate={{opacity:1,y:0}} className="build-output"><Icon size={34}/><span>{t.active}</span><h2>{mode.title}</h2><p>{mode.copy}</p><div className="terminal-output">{mode.output.map((line,index)=><code key={line}><b>{String(index+1).padStart(2,"0")}</b> {line}<i>✓</i></code>)}</div></motion.div><button className="console-next" onClick={()=>selectMode((activeMode+1)%t.modes.length)}><Play size={14} fill="currentColor"/> {t.next}</button></div></section>
+    <section className="web-toolbelt"><p>{t.tools}</p><LogoShowcase/></section><section className="web-deep-section"><div className="section-chip"><Cpu size={16}/> {t.matrix}</div><SkillCardGrid sectionTitle={t.skills} sectionSubtitle={t.skillsSub}/></section><section className="web-deep-section projects"><div className="section-chip"><Braces size={16}/> {t.files}</div><ProjectCardGrid sectionTitle={t.projects} sectionSubtitle={t.projectsSub}/></section><section className="web-final"><p className="world-kicker">{t.slot}</p><h2>{t.final1}<br/><em>{t.final2}</em></h2><Link href="/contact">{t.channel} <ArrowUpRight size={19}/></Link></section><Footer/>
+  </div>;
 }
