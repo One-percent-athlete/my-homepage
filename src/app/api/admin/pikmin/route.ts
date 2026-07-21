@@ -4,8 +4,14 @@ import { db } from "@/db";
 import { pikminDecorItems } from "@/db/schema";
 import { expandPikminSets, PIKMIN_COLORS, STANDARD_PIKMIN_SETS } from "@/lib/pikmin-catalog";
 import { isSameOrigin } from "@/lib/request-security";
+import { ADMIN_COOKIE, verifyAdminSession } from "@/lib/admin-auth";
 
-export async function GET() {
+async function isAuthorized(request: NextRequest) {
+  return verifyAdminSession(request.cookies.get(ADMIN_COOKIE)?.value);
+}
+
+export async function GET(request: NextRequest) {
+  if (!(await isAuthorized(request))) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   let items = await db.select().from(pikminDecorItems).orderBy(asc(pikminDecorItems.category), asc(pikminDecorItems.decor), asc(pikminDecorItems.id));
   if (!items.length) {
     await db.insert(pikminDecorItems).values(expandPikminSets(STANDARD_PIKMIN_SETS)).onConflictDoNothing();
@@ -15,6 +21,7 @@ export async function GET() {
 }
 
 export async function PUT(request: NextRequest) {
+  if (!(await isAuthorized(request))) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   if (!isSameOrigin(request)) return NextResponse.json({ error: "Invalid origin" }, { status: 403 });
   const body = await request.json().catch(() => ({}));
   if (!Number.isInteger(body.id) || typeof body.owned !== "boolean") return NextResponse.json({ error: "Invalid update" }, { status: 400 });
@@ -24,6 +31,7 @@ export async function PUT(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  if (!(await isAuthorized(request))) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   if (!isSameOrigin(request)) return NextResponse.json({ error: "Invalid origin" }, { status: 403 });
   const body = await request.json().catch(() => ({}));
   const category = typeof body.category === "string" ? body.category.trim() : "";
@@ -36,6 +44,7 @@ export async function POST(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
+  if (!(await isAuthorized(request))) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   if (!isSameOrigin(request)) return NextResponse.json({ error: "Invalid origin" }, { status: 403 });
   const category = request.nextUrl.searchParams.get("category") || "";
   const decor = request.nextUrl.searchParams.get("decor") || "";

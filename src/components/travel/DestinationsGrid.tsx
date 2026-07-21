@@ -81,10 +81,10 @@ export default function DestinationsGrid({ language }: DestinationsGridProps) {
   return (
     <section className="max-w-7xl mx-auto px-6 py-24">
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
+        initial={{ opacity: 0.82, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
         className="text-center mb-16"
       >
         <h2 className="text-4xl md:text-5xl font-black text-orange-400 mb-4">
@@ -100,10 +100,10 @@ export default function DestinationsGrid({ language }: DestinationsGridProps) {
         {currentDestinations.map((place, index) => (
           <motion.div
             key={index}
-            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            initial={{ opacity: 0.78, y: 18, scale: 0.985 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true }}
-            transition={{ delay: index * 0.2, duration: 0.8 }}
+            transition={{ delay: index * 0.06, duration: 0.5, ease: "easeOut" }}
             whileHover={{ y: -10, transition: { duration: 0.3 } }}
             className="group relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-md rounded-3xl shadow-2xl overflow-hidden hover:shadow-orange-500/20 transition-all duration-500 cursor-none"
           >

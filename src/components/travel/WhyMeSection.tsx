@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import TravelParallaxBackground from "./TravelParallaxBackground";
 
 const testimonials = {
   en: [
@@ -47,22 +48,15 @@ export default function WhyMeSection({ language }: WhyMeSectionProps) {
 
   return (
     <section className="relative mx-auto px-6 py-24 overflow-hidden">
-      {/* Background image */}
-      <div
-        className="absolute inset-0 bg-cover bg-center bg-fixed"
-        style={{
-          backgroundImage: "url('/images/whale.jpg')",
-          opacity: 0.4,
-        }}
-      />
+      <TravelParallaxBackground image="/images/whale.jpg" opacity={0.4} />
 
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto">
         <motion.h2
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0.82, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
           className="text-4xl md:text-5xl font-black text-center mb-16 text-orange-400"
         >
           ❤️ {language === "ja" ? "なぜ私？" : language === "zh" ? "为什么选择我？" : "Why Choose Me?"}
@@ -72,10 +66,10 @@ export default function WhyMeSection({ language }: WhyMeSectionProps) {
           {currentTestimonials.map((item, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 50, scale: 0.9 }}
+              initial={{ opacity: 0.78, y: 18, scale: 0.985 }}
               whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.1, duration: 0.6 }}
+              transition={{ delay: i * 0.045, duration: 0.5, ease: "easeOut" }}
               whileHover={{ 
                 y: -5,
                 transition: { duration: 0.3 }

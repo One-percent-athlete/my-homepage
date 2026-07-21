@@ -1,5 +1,5 @@
-const SESSION_DURATION_SECONDS = 60 * 60 * 8;
-export const ADMIN_COOKIE = "ryu_mission_session";
+export const SESSION_DURATION_SECONDS = 60 * 30;
+export const ADMIN_COOKIE = "ryu_mission_session_v2";
 
 const encode = (buffer: ArrayBuffer) =>
   Array.from(new Uint8Array(buffer), (byte) => byte.toString(16).padStart(2, "0")).join("");
@@ -19,7 +19,9 @@ export async function createAdminSession() {
 export async function verifyAdminSession(token?: string | null) {
   if (!token || !process.env.MISSION_CONTROL_SECRET) return false;
   const [expires, signature] = token.split(".");
-  if (!expires || !signature || !/^\d+$/.test(expires) || Number(expires) <= Date.now() / 1000) return false;
+  const now = Math.floor(Date.now() / 1000);
+  const expiry = Number(expires);
+  if (!expires || !signature || !/^\d+$/.test(expires) || expiry <= now || expiry > now + SESSION_DURATION_SECONDS + 30) return false;
   const expected = await hmac(expires);
   if (expected.length !== signature.length) return false;
   let mismatch = 0;

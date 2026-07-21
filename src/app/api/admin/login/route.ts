@@ -20,6 +20,6 @@ export async function POST(request: NextRequest) {
 
   attempts.delete(ip);
   const response = NextResponse.json({ status: "authenticated" });
-  response.cookies.set(ADMIN_COOKIE, await createAdminSession(), { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "strict", path: "/", maxAge: 60 * 60 * 8 });
+  response.cookies.set(ADMIN_COOKIE, await createAdminSession(), { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "strict", path: "/" });
   return response;
 }

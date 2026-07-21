@@ -19,6 +19,7 @@ button:disabled,[aria-disabled="true"]{cursor:not-allowed!important;opacity:.58}
   .dock-trigger{width:48px;height:48px;min-width:0;padding:0;border-radius:50%}
   .dock-trigger>span,.dock-trigger>b{display:none!important}
   .world-dock.expanded .dock-panel{bottom:56px}
+  .between-discovery{right:0;bottom:56px;max-width:calc(100vw - 24px)}
   .dock-tabs a{min-height:62px}
   .dock-languages button{min-width:42px;min-height:38px}
   .journal-controls button{min-height:44px;flex:0 0 auto}

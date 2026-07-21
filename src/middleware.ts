@@ -10,7 +10,13 @@ export async function middleware(request: NextRequest) {
   const authorized = await verifyAdminSession(request.cookies.get(ADMIN_COOKIE)?.value);
 
   if (pathname === loginPath && authorized) return NextResponse.redirect(new URL("/mission-control", request.url));
-  if (!protectedPath || authorized) return NextResponse.next();
+  if (!protectedPath) return NextResponse.next();
+  if (authorized) {
+    const response = NextResponse.next();
+    response.headers.set("Cache-Control", "private, no-store, max-age=0");
+    response.headers.set("Pragma", "no-cache");
+    return response;
+  }
   if (pathname.startsWith("/api/")) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const login = new URL(loginPath, request.url);

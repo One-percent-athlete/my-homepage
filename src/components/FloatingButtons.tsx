@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { BookOpen, Code2, Compass, Contact, Globe2, Home, Images, Languages, MountainSnow, Orbit, X } from "lucide-react";
+import { BookOpen, Code2, Compass, Contact, Globe2, Home, Images, Languages, MountainSnow, Orbit, Sparkles, X } from "lucide-react";
 import { useLanguage } from "@/app/context/LanguageContext";
 import { getFragments } from "@/lib/exploration";
 
@@ -21,9 +21,9 @@ const worldLabels: Record<string, Record<"en" | "ja" | "zh", string>> = {
   "/": { en: "Base", ja: "基地", zh: "基地" }, "/web": { en: "Build", ja: "開発", zh: "开发" }, "/travel": { en: "Explore", ja: "旅", zh: "探索" }, "/ski": { en: "Summit", ja: "雪山", zh: "雪山" }, "/blog": { en: "Journal", ja: "記録", zh: "日志" }, "/gallery": { en: "Archive", ja: "写真", zh: "影像" }, "/contact": { en: "Signal", ja: "通信", zh: "联络" }, "/between": { en: "The Between", ja: "狭間", zh: "间界" },
 };
 const dockCopy = {
-  en: { close: "Close map", navigator: "World navigator", anomaly: "Anomalous signal detected", fragments: "fragments recovered", current: "Current", visited: "Visited", unknown: "Unknown", signal: "Signal language" },
-  ja: { close: "マップを閉じる", navigator: "ワールドナビ", anomaly: "未知の信号を検出", fragments: "個の断片を回収", current: "現在地", visited: "訪問済み", unknown: "未発見", signal: "表示言語" },
-  zh: { close: "关闭地图", navigator: "世界导航", anomaly: "检测到异常信号", fragments: "个碎片已回收", current: "当前", visited: "已访问", unknown: "未知", signal: "显示语言" },
+  en: { close: "Close map", navigator: "World navigator", anomaly: "Anomalous signal detected", fragments: "fragments recovered", current: "Current", visited: "Visited", unknown: "Unknown", signal: "Signal language", discovered: "Hidden world discovered", enter: "Enter The Between" },
+  ja: { close: "マップを閉じる", navigator: "ワールドナビ", anomaly: "未知の信号を検出", fragments: "個の断片を回収", current: "現在地", visited: "訪問済み", unknown: "未発見", signal: "表示言語", discovered: "隠された世界を発見", enter: "The Betweenへ" },
+  zh: { close: "关闭地图", navigator: "世界导航", anomaly: "检测到异常信号", fragments: "个碎片已回收", current: "当前", visited: "已访问", unknown: "未知", signal: "显示语言", discovered: "发现隐藏世界", enter: "进入世界之间" },
 };
 
 export default function FloatingButtons() {
@@ -33,7 +33,8 @@ export default function FloatingButtons() {
   const [expanded, setExpanded] = useState(false);
   const [visited, setVisited] = useState<string[]>([]);
   const [fragmentCount,setFragmentCount]=useState(0);
-  const availableWorlds = fragmentCount >= 3 || pathname === "/between" ? [...worlds, hiddenWorld] : worlds;
+  const hiddenUnlocked = fragmentCount >= 3 || pathname === "/between";
+  const availableWorlds = hiddenUnlocked ? [...worlds, hiddenWorld] : worlds;
   const current = availableWorlds.find((world) => pathname === world.href || (world.href !== "/" && pathname.startsWith(`${world.href}/`))) ?? worlds[0];
   const copy = dockCopy[language];
 
@@ -65,7 +66,12 @@ export default function FloatingButtons() {
   }, [expanded]);
 
   return (
-    <aside ref={dockRef} className={expanded ? "world-dock expanded" : "world-dock"} aria-label={copy.navigator}>
+    <aside ref={dockRef} className={`${expanded ? "world-dock expanded" : "world-dock"}${hiddenUnlocked ? " hidden-unlocked" : ""}`} aria-label={copy.navigator}>
+      {hiddenUnlocked && pathname !== "/between" && (
+        <Link href="/between" className="between-discovery" aria-label={copy.enter}>
+          <Sparkles size={16}/><span><small>{copy.discovered}</small><strong>{copy.enter}</strong></span><Orbit size={18}/>
+        </Link>
+      )}
       <button className="dock-trigger" onClick={() => setExpanded(!expanded)} aria-expanded={expanded} aria-controls="world-navigator-panel" aria-label={expanded ? copy.close : copy.navigator} style={{ "--dock-accent": current.color } as React.CSSProperties}>
         {expanded ? <X size={20} /> : <Compass size={20} />}
         <span>{expanded ? copy.close : worldLabels[current.href][language]}</span>
