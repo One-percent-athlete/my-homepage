@@ -19,7 +19,9 @@ export async function POST(request: NextRequest) {
   }
 
   attempts.delete(ip);
+  const session = await createAdminSession();
+  if (!session) return NextResponse.json({ error: "Mission Control session signing is not configured" }, { status: 503 });
   const response = NextResponse.json({ status: "authenticated" });
-  response.cookies.set(ADMIN_COOKIE, await createAdminSession(), { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "strict", path: "/" });
+  response.cookies.set(ADMIN_COOKIE, session, { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "strict", path: "/" });
   return response;
 }

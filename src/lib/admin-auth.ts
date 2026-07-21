@@ -4,8 +4,15 @@ export const ADMIN_COOKIE = "ryu_mission_session_v2";
 const encode = (buffer: ArrayBuffer) =>
   Array.from(new Uint8Array(buffer), (byte) => byte.toString(16).padStart(2, "0")).join("");
 
+function getSessionSecret() {
+  const dedicatedSecret = process.env.MISSION_CONTROL_SECRET;
+  if (dedicatedSecret) return dedicatedSecret;
+  const password = process.env.MISSION_CONTROL_PASSWORD;
+  return password ? `mission-session:${password}` : "";
+}
+
 async function hmac(value: string) {
-  const secret = process.env.MISSION_CONTROL_SECRET;
+  const secret = getSessionSecret();
   if (!secret) return "";
   const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
   return encode(await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(value)));
@@ -13,11 +20,12 @@ async function hmac(value: string) {
 
 export async function createAdminSession() {
   const expires = Math.floor(Date.now() / 1000) + SESSION_DURATION_SECONDS;
-  return `${expires}.${await hmac(String(expires))}`;
+  const signature = await hmac(String(expires));
+  return signature ? `${expires}.${signature}` : "";
 }
 
 export async function verifyAdminSession(token?: string | null) {
-  if (!token || !process.env.MISSION_CONTROL_SECRET) return false;
+  if (!token || !getSessionSecret()) return false;
   const [expires, signature] = token.split(".");
   const now = Math.floor(Date.now() / 1000);
   const expiry = Number(expires);
