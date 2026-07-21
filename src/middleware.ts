@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ADMIN_COOKIE, verifyAdminSession } from "@/lib/admin-auth";
+import { ADMIN_COOKIE } from "@/lib/admin-auth";
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -7,11 +7,10 @@ export async function middleware(request: NextRequest) {
 
   const loginPath = "/mission-control/login";
   const protectedPath = (pathname.startsWith("/mission-control") && pathname !== loginPath) || pathname.startsWith("/blog/create") || (pathname.startsWith("/api/admin") && pathname !== "/api/admin/login");
-  const authorized = await verifyAdminSession(request.cookies.get(ADMIN_COOKIE)?.value);
+  const hasSessionCookie = Boolean(request.cookies.get(ADMIN_COOKIE)?.value);
 
-  if (pathname === loginPath && authorized) return NextResponse.redirect(new URL("/mission-control", request.url));
   if (!protectedPath) return NextResponse.next();
-  if (authorized) {
+  if (hasSessionCookie) {
     const response = NextResponse.next();
     response.headers.set("Cache-Control", "private, no-store, max-age=0");
     response.headers.set("Pragma", "no-cache");
