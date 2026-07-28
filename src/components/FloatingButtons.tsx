@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { BookOpen, Code2, Compass, Contact, Globe2, Home, Images, Languages, MountainSnow, Orbit, Sparkles, X } from "lucide-react";
 import { useLanguage } from "@/app/context/LanguageContext";
-import { getFragments } from "@/lib/exploration";
+import { getBetweenAccessRemainingMs, getFragments } from "@/lib/exploration";
 
 const worlds = [
   { href: "/", label: "Base", icon: Home, color: "#c8ff42" },
@@ -51,9 +51,15 @@ export default function FloatingButtons() {
   }, [current.href]);
 
   useEffect(()=>{
-    const refresh=()=>setFragmentCount(getFragments().length);
+    let expiryTimer: ReturnType<typeof setTimeout> | undefined;
+    const refresh=()=>{
+      if (expiryTimer) clearTimeout(expiryTimer);
+      setFragmentCount(getFragments().length);
+      const remaining = getBetweenAccessRemainingMs();
+      if (remaining > 0) expiryTimer = setTimeout(refresh, remaining + 50);
+    };
     refresh();window.addEventListener("ryu-progress",refresh);window.addEventListener("storage",refresh);
-    return()=>{window.removeEventListener("ryu-progress",refresh);window.removeEventListener("storage",refresh)};
+    return()=>{if(expiryTimer)clearTimeout(expiryTimer);window.removeEventListener("ryu-progress",refresh);window.removeEventListener("storage",refresh)};
   },[]);
 
   useEffect(() => {
