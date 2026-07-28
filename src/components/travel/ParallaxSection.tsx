@@ -7,30 +7,33 @@ interface ParallaxSectionProps {
   image: string;
   title: string;
   subtitle: string;
+  index: number;
+  location: string;
 }
 
-export default function ParallaxSection({ image, title, subtitle }: ParallaxSectionProps) {
+export default function ParallaxSection({ image, title, subtitle, index, location }: ParallaxSectionProps) {
   return (
-    <section className="relative h-[70vh] flex items-center justify-center overflow-hidden">
+    <section
+      className="travel-story-panel"
+      style={{ "--panel-index": index } as React.CSSProperties}
+    >
       <TravelParallaxBackground image={image} />
       
-      {/* Enhanced overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/40" />
+      <div className="travel-story-shade" />
+      <div className="travel-story-edge" aria-hidden="true" />
       
       <motion.div
-        initial={{ opacity: 0.82, y: 16 }}
+        initial={{ opacity: 0.85, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.65, ease: "easeOut" }}
-        className="relative z-10 text-center max-w-4xl mx-auto px-6"
+        transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+        className="travel-story-copy"
       >
-        <h2 className="text-4xl md:text-6xl font-black drop-shadow-2xl text-orange-400 mb-6">
-          {title}
-        </h2>
-        <p className="text-xl md:text-2xl text-gray-200 font-medium drop-shadow-lg">
-          {subtitle}
-        </p>
+        <div className="travel-story-meta"><span>0{index + 1}</span><i/><span>{location}</span></div>
+        <h2>{title}</h2>
+        <p>{subtitle}</p>
       </motion.div>
+      <span className="travel-story-count">0{index + 1} / 03</span>
     </section>
   );
 }

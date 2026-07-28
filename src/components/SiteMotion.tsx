@@ -13,7 +13,7 @@ const REVEAL_SELECTOR = [
   ".web-world > section",
   ".web-world > footer",
   ".travel-world > section",
-  ".travel-world > div > section",
+  ".travel-world > div:not(.travel-story-stack) > section",
   ".ski-world > header",
   ".ski-world main > section",
   ".journal-world > header",
@@ -206,6 +206,5 @@ export default function SiteMotion() {
     <div className="site-depth-scene" aria-hidden="true">
       <i className="depth-shard shard-one"/><i className="depth-shard shard-two"/><i className="depth-shard shard-three"/>
     </div>
-    <div key={pathname} className="route-depth-wipe" aria-hidden="true"/>
   </>;
 }

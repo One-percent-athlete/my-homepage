@@ -72,7 +72,7 @@ body.motion-ready[data-motion-world="contact"]{--motion-accent:#f4d84b}
   z-index:900;
   inset:0;
   pointer-events:none;
-  opacity:.14;
+  opacity:.08;
   background:radial-gradient(380px circle at var(--pointer-x) var(--pointer-y),color-mix(in srgb,var(--motion-accent) 38%,transparent),transparent 68%);
   mix-blend-mode:screen;
   transition:opacity .4s;
@@ -192,22 +192,6 @@ body.motion-ready :where(a,button):hover > svg{transform:translate3d(3px,-2px,0)
 @keyframes shardFloatOne{to{margin-top:28px;margin-left:12px;filter:hue-rotate(24deg) brightness(1.18)}}
 @keyframes shardFloatTwo{to{margin-top:-35px;margin-right:18px;filter:hue-rotate(-20deg) brightness(1.25)}}
 @keyframes shardFloatThree{to{margin-top:22px;margin-left:-16px;filter:hue-rotate(35deg)}}
-.route-depth-wipe{
-  position:fixed;
-  z-index:2100;
-  inset:-15%;
-  pointer-events:none;
-  opacity:0;
-  background:linear-gradient(112deg,transparent 38%,color-mix(in srgb,var(--motion-accent) 42%,#fff) 48%,color-mix(in srgb,var(--motion-accent) 14%,transparent) 53%,transparent 63%);
-  transform:translate3d(-65%,0,0) rotate(-3deg);
-  mix-blend-mode:screen;
-  animation:routeDepthWipe .9s cubic-bezier(.22,1,.36,1) both;
-}
-@keyframes routeDepthWipe{
-  0%{opacity:0;transform:translate3d(-65%,0,0) rotate(-3deg)}
-  20%{opacity:.6}
-  100%{opacity:0;transform:translate3d(65%,0,0) rotate(-3deg)}
-}
 .is-depth-active{
   position:relative;
   z-index:3;
@@ -237,12 +221,72 @@ body.motion-ready :where(a,button):hover > svg{transform:translate3d(3px,-2px,0)
 @media(max-width:800px){
   .site-depth-scene{opacity:.22}
   .shard-one{left:-3vw}.shard-two{right:-2vw}.shard-three{display:none}
-  .route-depth-wipe{animation-duration:.65s}
 }
 @media(hover:none),(prefers-reduced-motion:reduce){
-  .site-depth-scene,.route-depth-wipe{display:none}
+  .site-depth-scene{display:none}
   .is-depth-active{transform:none!important;box-shadow:inherit!important}
   .hero-portrait,.hero-orbit{transform:none!important}
+}
+
+.travel-story-stack{
+  position:relative;
+  z-index:4;
+  isolation:isolate;
+  background:#0b0907;
+}
+.travel-story-panel{
+  position:sticky!important;
+  top:0;
+  z-index:calc(20 + var(--panel-index));
+  display:flex;
+  min-height:100svh;
+  align-items:flex-end;
+  overflow:hidden;
+  padding:clamp(28px,6vw,88px);
+  background:#0b0907;
+  box-shadow:0 -24px 65px #000b;
+}
+.travel-story-panel:not(:first-child){border-top:1px solid #ffb66e8c}
+.travel-story-shade{
+  position:absolute;
+  z-index:1;
+  inset:0;
+  background:linear-gradient(90deg,#080604d9 0%,#08060452 52%,transparent 78%),linear-gradient(0deg,#080604d4 0%,transparent 62%),linear-gradient(180deg,#0007,transparent 24%);
+}
+.travel-story-edge{
+  position:absolute;
+  z-index:3;
+  top:0;
+  left:0;
+  right:0;
+  height:2px;
+  background:linear-gradient(90deg,transparent,var(--motion-accent),#fff8,var(--motion-accent),transparent);
+  box-shadow:0 7px 35px #000,0 0 18px color-mix(in srgb,var(--motion-accent) 35%,transparent);
+  opacity:.75;
+}
+.travel-story-copy{
+  position:relative;
+  z-index:4;
+  width:min(780px,80vw);
+  padding-bottom:3vh;
+  color:#fff7ec;
+  text-align:left;
+}
+.travel-story-meta{display:flex;align-items:center;gap:12px;color:#ffb66e;font:700 9px var(--font-geist-mono);letter-spacing:.16em}
+.travel-story-meta i{width:48px;height:1px;background:currentColor}
+.travel-story-copy h2{max-width:720px;margin:22px 0 18px;color:#fff7ec;font-size:clamp(54px,8vw,112px);font-weight:620;line-height:.86;letter-spacing:-.075em}
+.travel-story-copy p{max-width:580px;margin:0;color:#d8cbbb;font:400 clamp(16px,1.4vw,20px)/1.7 Georgia,serif}
+.travel-story-count{position:absolute;z-index:4;right:clamp(24px,5vw,72px);bottom:clamp(30px,5vw,72px);color:#ffcf9d;font:700 10px var(--font-geist-mono);letter-spacing:.16em}
+.travel-story-panel .travel-parallax-background{inset:-8% 0}
+
+@media(max-width:700px){
+  .travel-story-panel{padding:28px 22px;min-height:100svh}
+  .travel-story-copy{width:100%;padding-bottom:11vh}
+  .travel-story-copy h2{font-size:clamp(47px,15vw,72px)}
+  .travel-story-count{right:22px;bottom:27px}
+}
+@media(prefers-reduced-motion:reduce){
+  .travel-story-panel{position:relative!important}
 }
 
 a, button, [role="button"], input[type="submit"] { cursor: pointer !important; }

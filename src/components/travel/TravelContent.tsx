@@ -23,29 +23,38 @@ export default function TravelContent({ scrollY }: TravelContentProps) {
     <>
       <FloatingButtons />
       
-      <div className="travel-world relative min-h-screen overflow-hidden">
+      <div className="travel-world relative min-h-screen">
         {/* Hero Section */}
         <TravelHero scrollY={scrollY} language={language} />
 
         {/* Destinations Grid */}
         <DestinationsGrid language={language} />
 
-        {/* First Parallax Section */}
-        <ParallaxSection
-          image="/images/petra.jpg"
-          title="🌄 Breathtaking Views"
-          subtitle="Let nature remind you how small the world makes you feel."
-        />
+        <div className="travel-story-stack">
+          <ParallaxSection
+            image="/images/petra.jpg"
+            title="Breathtaking views."
+            subtitle="Let nature remind you how small the world makes you feel."
+            location="PETRA · JORDAN"
+            index={0}
+          />
+          <ParallaxSection
+            image="/images/srilanka.jpg"
+            title="Follow the unfamiliar."
+            subtitle="Every step into somewhere new brings back a story worth keeping."
+            location="SRI LANKA"
+            index={1}
+          />
+          <ParallaxSection
+            image="/images/patagonia.jpg"
+            title="Keep going outward."
+            subtitle="The edge of the map is usually where perspective begins."
+            location="PATAGONIA"
+            index={2}
+          />
+        </div>
 
-        {/* Why Me Section */}
         <WhyMeSection language={language} />
-
-        {/* Second Parallax Section */}
-        <ParallaxSection
-          image="/images/srilanka.jpg"
-          title="🌍 Endless Adventures"
-          subtitle="Every step brings a new story to tell."
-        />
 
         {/* Logo Showcase */}
         <LogoShowcase direction="right" />

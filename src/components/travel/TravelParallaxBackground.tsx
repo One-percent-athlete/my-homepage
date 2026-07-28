@@ -13,13 +13,14 @@ export default function TravelParallaxBackground({ image, opacity = 1 }: TravelP
   const reduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: backgroundRef, offset: ["start end", "end start"] });
   const y = useTransform(scrollYProgress, [0, 1], ["-7%", "7%"]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1.04, 1.13]);
 
   return (
     <motion.div
       ref={backgroundRef}
       aria-hidden="true"
       className="travel-parallax-background"
-      style={{ backgroundImage: `url('${image}')`, opacity, y: reduceMotion ? 0 : y }}
+      style={{ backgroundImage: `url('${image}')`, opacity, y: reduceMotion ? 0 : y, scale: reduceMotion ? 1.04 : scale }}
     />
   );
 }
