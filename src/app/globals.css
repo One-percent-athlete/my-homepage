@@ -39,6 +39,84 @@ html {
   cursor: auto;
 }
 
+/* Shared discovery motion */
+body.motion-ready {
+  --pointer-x: 50vw;
+  --pointer-y: 35vh;
+  --motion-accent: #c8ff42;
+}
+body.motion-ready[data-motion-world="build"]{--motion-accent:#52e8ff}
+body.motion-ready[data-motion-world="travel"]{--motion-accent:#ffad5c}
+body.motion-ready[data-motion-world="summit"]{--motion-accent:#8ddcff}
+body.motion-ready[data-motion-world="between"]{--motion-accent:#ff67d4}
+body.motion-ready[data-motion-world="archive"]{--motion-accent:#ffcf6a}
+body.motion-ready[data-motion-world="journal"]{--motion-accent:#d6a8ff}
+body.motion-ready[data-motion-world="contact"]{--motion-accent:#f4d84b}
+.site-ambient{
+  position:fixed;
+  z-index:900;
+  inset:0;
+  pointer-events:none;
+  opacity:.14;
+  background:radial-gradient(380px circle at var(--pointer-x) var(--pointer-y),color-mix(in srgb,var(--motion-accent) 38%,transparent),transparent 68%);
+  mix-blend-mode:screen;
+  transition:opacity .4s;
+}
+.motion-reveal{
+  --reveal-x:0px;
+  --reveal-y:42px;
+  opacity:0;
+  filter:blur(9px);
+  transform:translate3d(var(--reveal-x),var(--reveal-y),0) scale(.992);
+  transition:opacity .78s cubic-bezier(.22,1,.36,1) var(--reveal-delay,0ms),transform .9s cubic-bezier(.22,1,.36,1) var(--reveal-delay,0ms),filter .72s ease var(--reveal-delay,0ms);
+  will-change:opacity,transform,filter;
+}
+.motion-reveal[data-reveal-direction="left"]{--reveal-x:-34px;--reveal-y:18px}
+.motion-reveal[data-reveal-direction="right"]{--reveal-x:34px;--reveal-y:18px}
+.motion-reveal.is-revealed{opacity:1;filter:blur(0);transform:translate3d(0,0,0) scale(1);will-change:auto}
+.signal-ripple{
+  position:fixed;
+  z-index:2200;
+  width:16px;
+  height:16px;
+  border:1px solid var(--motion-accent);
+  border-radius:50%;
+  pointer-events:none;
+  transform:translate(-50%,-50%);
+  box-shadow:0 0 18px color-mix(in srgb,var(--motion-accent) 55%,transparent);
+  animation:signalRipple .62s cubic-bezier(.2,.75,.25,1) forwards;
+}
+@keyframes signalRipple{to{width:68px;height:68px;opacity:0;border-width:0}}
+body.motion-ready ::selection{color:#081014;background:var(--motion-accent)}
+body.motion-ready :where(a,button,input,textarea,select):focus-visible{
+  outline:2px solid var(--motion-accent);
+  outline-offset:4px;
+  box-shadow:0 0 0 6px color-mix(in srgb,var(--motion-accent) 15%,transparent);
+}
+body.motion-ready :where(a,button){transition-property:color,background-color,border-color,box-shadow,filter,transform;transition-duration:.24s}
+body.motion-ready :where(a,button):hover{filter:brightness(1.1) saturate(1.08)}
+body.motion-ready :where(a,button) > svg{transition:transform .28s cubic-bezier(.22,1,.36,1),color .24s}
+body.motion-ready :where(a,button):hover > svg{transform:translate3d(3px,-2px,0) rotate(4deg)}
+.mission-card{transition:transform .5s cubic-bezier(.22,1,.36,1),border-color .3s,box-shadow .5s}
+.mission-card:hover,.mission-card:focus-visible{transform:translateY(-8px);border-color:var(--motion-accent);box-shadow:0 24px 70px #0008,0 0 34px color-mix(in srgb,var(--motion-accent) 18%,transparent)}
+.mission-card:hover .mission-top svg{transform:rotate(12deg) scale(1.12)}
+.signal-strip p{transition:color .25s,transform .25s}
+.signal-strip p:hover{color:white;transform:translateY(-2px)}
+.capability-list>div{transition:padding-left .3s,background-color .3s,color .3s}
+.capability-list>div:hover{padding-left:28px;background:color-mix(in srgb,var(--motion-accent) 13%,transparent)}
+.capability-list>div:hover i{animation:capabilitySignal .65s ease both}
+@keyframes capabilitySignal{50%{transform:scaleX(.72);filter:brightness(1.4)}}
+
+@media (hover:none){
+  .site-ambient{display:none}
+  body.motion-ready :where(a,button):hover{filter:none}
+}
+@media (prefers-reduced-motion:reduce){
+  .site-ambient,.signal-ripple{display:none}
+  .motion-reveal{opacity:1!important;filter:none!important;transform:none!important;transition:none!important}
+  body.motion-ready *,body.motion-ready *::before,body.motion-ready *::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+
 a, button, [role="button"], input[type="submit"] { cursor: pointer !important; }
 
 /* Persistent world navigator */
