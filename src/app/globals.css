@@ -43,6 +43,21 @@ html {
 body.motion-ready {
   --pointer-x: 50vw;
   --pointer-y: 35vh;
+  --scene-x:0px;
+  --scene-y:0px;
+  --scene-x-inverse:0px;
+  --scene-y-inverse:0px;
+  --scene-x-soft:0px;
+  --scene-y-soft:0px;
+  --scene-rx:0deg;
+  --scene-ry:0deg;
+  --scene-rx-soft:0deg;
+  --scene-ry-soft:0deg;
+  --scroll-shift:0px;
+  --scroll-shift-reverse:0px;
+  --scroll-shift-soft:0px;
+  --scroll-turn:0deg;
+  --scroll-turn-reverse:0deg;
   --motion-accent: #c8ff42;
 }
 body.motion-ready[data-motion-world="build"]{--motion-accent:#52e8ff}
@@ -115,6 +130,119 @@ body.motion-ready :where(a,button):hover > svg{transform:translate3d(3px,-2px,0)
   .site-ambient,.signal-ripple{display:none}
   .motion-reveal{opacity:1!important;filter:none!important;transform:none!important;transition:none!important}
   body.motion-ready *,body.motion-ready *::before,body.motion-ready *::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+
+/* Spatial motion layer */
+.site-depth-scene{
+  position:fixed;
+  z-index:2;
+  inset:0;
+  overflow:hidden;
+  pointer-events:none;
+  perspective:1100px;
+  transform-style:preserve-3d;
+  opacity:.42;
+  mix-blend-mode:screen;
+}
+.depth-shard{
+  position:absolute;
+  display:block;
+  width:clamp(22px,3.2vw,48px);
+  height:clamp(120px,17vw,245px);
+  border:1px solid color-mix(in srgb,var(--motion-accent) 65%,white);
+  background:
+    linear-gradient(90deg,transparent 0 16%,color-mix(in srgb,var(--motion-accent) 34%,transparent) 17% 48%,#ffffff38 49% 53%,color-mix(in srgb,var(--motion-accent) 18%,transparent) 54% 83%,transparent 84%),
+    linear-gradient(180deg,#ffffff40,transparent 34% 70%,color-mix(in srgb,var(--motion-accent) 38%,transparent));
+  box-shadow:inset 8px 0 20px #ffffff13,inset -10px 0 28px color-mix(in srgb,var(--motion-accent) 24%,transparent),0 0 38px color-mix(in srgb,var(--motion-accent) 16%,transparent);
+  backdrop-filter:blur(3px);
+  transform-style:preserve-3d;
+  will-change:transform;
+}
+.depth-shard::before,.depth-shard::after{
+  content:"";
+  position:absolute;
+  inset:-1px;
+  border:1px solid color-mix(in srgb,var(--motion-accent) 28%,transparent);
+  transform:translateZ(-14px) translate(9px,8px);
+}
+.depth-shard::after{transform:translateZ(14px) translate(-5px,-4px);opacity:.65}
+.shard-one{
+  left:7vw;
+  top:18vh;
+  transform:translate3d(var(--scene-x),calc(var(--scene-y) + var(--scroll-shift)),60px) rotateX(calc(64deg + var(--scene-rx))) rotateY(calc(-28deg + var(--scene-ry))) rotateZ(calc(18deg + var(--scroll-turn)));
+  animation:shardFloatOne 9s ease-in-out infinite alternate;
+}
+.shard-two{
+  right:9vw;
+  top:55vh;
+  width:clamp(18px,2.4vw,38px);
+  height:clamp(90px,13vw,185px);
+  transform:translate3d(var(--scene-x-inverse),calc(var(--scene-y-inverse) + var(--scroll-shift-reverse)),120px) rotateX(calc(32deg - var(--scene-rx))) rotateY(calc(38deg - var(--scene-ry))) rotateZ(calc(-31deg + var(--scroll-turn-reverse)));
+  animation:shardFloatTwo 12s ease-in-out infinite alternate;
+}
+.shard-three{
+  left:62vw;
+  top:8vh;
+  width:clamp(12px,1.7vw,28px);
+  height:clamp(70px,9vw,130px);
+  opacity:.55;
+  transform:translate3d(var(--scene-x-soft),calc(var(--scene-y-soft) + var(--scroll-shift-soft)),-50px) rotateX(calc(75deg + var(--scene-rx))) rotateY(calc(18deg + var(--scene-ry))) rotateZ(calc(52deg + var(--scroll-turn)));
+  animation:shardFloatThree 7s ease-in-out infinite alternate;
+}
+@keyframes shardFloatOne{to{margin-top:28px;margin-left:12px;filter:hue-rotate(24deg) brightness(1.18)}}
+@keyframes shardFloatTwo{to{margin-top:-35px;margin-right:18px;filter:hue-rotate(-20deg) brightness(1.25)}}
+@keyframes shardFloatThree{to{margin-top:22px;margin-left:-16px;filter:hue-rotate(35deg)}}
+.route-depth-wipe{
+  position:fixed;
+  z-index:2100;
+  inset:-15%;
+  pointer-events:none;
+  opacity:0;
+  background:linear-gradient(112deg,transparent 38%,color-mix(in srgb,var(--motion-accent) 42%,#fff) 48%,color-mix(in srgb,var(--motion-accent) 14%,transparent) 53%,transparent 63%);
+  transform:translate3d(-65%,0,0) rotate(-3deg);
+  mix-blend-mode:screen;
+  animation:routeDepthWipe .9s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes routeDepthWipe{
+  0%{opacity:0;transform:translate3d(-65%,0,0) rotate(-3deg)}
+  20%{opacity:.6}
+  100%{opacity:0;transform:translate3d(65%,0,0) rotate(-3deg)}
+}
+.is-depth-active{
+  position:relative;
+  z-index:3;
+  transform:perspective(1200px) rotateX(var(--surface-rx,0deg)) rotateY(var(--surface-ry,0deg)) translate3d(0,-5px,24px)!important;
+  box-shadow:0 28px 75px #0008,0 0 42px color-mix(in srgb,var(--motion-accent) 14%,transparent)!important;
+  transition:transform .12s ease-out,box-shadow .35s ease!important;
+  transform-style:preserve-3d;
+}
+.is-depth-active::after{
+  content:"";
+  position:absolute;
+  z-index:20;
+  inset:0;
+  pointer-events:none;
+  opacity:.42;
+  background:radial-gradient(420px circle at var(--surface-light-x,50%) var(--surface-light-y,50%),#ffffff38,transparent 58%);
+  mix-blend-mode:screen;
+}
+.is-depth-active > :where(div,section,article,nav):not([class*="shade"]){transform:translateZ(12px)}
+.hero-portrait{
+  transform:perspective(1200px) translate3d(var(--scene-x-soft),var(--scene-y-soft),22px) rotateX(var(--scene-rx-soft)) rotateY(var(--scene-ry-soft));
+  transform-style:preserve-3d;
+  transition:transform .22s ease-out;
+}
+.hero-orbit{transform:translate3d(var(--scene-x-inverse),var(--scene-y-inverse),-10px);transition:transform .3s ease-out}
+
+@media(max-width:800px){
+  .site-depth-scene{opacity:.22}
+  .shard-one{left:-3vw}.shard-two{right:-2vw}.shard-three{display:none}
+  .route-depth-wipe{animation-duration:.65s}
+}
+@media(hover:none),(prefers-reduced-motion:reduce){
+  .site-depth-scene,.route-depth-wipe{display:none}
+  .is-depth-active{transform:none!important;box-shadow:inherit!important}
+  .hero-portrait,.hero-orbit{transform:none!important}
 }
 
 a, button, [role="button"], input[type="submit"] { cursor: pointer !important; }
