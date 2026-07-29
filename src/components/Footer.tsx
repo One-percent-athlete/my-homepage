@@ -23,11 +23,14 @@ export default function Footer() {
     "/travel": { border: "border-orange-400", text: "text-orange-400", shadow: "shadow-[0_0_10px_rgba(251,146,60,0.5)] hover:shadow-[0_0_20px_rgba(251,146,60,0.7)]" },
     "/ski": { border: "border-sky-400", text: "text-sky-400", shadow: "shadow-[0_0_10px_rgba(56,189,248,0.5)] hover:shadow-[0_0_20px_rgba(56,189,248,0.7)]" },
     "/blog": { border: "border-purple-400", text: "text-purple-400", shadow: "shadow-[0_0_10px_rgba(192,132,252,0.5)] hover:shadow-[0_0_20px_rgba(192,132,252,0.7)]" },
+    "/gallery": { border: "border-amber-300", text: "text-amber-300", shadow: "shadow-[0_0_10px_rgba(252,211,77,0.45)] hover:shadow-[0_0_20px_rgba(252,211,77,0.65)]" },
+    "/between": { border: "border-pink-400", text: "text-pink-400", shadow: "shadow-[0_0_10px_rgba(244,114,182,0.45)] hover:shadow-[0_0_20px_rgba(244,114,182,0.65)]" },
     "/contact": { border: "border-yellow-400", text: "text-yellow-400", shadow: "shadow-[0_0_10px_rgba(251,146,60,0.5)] hover:shadow-[0_0_20px_rgba(251,146,60,0.7)]" },
   };
 
   const pathname = usePathname();
-  const currentTheme = themes[pathname as keyof typeof themes] || themes["/"];
+  const themePath = Object.keys(themes).find((path) => path !== "/" && pathname.startsWith(path)) as keyof typeof themes | undefined;
+  const currentTheme = themePath ? themes[themePath] : themes["/"];
 
   const contactLinks = [
     { icon: FaEnvelope, href: "mailto:one.percent.athlete@gmail.com" },
@@ -45,7 +48,7 @@ export default function Footer() {
 
   return (
     <footer
-      className={`relative w-full text-gray-300 bg-gray-800 border-t-4 ${currentTheme.border} overflow-x-hidden pt-8 md:pt-16 md:pb-24 px-4 transition-colors duration-500`}
+      className={`relative z-20 w-full text-gray-300 bg-gray-800 border-t-4 ${currentTheme.border} overflow-x-hidden pt-8 md:pt-16 md:pb-24 px-4 transition-colors duration-500`}
     >
       {/* Background text */}
       <h1

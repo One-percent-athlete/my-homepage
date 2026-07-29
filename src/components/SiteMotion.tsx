@@ -92,7 +92,19 @@ export default function SiteMotion() {
         body.style.setProperty("--scene-rx-soft", `${normalY * -2.3}deg`);
         body.style.setProperty("--scene-ry-soft", `${normalX * 3.4}deg`);
 
-        const target = event.target instanceof Element ? event.target.closest<HTMLElement>(DEPTH_SELECTOR) : null;
+        const activeBounds = activeSurface?.getBoundingClientRect();
+        const insideActiveDeadZone = Boolean(
+          activeBounds &&
+          event.clientX >= activeBounds.left - 18 &&
+          event.clientX <= activeBounds.right + 18 &&
+          event.clientY >= activeBounds.top - 18 &&
+          event.clientY <= activeBounds.bottom + 18
+        );
+        const target = insideActiveDeadZone
+          ? activeSurface
+          : event.target instanceof Element
+            ? event.target.closest<HTMLElement>(DEPTH_SELECTOR)
+            : null;
         if (!target) {
           resetSurface();
           return;
@@ -122,6 +134,9 @@ export default function SiteMotion() {
         body.style.setProperty("--scroll-shift-soft", `${progress * -45}px`);
         body.style.setProperty("--scroll-turn", `${progress * 115}deg`);
         body.style.setProperty("--scroll-turn-reverse", `${progress * -115}deg`);
+        body.style.setProperty("--world-dolly", `${progress * 170}px`);
+        body.style.setProperty("--world-rise", `${progress * -95}px`);
+        body.style.setProperty("--world-scale", String(1 + progress * 0.18));
         body.style.setProperty("--scroll-progress", String(progress));
       });
     };
@@ -203,6 +218,14 @@ export default function SiteMotion() {
 
   return <>
     <div className="site-ambient" aria-hidden="true" />
+    <div className="site-world-stage" aria-hidden="true">
+      <div className="world-sky"/>
+      <div className="world-orbit"/>
+      <div className="world-structures">
+        <i/><i/><i/><i/><i/>
+      </div>
+      <div className="world-ground"/>
+    </div>
     <div className="site-depth-scene" aria-hidden="true">
       <i className="depth-shard shard-one"/><i className="depth-shard shard-two"/><i className="depth-shard shard-three"/>
     </div>

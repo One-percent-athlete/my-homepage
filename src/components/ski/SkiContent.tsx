@@ -1,7 +1,6 @@
 "use client";
 
 import FloatingButtons from "@/components/FloatingButtons";
-import Footer from "@/components/Footer";
 import { useLanguage } from "@/app/context/LanguageContext";
 
 // Component imports
@@ -69,7 +68,6 @@ export default function SkiContent() {
         {/* Floating Buttons */}
         <FloatingButtons />
       </div>
-      <Footer />
     </>
   );
 }

@@ -12,7 +12,6 @@ import {
   FaEnvelope,
 } from "react-icons/fa";
 import FloatingButtons from "@/components/FloatingButtons";
-import Footer from "@/components/Footer";
 import { useLanguage } from "@/app/context/LanguageContext";
 
 // Map icon strings to React components
@@ -335,7 +334,6 @@ export default function Contact() {
         </div>
       </motion.form>
     </section>
-      <Footer />
       </>
   );
 }

@@ -1,7 +1,6 @@
 "use client";
 
 import FloatingButtons from "../../components/FloatingButtons";
-import Footer from "@/components/Footer";
 import { useLanguage } from "@/app/context/LanguageContext";
 
 // Component imports
@@ -66,7 +65,6 @@ export default function TravelContent({ scrollY }: TravelContentProps) {
         <LogoShowcase direction="left" />
       </div>
 
-      <Footer />
     </>
   );
 }
