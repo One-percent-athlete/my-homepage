@@ -269,6 +269,9 @@ body[data-motion-world="between"] .world-orbit{box-shadow:0 0 150px #ff67d420,in
 /* A fixed cosmic room behind the scrolling site */
 .cosmic-room{
   --room-edge:#7396ff;
+  --room-left:14vw;
+  --room-top:12vh;
+  --room-bottom:14vh;
   position:fixed;
   z-index:0;
   inset:0;
@@ -280,17 +283,42 @@ body[data-motion-world="between"] .world-orbit{box-shadow:0 0 150px #ff67d420,in
 .room-back-wall{
   position:absolute;
   z-index:1;
-  inset:10vh 12vw 12vh;
+  inset:var(--room-top) var(--room-left) var(--room-bottom);
   overflow:hidden;
-  border:1px solid color-mix(in srgb,var(--room-edge) 24%,transparent);
+  border:1px solid color-mix(in srgb,var(--room-edge) 52%,transparent);
   background:
+    linear-gradient(color-mix(in srgb,var(--room-edge) 11%,transparent) 1px,transparent 1px),
+    linear-gradient(90deg,color-mix(in srgb,var(--room-edge) 11%,transparent) 1px,transparent 1px),
     radial-gradient(circle at 72% 32%,#293c8b42,transparent 22%),
     radial-gradient(circle at 28% 65%,#542c7b35,transparent 24%),
     linear-gradient(145deg,#080d25 0%,#030612 54%,#0a0920 100%);
-  box-shadow:inset 0 0 120px #000b,0 0 90px #5076ff12;
+  background-size:9vw 9vh,9vw 9vh,auto,auto,auto;
+  box-shadow:inset 0 0 120px #0009,inset 0 0 0 18px #02040c80,0 0 70px color-mix(in srgb,var(--room-edge) 16%,transparent);
+}
+.room-back-wall::before{
+  content:"";
+  position:absolute;
+  z-index:2;
+  inset:18px;
+  border:1px solid color-mix(in srgb,var(--room-edge) 24%,transparent);
+  box-shadow:inset 0 0 45px #0008;
+  pointer-events:none;
+}
+.room-back-wall::after{
+  content:"";
+  position:absolute;
+  z-index:2;
+  inset:0;
+  background:
+    linear-gradient(135deg,color-mix(in srgb,var(--room-edge) 65%,transparent) 0 2px,transparent 2px) left top/26px 26px no-repeat,
+    linear-gradient(225deg,color-mix(in srgb,var(--room-edge) 65%,transparent) 0 2px,transparent 2px) right top/26px 26px no-repeat,
+    linear-gradient(45deg,color-mix(in srgb,var(--room-edge) 65%,transparent) 0 2px,transparent 2px) left bottom/26px 26px no-repeat,
+    linear-gradient(315deg,color-mix(in srgb,var(--room-edge) 65%,transparent) 0 2px,transparent 2px) right bottom/26px 26px no-repeat;
+  pointer-events:none;
 }
 .room-nebula{
   position:absolute;
+  z-index:1;
   width:55%;
   aspect-ratio:1.7;
   border-radius:50%;
@@ -301,7 +329,7 @@ body[data-motion-world="between"] .world-orbit{box-shadow:0 0 150px #ff67d420,in
 .room-nebula-one{left:-8%;top:12%;background:#294ca3}
 .room-nebula-two{right:-12%;bottom:4%;background:#682e8c;animation-duration:23s;animation-direction:alternate-reverse}
 @keyframes roomNebula{to{opacity:.46;transform:scale(1.12) translate3d(4%,2%,0)}}
-.room-stars{position:absolute;inset:0}
+.room-stars{position:absolute;z-index:3;inset:0}
 .room-stars i{
   position:absolute;
   left:var(--star-left);
@@ -342,16 +370,17 @@ body[data-motion-world="between"] .world-orbit{box-shadow:0 0 150px #ff67d420,in
   box-shadow:inset 0 0 100px #000a;
 }
 .room-ceiling{
-  inset:0 0 90vh;
-  height:10vh;
-  clip-path:polygon(0 0,100% 0,88% 100%,12% 100%);
+  inset:0 0 auto;
+  height:var(--room-top);
+  clip-path:polygon(0 0,100% 0,calc(100% - var(--room-left)) 100%,var(--room-left) 100%);
   border-bottom:1px solid color-mix(in srgb,var(--room-edge) 35%,transparent);
-  background-position:0 -28px;
+  background-color:#070b1d;
+  background-position:0 -18px;
 }
 .room-floor{
   inset:auto 0 0;
-  height:12vh;
-  clip-path:polygon(12% 0,88% 0,100% 100%,0 100%);
+  height:var(--room-bottom);
+  clip-path:polygon(var(--room-left) 0,calc(100% - var(--room-left)) 0,100% 100%,0 100%);
   border-top:1px solid color-mix(in srgb,var(--room-edge) 35%,transparent);
   background:
     linear-gradient(90deg,transparent 49.8%,#8ba3ff20 50%,transparent 50.2%),
@@ -361,49 +390,61 @@ body[data-motion-world="between"] .world-orbit{box-shadow:0 0 150px #ff67d420,in
 }
 .room-wall-left{
   inset:0 auto 0 0;
-  width:12vw;
-  clip-path:polygon(0 0,100% 10%,100% 88%,0 100%);
+  width:var(--room-left);
+  clip-path:polygon(0 0,100% var(--room-top),100% calc(100% - var(--room-bottom)),0 100%);
   border-right:1px solid color-mix(in srgb,var(--room-edge) 35%,transparent);
+  background-color:#050817;
+  background-image:
+    linear-gradient(105deg,#0008,transparent 72%),
+    repeating-linear-gradient(0deg,transparent 0 11vh,color-mix(in srgb,var(--room-edge) 15%,transparent) 11vh calc(11vh + 1px)),
+    radial-gradient(circle at 70% 30%,#b8c8ff 0 1px,transparent 1.6px);
+  background-size:auto,auto,120px 150px;
 }
 .room-wall-right{
   inset:0 0 0 auto;
-  width:12vw;
-  clip-path:polygon(0 10%,100% 0,100% 100%,0 88%);
+  width:var(--room-left);
+  clip-path:polygon(0 var(--room-top),100% 0,100% 100%,0 calc(100% - var(--room-bottom)));
   border-left:1px solid color-mix(in srgb,var(--room-edge) 35%,transparent);
-  background-position:22px 8px,22px 8px,0 0,40px 22px;
+  background-color:#050817;
+  background-image:
+    linear-gradient(255deg,#0008,transparent 72%),
+    repeating-linear-gradient(0deg,transparent 0 11vh,color-mix(in srgb,var(--room-edge) 15%,transparent) 11vh calc(11vh + 1px)),
+    radial-gradient(circle at 30% 65%,#b8c8ff 0 1px,transparent 1.6px);
+  background-size:auto,auto,130px 160px;
 }
 .room-perspective-lines{position:absolute;z-index:3;inset:0}
 .room-perspective-lines i{
   position:absolute;
   display:block;
-  width:12vw;
-  height:10vh;
-  opacity:.65;
+  width:var(--room-left);
+  height:var(--room-top);
+  opacity:.9;
+  background:color-mix(in srgb,var(--room-edge) 62%,transparent);
   filter:drop-shadow(0 0 5px color-mix(in srgb,var(--room-edge) 38%,transparent));
 }
 .room-perspective-lines i:nth-child(1){
   left:0;
   top:0;
-  background:linear-gradient(to bottom right,transparent 49.5%,color-mix(in srgb,var(--room-edge) 48%,transparent) 49.8% 50.2%,transparent 50.5%);
+  clip-path:polygon(0 0,2px 0,100% calc(100% - 2px),100% 100%);
 }
 .room-perspective-lines i:nth-child(2){
   right:0;
   top:0;
-  background:linear-gradient(to bottom left,transparent 49.5%,color-mix(in srgb,var(--room-edge) 48%,transparent) 49.8% 50.2%,transparent 50.5%);
+  clip-path:polygon(calc(100% - 2px) 0,100% 0,0 100%,0 calc(100% - 2px));
 }
 .room-perspective-lines i:nth-child(3){
   left:0;
   bottom:0;
-  height:12vh;
-  background:linear-gradient(to top right,transparent 49.5%,color-mix(in srgb,var(--room-edge) 48%,transparent) 49.8% 50.2%,transparent 50.5%);
+  height:var(--room-bottom);
+  clip-path:polygon(0 100%,2px 100%,100% 2px,100% 0);
 }
 .room-perspective-lines i:nth-child(4){
   right:0;
   bottom:0;
-  height:12vh;
-  background:linear-gradient(to top left,transparent 49.5%,color-mix(in srgb,var(--room-edge) 48%,transparent) 49.8% 50.2%,transparent 50.5%);
+  height:var(--room-bottom);
+  clip-path:polygon(calc(100% - 2px) 100%,100% 100%,0 0,0 2px);
 }
-.room-shooting-stars{position:absolute;z-index:4;inset:10vh 12vw 12vh;overflow:hidden}
+.room-shooting-stars{position:absolute;z-index:4;inset:var(--room-top) var(--room-left) var(--room-bottom);overflow:hidden}
 .room-shooting-stars i{
   position:absolute;
   right:-18vw;
@@ -898,6 +939,18 @@ body:not([data-motion-world="private"]) :is(.mission-site,.web-world,.travel-wor
   z-index:30!important;
 }
 .world-dock{z-index:9999!important}
+.world-dock,.world-dock *{box-sizing:border-box}
+.between-discovery{
+  min-width:220px;
+  height:54px;
+  padding:9px 12px!important;
+  gap:10px!important;
+  font-family:var(--font-geist-mono,"SFMono-Regular",Consolas,monospace)!important;
+  font-size:10px!important;
+  line-height:1!important;
+}
+.between-discovery small{font-size:7px!important;line-height:1.15!important}
+.between-discovery strong{font-size:9px!important;line-height:1.15!important}
 .web-toolbelt{
   background:transparent!important;
   backdrop-filter:none!important;
@@ -906,13 +959,7 @@ body:not([data-motion-world="private"]) :is(.mission-site,.web-world,.travel-wor
 .web-deep-section.projects :is(a,button,[role="button"]){cursor:pointer!important}
 
 @media(max-width:700px){
-  .room-back-wall{inset:7vh 7vw 9vh}
-  .room-ceiling{height:7vh;inset:0 0 93vh;clip-path:polygon(0 0,100% 0,93% 100%,7% 100%)}
-  .room-floor{height:9vh;clip-path:polygon(7% 0,93% 0,100% 100%,0 100%)}
-  .room-wall-left,.room-wall-right{width:7vw}
-  .room-wall-left{clip-path:polygon(0 0,100% 7%,100% 91%,0 100%)}
-  .room-wall-right{clip-path:polygon(0 7%,100% 0,100% 100%,0 91%)}
-  .room-perspective-lines i{width:7vw;height:7vh}
-  .room-perspective-lines i:nth-child(3),.room-perspective-lines i:nth-child(4){height:9vh}
-  .room-shooting-stars{inset:7vh 7vw 9vh}
+  .cosmic-room{--room-left:8vw;--room-top:8vh;--room-bottom:10vh}
+  .room-back-wall{box-shadow:inset 0 0 80px #0009,inset 0 0 0 10px #02040c80}
+  .room-back-wall::before{inset:10px}
 }
