@@ -9,9 +9,10 @@ interface ParallaxSectionProps {
   subtitle: string;
   index: number;
   location: string;
+  total?: number;
 }
 
-export default function ParallaxSection({ image, title, subtitle, index, location }: ParallaxSectionProps) {
+export default function ParallaxSection({ image, title, subtitle, index, location, total = 3 }: ParallaxSectionProps) {
   return (
     <section
       className="travel-story-panel"
@@ -33,7 +34,7 @@ export default function ParallaxSection({ image, title, subtitle, index, locatio
         <h2>{title}</h2>
         <p>{subtitle}</p>
       </motion.div>
-      <span className="travel-story-count">0{index + 1} / 03</span>
+      <span className="travel-story-count">0{index + 1} / {String(total).padStart(2, "0")}</span>
     </section>
   );
 }

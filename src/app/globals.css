@@ -375,18 +375,20 @@ body[data-motion-world="between"] .world-orbit{box-shadow:0 0 150px #ff67d420,in
 .room-shooting-stars{position:absolute;z-index:4;inset:10vh 12vw 12vh;overflow:hidden}
 .room-shooting-stars i{
   position:absolute;
-  width:clamp(90px,13vw,190px);
+  right:-18vw;
+  width:clamp(55px,8vw,115px);
   height:1px;
   opacity:0;
-  background:linear-gradient(90deg,transparent,#cfe0ff 75%,#fff);
-  filter:drop-shadow(0 0 5px #82a0ff);
-  transform:rotate(-28deg);
-  animation:shootingStar 8s linear infinite;
+  background:linear-gradient(90deg,#fff 0,#cfe0ff 8%,#8da8ff66 42%,transparent 100%);
+  filter:drop-shadow(0 0 4px #82a0ff);
+  transform:translate3d(0,0,0) rotate(-22deg);
+  transform-origin:left center;
+  animation:shootingStar 12s cubic-bezier(.28,.01,.7,1) infinite;
 }
 .room-shooting-stars i::after{
   content:"";
   position:absolute;
-  right:-2px;
+  left:-2px;
   top:-2px;
   width:5px;
   height:5px;
@@ -394,11 +396,15 @@ body[data-motion-world="between"] .world-orbit{box-shadow:0 0 150px #ff67d420,in
   background:#fff;
   box-shadow:0 0 12px #fff,0 0 24px #7998ff;
 }
-.room-shooting-stars i:nth-child(1){left:-20%;top:18%;animation-delay:-1.2s}
-.room-shooting-stars i:nth-child(2){left:18%;top:42%;animation-delay:-5.7s;animation-duration:11s}
-.room-shooting-stars i:nth-child(3){left:48%;top:10%;animation-delay:-8.4s;animation-duration:13s}
-.room-shooting-stars i:nth-child(4){left:4%;top:73%;animation-delay:-10.5s;animation-duration:15s}
-@keyframes shootingStar{0%,72%{opacity:0;translate:-12vw -8vh}74%{opacity:1}83%{opacity:.9}90%,100%{opacity:0;translate:82vw 52vh}}
+.room-shooting-stars i:nth-child(1){top:14%;animation-delay:-2.1s}
+.room-shooting-stars i:nth-child(2){top:34%;animation-delay:-9.4s;animation-duration:17s;scale:.7}
+.room-shooting-stars i:nth-child(3){top:4%;animation-delay:-14.8s;animation-duration:21s;scale:1.15}
+@keyframes shootingStar{
+  0%,78%{opacity:0;transform:translate3d(0,0,0) rotate(-22deg)}
+  80%{opacity:1}
+  88%{opacity:.9}
+  94%,100%{opacity:0;transform:translate3d(-118vw,46vh,0) rotate(-22deg)}
+}
 .room-vignette{
   position:absolute;
   z-index:6;
@@ -510,12 +516,33 @@ body[data-motion-world="contact"] .cosmic-room{--room-edge:#91a9ff}
 .travel-story-copy p{max-width:580px;margin:0;color:#d8cbbb;font:400 clamp(16px,1.4vw,20px)/1.7 Georgia,serif}
 .travel-story-count{position:absolute;z-index:4;right:clamp(24px,5vw,72px);bottom:clamp(30px,5vw,72px);color:#ffcf9d;font:700 10px var(--font-geist-mono);letter-spacing:.16em}
 .travel-story-panel .travel-parallax-background{inset:-8% 0}
+.travel-story-details-panel{
+  align-items:center;
+  justify-content:center;
+  padding-block:clamp(62px,8vh,96px);
+}
+.travel-story-details-panel>div.relative{width:100%}
+.travel-story-details-panel h2{margin-bottom:clamp(24px,4vh,46px)}
+.travel-story-details-panel .grid{gap:12px}
+.travel-story-details-panel .grid>div{min-height:112px;padding:16px;backdrop-filter:none}
+.travel-story-details-panel .grid>div>div:nth-of-type(2){margin-bottom:8px;font-size:1.8rem}
+.travel-story-details-panel .grid h4{font-size:clamp(13px,1.2vw,17px)}
+.travel-story-cta-panel{
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
+.travel-story-cta-panel>div.relative{width:min(900px,90vw)}
 
 @media(max-width:700px){
   .travel-story-panel{padding:28px 22px;min-height:100svh}
   .travel-story-copy{width:100%;padding-bottom:11vh}
   .travel-story-copy h2{font-size:clamp(47px,15vw,72px)}
   .travel-story-count{right:22px;bottom:27px}
+  .travel-story-details-panel{position:relative!important;min-height:auto;padding:75px 18px 90px}
+  .travel-story-details-panel .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .travel-story-details-panel .grid>div{min-height:105px;padding:12px 8px}
+  .travel-story-details-panel .grid h4{font-size:12px}
 }
 @media(prefers-reduced-motion:reduce){
   .travel-story-panel{position:relative!important}

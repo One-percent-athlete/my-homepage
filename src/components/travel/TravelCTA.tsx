@@ -23,17 +23,23 @@ const ctaTexts = {
 
 interface TravelCTAProps {
   language: keyof typeof ctaTexts;
+  index?: number;
+  total?: number;
 }
 
-export default function TravelCTA({ language }: TravelCTAProps) {
+export default function TravelCTA({ language, index = 0, total = 1 }: TravelCTAProps) {
   const currentTexts = ctaTexts[language];
 
   return (
-    <section className="relative text-center px-6 py-24 overflow-hidden bg-gradient-to-br from-orange-900/30 to-amber-900/20 min-h-[60vh] flex items-center justify-center">
+    <section
+      className="travel-story-panel travel-story-cta-panel"
+      style={{ "--panel-index": index } as React.CSSProperties}
+    >
       <TravelParallaxBackground image="/images/japan1.jpg" />
 
       {/* Overlay */}
-      <div className="absolute inset-0 bg-black/40"></div>
+      <div className="travel-story-shade"></div>
+      <div className="travel-story-edge" aria-hidden="true" />
 
       {/* Content */}
       <div className="relative z-10 max-w-4xl mx-auto">
@@ -74,6 +80,7 @@ export default function TravelCTA({ language }: TravelCTAProps) {
           <div className="absolute inset-0 bg-gradient-to-r from-amber-500 to-orange-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         </motion.a>
       </div>
+      <span className="travel-story-count">0{index + 1} / {String(total).padStart(2, "0")}</span>
     </section>
   );
 }

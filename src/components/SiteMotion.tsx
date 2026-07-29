@@ -150,7 +150,7 @@ export default function SiteMotion() {
       <div className="room-plane room-wall-right" />
       <div className="room-plane room-floor" />
       <div className="room-shooting-stars">
-        <i /><i /><i /><i />
+        <i /><i /><i />
       </div>
       <div className="room-vignette" />
     </div>

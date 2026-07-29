@@ -41,14 +41,21 @@ const testimonials = {
 
 interface WhyMeSectionProps {
   language: keyof typeof testimonials;
+  index?: number;
+  total?: number;
 }
 
-export default function WhyMeSection({ language }: WhyMeSectionProps) {
+export default function WhyMeSection({ language, index = 0, total = 1 }: WhyMeSectionProps) {
   const currentTestimonials = testimonials[language];
 
   return (
-    <section className="relative mx-auto px-6 py-24 overflow-hidden">
+    <section
+      className="travel-story-panel travel-story-details-panel"
+      style={{ "--panel-index": index } as React.CSSProperties}
+    >
       <TravelParallaxBackground image="/images/whale.jpg" opacity={0.4} />
+      <div className="travel-story-shade" />
+      <div className="travel-story-edge" aria-hidden="true" />
 
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto">
@@ -95,6 +102,7 @@ export default function WhyMeSection({ language }: WhyMeSectionProps) {
           ))}
         </div>
       </div>
+      <span className="travel-story-count">0{index + 1} / {String(total).padStart(2, "0")}</span>
     </section>
   );
 }
