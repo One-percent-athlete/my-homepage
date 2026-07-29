@@ -1,28 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
-
-const REVEAL_SELECTOR = [
-  "main > header",
-  "main > section",
-  "main > footer",
-  ".mission-site > header",
-  ".mission-site > section",
-  ".mission-site > footer",
-  ".web-world > section",
-  ".web-world > footer",
-  ".travel-world > section",
-  ".travel-world > div:not(.travel-story-stack) > section",
-  ".ski-world > header",
-  ".ski-world main > section",
-  ".journal-world > header",
-  ".journal-world > section",
-  ".journal-world > main",
-  ".journal-world > footer",
-  ".between-world > section",
-  ".contact-world",
-].join(",");
+import { useEffect, type CSSProperties } from "react";
 
 const DEPTH_SELECTOR = [
   ".mission-card",
@@ -40,7 +19,20 @@ const DEPTH_SELECTOR = [
   "button:has(img)",
 ].join(",");
 
+const ROOM_STARS = [
+  [7, 15, 2, 0.35, 4.8], [13, 34, 1, 0.7, 3.1], [18, 69, 3, 0.85, 5.7],
+  [23, 22, 1, 0.42, 4.2], [28, 51, 2, 0.75, 6.2], [32, 79, 1, 0.5, 3.7],
+  [37, 12, 4, 0.9, 7.1], [41, 41, 1, 0.4, 5.3], [45, 64, 2, 0.8, 3.4],
+  [49, 27, 1, 0.65, 6.7], [53, 76, 3, 0.9, 4.5], [57, 47, 1, 0.38, 5.9],
+  [61, 18, 2, 0.72, 3.8], [65, 58, 1, 0.45, 6.5], [69, 85, 4, 0.95, 7.4],
+  [73, 33, 1, 0.5, 4.1], [77, 67, 2, 0.82, 5.5], [81, 14, 1, 0.4, 6.9],
+  [85, 45, 3, 0.88, 3.5], [90, 75, 1, 0.52, 5.1], [94, 26, 2, 0.76, 6.1],
+  [10, 88, 1, 0.45, 7.6], [26, 91, 3, 0.9, 4.7], [43, 89, 1, 0.55, 3.3],
+  [58, 94, 2, 0.72, 5.8], [74, 92, 1, 0.4, 6.4], [88, 90, 3, 0.86, 4.3],
+] as const;
+
 function worldFor(pathname: string) {
+  if (pathname.startsWith("/mission-control") || pathname.startsWith("/blog/create")) return "private";
   if (pathname.startsWith("/web")) return "build";
   if (pathname.startsWith("/travel")) return "travel";
   if (pathname.startsWith("/ski")) return "summit";
@@ -63,7 +55,6 @@ export default function SiteMotion() {
     if (reducedMotion) return;
 
     let pointerFrame = 0;
-    let scrollFrame = 0;
     let activeSurface: HTMLElement | null = null;
     const resetSurface = () => {
       activeSurface?.classList.remove("is-depth-active");
@@ -73,25 +64,11 @@ export default function SiteMotion() {
       activeSurface?.style.removeProperty("--surface-light-y");
       activeSurface = null;
     };
-    const moveGlow = (event: PointerEvent) => {
+
+    const moveDepth = (event: PointerEvent) => {
       if (event.pointerType === "touch") return;
       cancelAnimationFrame(pointerFrame);
       pointerFrame = requestAnimationFrame(() => {
-        const normalX = event.clientX / window.innerWidth - 0.5;
-        const normalY = event.clientY / window.innerHeight - 0.5;
-        body.style.setProperty("--pointer-x", `${event.clientX}px`);
-        body.style.setProperty("--pointer-y", `${event.clientY}px`);
-        body.style.setProperty("--scene-x", `${normalX * 28}px`);
-        body.style.setProperty("--scene-y", `${normalY * 20}px`);
-        body.style.setProperty("--scene-x-inverse", `${normalX * -20}px`);
-        body.style.setProperty("--scene-y-inverse", `${normalY * -16}px`);
-        body.style.setProperty("--scene-x-soft", `${normalX * 11}px`);
-        body.style.setProperty("--scene-y-soft", `${normalY * 8}px`);
-        body.style.setProperty("--scene-rx", `${normalY * -5}deg`);
-        body.style.setProperty("--scene-ry", `${normalX * 7}deg`);
-        body.style.setProperty("--scene-rx-soft", `${normalY * -2.3}deg`);
-        body.style.setProperty("--scene-ry-soft", `${normalX * 3.4}deg`);
-
         const activeBounds = activeSurface?.getBoundingClientRect();
         const insideActiveDeadZone = Boolean(
           activeBounds &&
@@ -105,6 +82,7 @@ export default function SiteMotion() {
           : event.target instanceof Element
             ? event.target.closest<HTMLElement>(DEPTH_SELECTOR)
             : null;
+
         if (!target) {
           resetSurface();
           return;
@@ -114,6 +92,7 @@ export default function SiteMotion() {
           activeSurface = target;
           activeSurface.classList.add("is-depth-active");
         }
+
         const bounds = target.getBoundingClientRect();
         const localX = Math.max(-1, Math.min(1, ((event.clientX - bounds.left) / bounds.width - 0.5) * 2));
         const localY = Math.max(-1, Math.min(1, ((event.clientY - bounds.top) / bounds.height - 0.5) * 2));
@@ -121,23 +100,6 @@ export default function SiteMotion() {
         target.style.setProperty("--surface-ry", `${localX * 6.5}deg`);
         target.style.setProperty("--surface-light-x", `${(localX + 1) * 50}%`);
         target.style.setProperty("--surface-light-y", `${(localY + 1) * 50}%`);
-      });
-    };
-
-    const moveSceneWithScroll = () => {
-      cancelAnimationFrame(scrollFrame);
-      scrollFrame = requestAnimationFrame(() => {
-        const available = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-        const progress = Math.max(0, Math.min(1, window.scrollY / available));
-        body.style.setProperty("--scroll-shift", `${progress * -150}px`);
-        body.style.setProperty("--scroll-shift-reverse", `${progress * 68}px`);
-        body.style.setProperty("--scroll-shift-soft", `${progress * -45}px`);
-        body.style.setProperty("--scroll-turn", `${progress * 115}deg`);
-        body.style.setProperty("--scroll-turn-reverse", `${progress * -115}deg`);
-        body.style.setProperty("--world-dolly", `${progress * 170}px`);
-        body.style.setProperty("--world-rise", `${progress * -95}px`);
-        body.style.setProperty("--world-scale", String(1 + progress * 0.18));
-        body.style.setProperty("--scroll-progress", String(progress));
       });
     };
 
@@ -151,83 +113,46 @@ export default function SiteMotion() {
       body.appendChild(ring);
     };
 
-    let revealIndex = 0;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          entry.target.classList.add("is-revealed");
-          observer.unobserve(entry.target);
-        });
-      },
-      { threshold: 0.08, rootMargin: "0px 0px -7% 0px" },
-    );
-
-    const register = (root: ParentNode = document) => {
-      const elements = root.querySelectorAll<HTMLElement>(REVEAL_SELECTOR);
-      elements.forEach((element) => {
-        if (!element.classList.contains("motion-reveal")) {
-          element.classList.add("motion-reveal");
-          element.dataset.revealDirection = revealIndex % 3 === 1 ? "left" : revealIndex % 3 === 2 ? "right" : "up";
-          element.style.setProperty("--reveal-delay", `${Math.min(revealIndex % 4, 3) * 45}ms`);
-          revealIndex += 1;
-        }
-        if (element.classList.contains("is-revealed")) return;
-        observer.observe(element);
-      });
-    };
-
-    register();
-    const mutations = new MutationObserver((records) => {
-      records.forEach((record) => {
-        record.addedNodes.forEach((node) => {
-          if (node instanceof HTMLElement) {
-            if (node.matches(REVEAL_SELECTOR) && !node.classList.contains("motion-reveal")) {
-              node.classList.add("motion-reveal");
-              node.dataset.revealDirection = "up";
-              observer.observe(node);
-            }
-            register(node);
-          }
-        });
-      });
-    });
-    mutations.observe(body, { childList: true, subtree: true });
-
-    moveSceneWithScroll();
-    window.addEventListener("pointermove", moveGlow, { passive: true });
+    window.addEventListener("pointermove", moveDepth, { passive: true });
     window.addEventListener("pointerdown", pulse, { passive: true });
-    window.addEventListener("scroll", moveSceneWithScroll, { passive: true });
     return () => {
       cancelAnimationFrame(pointerFrame);
-      cancelAnimationFrame(scrollFrame);
       resetSurface();
-      observer.disconnect();
-      mutations.disconnect();
-      window.removeEventListener("pointermove", moveGlow);
+      window.removeEventListener("pointermove", moveDepth);
       window.removeEventListener("pointerdown", pulse);
-      window.removeEventListener("scroll", moveSceneWithScroll);
       document.querySelectorAll(".signal-ripple").forEach((ring) => ring.remove());
-      document.querySelectorAll<HTMLElement>(".motion-reveal").forEach((element) => {
-        element.classList.remove("motion-reveal", "is-revealed");
-        delete element.dataset.revealDirection;
-        element.style.removeProperty("--reveal-delay");
-      });
     };
   }, [pathname]);
 
-  return <>
-    <div className="site-ambient" aria-hidden="true" />
-    <div className="site-world-stage" aria-hidden="true">
-      <div className="world-sky"/>
-      <div className="world-orbit"/>
-      <div className="world-structures">
-        <i/><i/><i/><i/><i/>
+  return (
+    <div className="cosmic-room" aria-hidden="true">
+      <div className="room-back-wall">
+        <div className="room-nebula room-nebula-one" />
+        <div className="room-nebula room-nebula-two" />
+        <div className="room-stars">
+          {ROOM_STARS.map(([left, top, size, opacity, duration], index) => (
+            <i
+              key={index}
+              style={{
+                "--star-left": `${left}%`,
+                "--star-top": `${top}%`,
+                "--star-size": `${size}px`,
+                "--star-opacity": opacity,
+                "--star-duration": `${duration}s`,
+                "--star-delay": `${(index % 9) * -0.63}s`,
+              } as CSSProperties}
+            />
+          ))}
+        </div>
       </div>
-      <div className="world-ground"/>
+      <div className="room-plane room-ceiling" />
+      <div className="room-plane room-wall-left" />
+      <div className="room-plane room-wall-right" />
+      <div className="room-plane room-floor" />
+      <div className="room-shooting-stars">
+        <i /><i /><i /><i />
+      </div>
+      <div className="room-vignette" />
     </div>
-    <div className="site-depth-scene" aria-hidden="true">
-      <i className="depth-shard shard-one"/><i className="depth-shard shard-two"/><i className="depth-shard shard-three"/>
-    </div>
-  </>;
+  );
 }
