@@ -51,6 +51,11 @@ export default function SiteMotion() {
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     body.classList.add("motion-ready");
     body.dataset.motionWorld = worldFor(pathname);
+    if (pathname.startsWith("/ski")) {
+      window.requestAnimationFrame(() => {
+        document.querySelector<HTMLButtonElement>(".ski-run-tabs button:first-child")?.click();
+      });
+    }
 
     if (reducedMotion) return;
 
@@ -149,6 +154,9 @@ export default function SiteMotion() {
       <div className="room-plane room-wall-left" />
       <div className="room-plane room-wall-right" />
       <div className="room-plane room-floor" />
+      <div className="room-perspective-lines">
+        <i /><i /><i /><i />
+      </div>
       <div className="room-shooting-stars">
         <i /><i /><i />
       </div>

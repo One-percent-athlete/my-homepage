@@ -372,6 +372,37 @@ body[data-motion-world="between"] .world-orbit{box-shadow:0 0 150px #ff67d420,in
   border-left:1px solid color-mix(in srgb,var(--room-edge) 35%,transparent);
   background-position:22px 8px,22px 8px,0 0,40px 22px;
 }
+.room-perspective-lines{position:absolute;z-index:3;inset:0}
+.room-perspective-lines i{
+  position:absolute;
+  display:block;
+  width:12vw;
+  height:10vh;
+  opacity:.65;
+  filter:drop-shadow(0 0 5px color-mix(in srgb,var(--room-edge) 38%,transparent));
+}
+.room-perspective-lines i:nth-child(1){
+  left:0;
+  top:0;
+  background:linear-gradient(to bottom right,transparent 49.5%,color-mix(in srgb,var(--room-edge) 48%,transparent) 49.8% 50.2%,transparent 50.5%);
+}
+.room-perspective-lines i:nth-child(2){
+  right:0;
+  top:0;
+  background:linear-gradient(to bottom left,transparent 49.5%,color-mix(in srgb,var(--room-edge) 48%,transparent) 49.8% 50.2%,transparent 50.5%);
+}
+.room-perspective-lines i:nth-child(3){
+  left:0;
+  bottom:0;
+  height:12vh;
+  background:linear-gradient(to top right,transparent 49.5%,color-mix(in srgb,var(--room-edge) 48%,transparent) 49.8% 50.2%,transparent 50.5%);
+}
+.room-perspective-lines i:nth-child(4){
+  right:0;
+  bottom:0;
+  height:12vh;
+  background:linear-gradient(to top left,transparent 49.5%,color-mix(in srgb,var(--room-edge) 48%,transparent) 49.8% 50.2%,transparent 50.5%);
+}
 .room-shooting-stars{position:absolute;z-index:4;inset:10vh 12vw 12vh;overflow:hidden}
 .room-shooting-stars i{
   position:absolute;
@@ -861,6 +892,19 @@ body[data-motion-world="archive"] main{background:transparent!important}
   background:#070a18d9!important;
   backdrop-filter:none!important;
 }
+
+/* Keep navigation and interactive build cards above every scrolling layer. */
+body:not([data-motion-world="private"]) :is(.mission-site,.web-world,.travel-world,.ski-world,.journal-world,.between-world,.contact-world){
+  z-index:30!important;
+}
+.world-dock{z-index:9999!important}
+.web-toolbelt{
+  background:transparent!important;
+  backdrop-filter:none!important;
+}
+.web-deep-section.projects,.web-deep-section.projects *{cursor:auto!important}
+.web-deep-section.projects :is(a,button,[role="button"]){cursor:pointer!important}
+
 @media(max-width:700px){
   .room-back-wall{inset:7vh 7vw 9vh}
   .room-ceiling{height:7vh;inset:0 0 93vh;clip-path:polygon(0 0,100% 0,93% 100%,7% 100%)}
@@ -868,5 +912,7 @@ body[data-motion-world="archive"] main{background:transparent!important}
   .room-wall-left,.room-wall-right{width:7vw}
   .room-wall-left{clip-path:polygon(0 0,100% 7%,100% 91%,0 100%)}
   .room-wall-right{clip-path:polygon(0 7%,100% 0,100% 100%,0 91%)}
+  .room-perspective-lines i{width:7vw;height:7vh}
+  .room-perspective-lines i:nth-child(3),.room-perspective-lines i:nth-child(4){height:9vh}
   .room-shooting-stars{inset:7vh 7vw 9vh}
 }
