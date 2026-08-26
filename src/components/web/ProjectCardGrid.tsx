@@ -5,6 +5,15 @@ import { useLanguage } from "@/app/context/LanguageContext";
 import { useState, useRef, useEffect } from "react";
 import { FiExternalLink, FiGithub, FiEye, FiEyeOff } from "react-icons/fi";
 
+const demoLinks = [
+  "/demos/task-schedule",
+  "/demos/product-management",
+  "/demos/modern-landing",
+  "/demos/interactive-portfolio",
+  "/demos/ecommerce-platform",
+  "/demos/smart-matching",
+] as const;
+
 const projects = {
   en: [
     {
@@ -249,11 +258,15 @@ export default function ProjectCardGrid({
   sectionSubtitle = "A showcase of my recent work and creative solutions" 
 }: ProjectCardGridProps) {
   const { language } = useLanguage();
-  const currentProjects = projects[language];
+  const currentProjects = projects[language].map((project, index) => ({
+    ...project,
+    live: demoLinks[index],
+    github: null,
+  }));
   const ui = {
-    en:{live:"Live Demo",code:"Code",details:"Project Details",description:"Description",stack:"Technology Stack",category:"Category",status:"Status",view:"View Project",source:"Source Code"},
-    ja:{live:"デモを見る",code:"コード",details:"プロジェクト詳細",description:"説明",stack:"使用技術",category:"カテゴリー",status:"状態",view:"プロジェクトを見る",source:"ソースコード"},
-    zh:{live:"在线演示",code:"代码",details:"项目详情",description:"说明",stack:"技术栈",category:"类别",status:"状态",view:"查看项目",source:"源代码"},
+    en:{live:"Live Demo",details:"Project Details",description:"Description",stack:"Technology Stack",category:"Category",status:"Status",view:"View Project",soon:"Coming soon",private:"Private code"},
+    ja:{live:"デモを見る",details:"プロジェクト詳細",description:"説明",stack:"使用技術",category:"カテゴリー",status:"状態",view:"プロジェクトを見る",soon:"近日公開",private:"非公開コード"},
+    zh:{live:"在线演示",details:"项目详情",description:"说明",stack:"技术栈",category:"类别",status:"状态",view:"查看项目",soon:"即将推出",private:"代码未公开"},
   }[language];
   const [flippedCards, setFlippedCards] = useState<number[]>([]);
   const [isVisible, setIsVisible] = useState(false);
@@ -396,22 +409,25 @@ export default function ProjectCardGrid({
 
                 {/* Action Buttons */}
                 <div className="flex gap-3 pt-4 border-t border-neutral-700 cursor-none">
-                  <a 
-                    href={project.live}
-                    className="flex items-center justify-center gap-2 flex-1 py-3 bg-teal-500 hover:bg-teal-400 text-white rounded-xl text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-teal-500/25 cursor-none"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <FiExternalLink size={16} />
-                    {ui.live}
-                  </a>
-                  <a 
-                    href={project.github}
-                    className="flex items-center justify-center gap-2 flex-1 py-3 bg-neutral-800 hover:bg-neutral-700 text-white rounded-xl text-sm font-medium transition-all duration-200 hover:scale-105 border border-neutral-700 cursor-none"
-                    onClick={(e) => e.stopPropagation()}
-                  >
+                  {project.live ? (
+                    <a
+                      href={project.live}
+                      className="flex items-center justify-center gap-2 flex-1 py-3 bg-teal-500 hover:bg-teal-400 text-white rounded-xl text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-teal-500/25 cursor-none"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <FiExternalLink size={16} />
+                      {ui.live}
+                    </a>
+                  ) : (
+                    <span className="flex items-center justify-center gap-2 flex-1 py-3 bg-neutral-800 text-neutral-500 rounded-xl text-sm font-medium border border-neutral-700" aria-label="Demo coming soon">
+                      <FiEyeOff size={16} />
+                      {ui.soon}
+                    </span>
+                  )}
+                  <span className="flex items-center justify-center gap-2 flex-1 py-3 bg-neutral-900 text-neutral-500 rounded-xl text-sm font-medium border border-neutral-800" aria-label="Source code is private">
                     <FiGithub size={16} />
-                    {ui.code}
-                  </a>
+                    {ui.private}
+                  </span>
                 </div>
               </div>
 
@@ -473,22 +489,23 @@ export default function ProjectCardGrid({
 
                 {/* Back Side Actions */}
                 <div className="flex gap-3 pt-6 mt-6 border-t border-neutral-700 cursor-none">
-                  <a 
-                    href={project.live}
-                    className="flex items-center justify-center gap-2 flex-1 py-3 bg-teal-500 hover:bg-teal-400 text-white rounded-xl text-sm font-medium transition-all duration-200 hover:scale-105 cursor-none"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <FiExternalLink size={16} />
-                    {ui.view}
-                  </a>
-                  <a 
-                    href={project.github}
-                    className="flex items-center justify-center gap-2 flex-1 py-3 bg-neutral-800 hover:bg-neutral-700 text-white rounded-xl text-sm font-medium transition-all duration-200 hover:scale-105 border border-neutral-700 cursor-none"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <FiGithub size={16} />
-                    {ui.source}
-                  </a>
+                  {project.live ? (
+                    <a
+                      href={project.live}
+                      className="flex items-center justify-center gap-2 flex-1 py-3 bg-teal-500 hover:bg-teal-400 text-white rounded-xl text-sm font-medium transition-all duration-200 hover:scale-105 cursor-none"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <FiExternalLink size={16} />
+                      {ui.view}
+                    </a>
+                  ) : (
+                    <span className="flex items-center justify-center gap-2 flex-1 py-3 bg-neutral-800 text-neutral-500 rounded-xl text-sm font-medium border border-neutral-700">
+                      <FiEyeOff size={16} /> {ui.soon}
+                    </span>
+                  )}
+                  <span className="flex items-center justify-center gap-2 flex-1 py-3 bg-neutral-900 text-neutral-500 rounded-xl text-sm font-medium border border-neutral-800">
+                    <FiGithub size={16} /> {ui.private}
+                  </span>
                 </div>
               </div>
             </div>
