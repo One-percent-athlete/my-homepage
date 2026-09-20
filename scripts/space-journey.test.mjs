@@ -34,7 +34,11 @@ function mountJourney(reduced = false, route = '/') {
   const media = new EventTarget();
   media.matches = reduced;
   document.hidden = false;
-  const drawing = { setTransform() {}, clearRect() {}, drawImage() {}, beginPath() {}, arc() {}, fill() {} };
+  document.documentElement = { scrollHeight: 2700 };
+  document.body = {};
+  document.querySelector = () => null;
+  const draws = [];
+  const drawing = { setTransform() {}, clearRect() { draws.length = 0; }, drawImage(...args) { draws.push(args); }, beginPath() {}, arc() {}, fill() {} };
   const canvas = { dataset: {}, getContext: () => drawing };
   const refs = [canvas, { style: {} }];
   const effects = [];
@@ -46,7 +50,7 @@ function mountJourney(reduced = false, route = '/') {
   const source = readFileSync(new URL('../src/components/SpaceJourney.tsx', import.meta.url), 'utf8');
   const compiled = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX } }).outputText;
   vm.runInNewContext(compiled, {
-    exports, window, document,
+    exports, window, document, Element: class {}, getComputedStyle: () => ({ overflowY: 'visible' }),
     requestAnimationFrame: fn => { const id = ++sequence; pending.set(id, fn); return id; },
     cancelAnimationFrame: id => pending.delete(id),
     require: id => {
@@ -60,7 +64,8 @@ function mountJourney(reduced = false, route = '/') {
   exports.default();
   const cleanup = effects.map(effect => effect());
   return {
-    canvas, media, pending,
+    canvas, media, pending, draws,
+    input(type, props = {}) { const event = new Event(type); Object.assign(event, props); window.dispatchEvent(event); },
     scroll(y) { window.scrollY = y; window.dispatchEvent(new Event('scroll')); },
     settle() { for (let i = 0; pending.size && i < 200; i++) { const callbacks = [...pending.values()]; pending.clear(); now += 16; callbacks.forEach(fn => fn(now)); } assert.equal(pending.size, 0, 'animation must stop when idle'); },
     unmount() { cleanup.forEach(fn => fn?.()); },
@@ -78,6 +83,48 @@ test('live scrolling settles, reverses, and stops scheduling after unmount', () 
   assert.equal(view.pending.size, 0);
   view.scroll(900);
   assert.equal(view.pending.size, 0);
+});
+
+test('portal sprites are centered on the visible canvas', () => {
+  const view = mountJourney();
+  for (const [, x, y, width, height] of view.draws) {
+    assert.ok(Math.abs(x + width / 2 - 600) < 0.0001);
+    assert.ok(Math.abs(y + height / 2 - 450) < 0.0001);
+  }
+  assert.ok(view.draws.length > 0);
+  view.unmount();
+});
+
+test('wheel input advances beyond the footer, stays idle afterward, and never doubles normal scroll', () => {
+  const view = mountJourney();
+  view.input('wheel', { deltaY: 900, deltaX: 0, deltaMode: 0 }); view.settle();
+  assert.equal(view.canvas.dataset.distance, '0.000');
+  view.scroll(1800); view.settle();
+  assert.equal(view.canvas.dataset.distance, '3.000');
+  view.input('wheel', { deltaY: 900, deltaX: 0, deltaMode: 0 }); view.settle();
+  assert.equal(view.canvas.dataset.distance, '4.500');
+  view.input('wheel', { deltaY: 900, deltaX: 0, deltaMode: 0, ctrlKey: true }); view.settle();
+  assert.equal(view.canvas.dataset.distance, '4.500');
+  view.scroll(900); view.settle();
+  assert.equal(view.canvas.dataset.distance, '3.000', 'scrolling back immediately moves backward');
+  view.unmount();
+  view.input('wheel', { deltaY: 900, deltaX: 0, deltaMode: 0 });
+  assert.equal(view.pending.size, 0);
+});
+
+test('touch and keyboard continue at the bottom and reduced motion disables extra travel', () => {
+  const view = mountJourney();
+  view.scroll(1800); view.settle();
+  view.input('touchstart', { touches: [{ clientY: 700 }] });
+  view.input('touchmove', { touches: [{ clientY: 400 }] }); view.settle();
+  assert.equal(view.canvas.dataset.distance, '3.500');
+  view.input('touchend');
+  view.input('keydown', { key: 'PageDown' }); view.settle();
+  assert.equal(view.canvas.dataset.distance, '4.775');
+  view.media.matches = true; view.media.dispatchEvent(new Event('change'));
+  view.input('wheel', { deltaY: 900, deltaX: 0, deltaMode: 0 }); view.settle();
+  assert.equal(view.canvas.dataset.distance, '0.000');
+  view.unmount();
 });
 
 test('reduced motion remains still and responds to preference changes at runtime', () => {

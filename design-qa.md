@@ -69,3 +69,11 @@ Home's field note and Travel's three photographic story panels are now inset, at
 Browser verification: Travel panels visually checked at 1440 x 900 and 390 x 844; screenshot unified-travel-photos.png saved in the audit directory. Footer computed background rgba(0,0,0,0), border-top 0px; colored orange Travel icons verified visually. Ski hero checked at desktop and mobile sizes; seven animated groups detected. Keyboard activation of All Mountain changed the selected heading to Own the whole resort. No console errors observed. Shared-scene tests cover Home, Travel, Work, Ski, Gallery, Journal and Contact; all 13 motion tests pass. TypeScript and targeted lint pass.
 
 Current follow-up result: passed. No deployment performed.
+
+## Follow-up: centered tunnel and continued movement at the footer
+
+The projection center is now exactly half the canvas's visible width and height, accounting for the scrollbar. Previously it used 53% horizontally and 49% vertically. Additional downward wheel, trackpad, touch or scrolling-key input at the document bottom adds virtual camera distance while native page scrolling remains untouched. Zoom gestures, editable controls, modal dialogs and independently scrolling content are excluded. Motion settles when input stops, respects reduced motion, and all added listeners are removed on unmount.
+
+Live browser check: at scrollY 3633.333 the distance advanced from 7.569 to 9.069 and then 10.569 on two further downward scrolls, with the footer staying at the same page position. Scrolling upward immediately changed scrollY to 3273.333 and distance to 9.819. Centering checked visually at the homepage and footer. Console had no errors. All 16 motion tests pass, including exact sprite centers, continued bottom wheel/touch/keyboard input, ignoring zoom, normal reverse scrolling and reduced motion. TypeScript and targeted lint pass. Touch behavior was covered in the event harness, not a physical phone.
+
+Current result: passed.

@@ -35,14 +35,16 @@ export default function SpaceJourney() {
     let frame = 0;
     let previousTime = 0;
     let disposed = false;
+    let extraDistance = 0;
+    let touchY: number | null = null;
     let current = media.matches ? 0 : travelDistance(window.scrollY, window.innerHeight);
 
     function paint(distance: number) {
       if (!context || !canvas || !backdrop) return;
       context.setTransform(density, 0, 0, density, 0, 0);
       context.clearRect(0, 0, width, height);
-      const centerX = width * 0.53;
-      const centerY = height * 0.49;
+      const centerX = width / 2;
+      const centerY = height / 2;
       const extent = Math.max(width * 0.94, height * 0.9);
 
       // Draw far-to-near, with entry/exit fades so recycled gates never pop in.
@@ -82,7 +84,7 @@ export default function SpaceJourney() {
     function tick(time: number) {
       frame = 0;
       if (disposed || document.hidden) return;
-      const target = media.matches ? 0 : travelDistance(window.scrollY, height);
+      const target = media.matches ? 0 : travelDistance(window.scrollY, height) + extraDistance;
       const elapsed = previousTime ? Math.min(64, time - previousTime) : 16;
       previousTime = time;
       current += (target - current) * (1 - Math.exp(-elapsed / 75));
@@ -99,20 +101,59 @@ export default function SpaceJourney() {
 
     function resize() {
       if (!canvas) return;
-      width = window.innerWidth;
-      height = window.innerHeight;
+      width = canvas.clientWidth || window.innerWidth;
+      height = canvas.clientHeight || window.innerHeight;
       density = Math.min(window.devicePixelRatio || 1, width < 600 ? 1.25 : 1.5);
       canvas.width = Math.round(width * density);
       canvas.height = Math.round(height * density);
-      current = media.matches ? 0 : travelDistance(window.scrollY, height);
+      current = media.matches ? 0 : travelDistance(window.scrollY, height) + extraDistance;
       paint(current);
     }
 
     function motionChange() {
       cancelAnimationFrame(frame);
       frame = 0;
+      extraDistance = 0;
       current = media.matches ? 0 : travelDistance(window.scrollY, height);
       paint(current);
+    }
+
+    // Native scroll handles the page. Only unused input at the bottom advances
+    // the camera, so there is no scroll trap or second animation inside menus.
+    function advanceAtBottom(delta: number, event: Event) {
+      if (media.matches || delta <= 0 || document.hidden) return;
+      const root = document.documentElement;
+      const bottom = Math.max(0, root.scrollHeight - window.innerHeight);
+      if (window.scrollY < bottom - 1 || document.querySelector('[aria-modal="true"]')) return;
+      if (getComputedStyle(document.body).overflowY === "hidden") return;
+      for (const node of event.composedPath()) {
+        if (!(node instanceof Element) || node === root || node === document.body) continue;
+        if (node.matches('input,textarea,select,[contenteditable="true"]')) return;
+        const style = getComputedStyle(node);
+        if (/(auto|scroll)/.test(style.overflowY) && node.scrollHeight > node.clientHeight && node.scrollTop + node.clientHeight < node.scrollHeight - 1) return;
+      }
+      extraDistance += travelDistance(delta, height);
+      schedule();
+    }
+
+    function onWheel(event: WheelEvent) {
+      if (event.ctrlKey || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
+      const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? height : 1;
+      advanceAtBottom(event.deltaY * unit, event);
+    }
+    function onTouchStart(event: TouchEvent) { touchY = event.touches.length === 1 ? event.touches[0].clientY : null; }
+    function onTouchMove(event: TouchEvent) {
+      if (event.touches.length !== 1) { touchY = null; return; }
+      const next = event.touches[0].clientY;
+      if (touchY !== null) advanceAtBottom(touchY - next, event);
+      touchY = next;
+    }
+    function onTouchEnd() { touchY = null; }
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+      if (event.target instanceof Element && event.target.closest('a,button,input,textarea,select,[contenteditable="true"]')) return;
+      const delta = event.key === "ArrowDown" ? 40 : event.key === "PageDown" || event.key === " " ? height * 0.85 : 0;
+      advanceAtBottom(delta, event);
     }
 
     portal.onload = schedule;
@@ -121,6 +162,12 @@ export default function SpaceJourney() {
     const onScroll = () => { if (!media.matches) schedule(); };
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", resize, { passive: true });
+    window.addEventListener("wheel", onWheel, { passive: true });
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: true });
+    window.addEventListener("touchend", onTouchEnd, { passive: true });
+    window.addEventListener("touchcancel", onTouchEnd, { passive: true });
+    window.addEventListener("keydown", onKeyDown);
     document.addEventListener("visibilitychange", schedule);
     media.addEventListener("change", motionChange);
     return () => {
@@ -129,6 +176,12 @@ export default function SpaceJourney() {
       portal.onload = null;
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", resize);
+      window.removeEventListener("wheel", onWheel);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("touchend", onTouchEnd);
+      window.removeEventListener("touchcancel", onTouchEnd);
+      window.removeEventListener("keydown", onKeyDown);
       document.removeEventListener("visibilitychange", schedule);
       media.removeEventListener("change", motionChange);
     };
