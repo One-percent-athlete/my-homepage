@@ -1,0 +1,34 @@
+/* The shared scenery is projected independently of the readable page content. */
+.space-journey{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;background:#02050c;isolation:isolate;contain:strict}
+.space-atmosphere{position:absolute;inset:-4%;background:url('/images/space/threshold-nebula.png') center/cover no-repeat;opacity:.72;will-change:transform}
+.space-portals{position:absolute;inset:0;width:100%;height:100%;opacity:.85}
+.space-journey[data-scene="nebula"] .space-atmosphere{background-image:url('/images/space/exploration-nebula.png');opacity:.8}
+.space-journey[data-scene="orbit"] .space-atmosphere{background-image:url('/images/space/orbital-field.png');opacity:.85}
+.mission-site .star-field,.mission-site .hero-orbit{display:none}
+/* Let the journey continue between sections, without putting scenery over photos. */
+.mission-site .missions-section{background:#03091466}
+.mission-site .final-transmission{background:#03091466}
+.mission-site .loadout-section{background:#060e1bba;color:#edf4fb}
+.mission-site .loadout-copy h2,.mission-site .loadout-copy a{color:#edf4fb}
+.mission-site .loadout-copy>p{color:#a4b2c4}
+.mission-site .loadout-copy .eyebrow{color:#c8f44b}
+.mission-site .capability-console{background:#071321ed;border-color:#779bb54d;box-shadow:15px 15px 0 #02081180}
+.mission-site .console-head{border-color:#779bb54d}
+.mission-site .console-status{color:#c8f44b}
+.mission-site .capability-list span{color:#9aacbf}
+.mission-site .capability-list>div{border-color:#779bb52b}
+.web-world .web-deep-section,.web-world .web-deep-section.projects,.web-world .web-final{background:#03091488!important}
+.travel-world .travel-log-shade{background:#0209163d}
+.travel-world .travel-hero-copy{max-width:min(850px,63%);padding-right:0}
+.travel-world .travel-kicker,.travel-world .travel-hero-copy h1 em{color:#9bc9ff}
+.travel-world .travel-hero-copy>p{color:#c4d2e6}
+.travel-world .travel-hero-copy>a{background:#acd1ff;color:#061223}
+.travel-world .route-selector{background:#071322e8;border-color:#9bc9ff57}
+.travel-world .route-tabs button.active{background:#acd1ff;color:#061223}
+.travel-world .route-tabs button,.travel-world .route-readout>span{color:#9caec6}
+.travel-world .route-readout p,.travel-world .route-readout>svg{color:#acd1ff}
+.travel-world .route-readout blockquote{color:#c4d2e6}
+.public-header{background:#030911e8}
+@media(max-width:600px){.space-atmosphere{opacity:.6}.space-portals{opacity:.7}}
+@media(max-width:900px){.travel-world .travel-hero-copy{max-width:100%}}
+@media(prefers-reduced-motion:reduce){.space-atmosphere{will-change:auto}}

@@ -33,17 +33,17 @@ export default function Footer() {
   const currentTheme = themePath ? themes[themePath] : themes["/"];
 
   const contactLinks = [
-    { icon: FaEnvelope, href: "mailto:one.percent.athlete@gmail.com" },
-    { icon: FaPhoneAlt, href: "tel:+8107045618976" },
+    { label: "Email", icon: FaEnvelope, href: "mailto:one.percent.athlete@gmail.com" },
+    { label: "Phone", icon: FaPhoneAlt, href: "tel:+817045618976" },
   ];
 
   const socialLinks = [
-    { icon: FaGithub, url: "https://github.com/One-percent-athlete" },
-    { icon: FaLinkedin, url: "https://www.linkedin.com/in/ryu-suzuki-7613a8299/" },
-    { icon: FaInstagram, url: "https://www.instagram.com/ryu.free.spirit/" },
-    { icon: FaFacebook, url: "https://www.facebook.com/ryu.suzuki.super/" },
-    { icon: FaLine, url: "https://line.me/ti/p/hkL8_yg15L" },
-    { icon: FaWeixin, url: "https://wechat/" },
+    { label: "GitHub", icon: FaGithub, url: "https://github.com/One-percent-athlete" },
+    { label: "LinkedIn", icon: FaLinkedin, url: "https://www.linkedin.com/in/ryu-suzuki-7613a8299/" },
+    { label: "Instagram", icon: FaInstagram, url: "https://www.instagram.com/ryu.free.spirit/" },
+    { label: "Facebook", icon: FaFacebook, url: "https://www.facebook.com/ryu.suzuki.super/" },
+    { label: "LINE", icon: FaLine, url: "https://line.me/ti/p/hkL8_yg15L" },
+    { label: "WeChat QR code", icon: FaWeixin, url: "/contact#messaging-apps" },
   ];
 
   return (
@@ -51,7 +51,7 @@ export default function Footer() {
       className={`relative z-20 w-full text-gray-300 bg-gray-800 border-t-4 ${currentTheme.border} overflow-x-hidden pt-8 md:pt-16 md:pb-24 px-4 transition-colors duration-500`}
     >
       {/* Background text */}
-      <h1
+      <p
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
                   font-extrabold text-[8vw] sm:text-[7vw] md:text-[6vw] lg:text-[4vw]
                   select-none pointer-events-none text-center break-words"
@@ -62,16 +62,17 @@ export default function Footer() {
         }}
       >
         ONE PERCENT 37X
-      </h1>
+      </p>
 
       {/* Main content */}
       <div className="relative z-10 max-w-7xl mx-auto flex flex-col items-center gap-6 pb-10">
         {/* Links container */}
         <div className="flex flex-wrap justify-center gap-3 w-full max-w-[220px] sm:max-w-none">
           {/* Contact links */}
-          {contactLinks.map(({ icon: Icon, href }, idx) => (
+          {contactLinks.map(({ icon: Icon, href, label }, idx) => (
             <a
               key={idx}
+              aria-label={label}
               href={href}
               className={`flex items-center justify-center w-12 h-12 sm:w-12 sm:h-12 md:w-14 md:h-14 
                         rounded-full border ${currentTheme.border} ${currentTheme.text} md:cursor-none
@@ -83,11 +84,12 @@ export default function Footer() {
           ))}
 
           {/* Social links */}
-          {socialLinks.map(({ icon: Icon, url }, idx) => (
+          {socialLinks.map(({ icon: Icon, url, label }, idx) => (
             <a
               key={idx}
+              aria-label={label}
               href={url}
-              target="_blank"
+              target={url.startsWith("/") ? undefined : "_blank"}
               rel="noopener noreferrer"
               className={`flex items-center justify-center w-12 h-12 sm:w-12 sm:h-12 md:w-14 md:h-14 
                         rounded-full border ${currentTheme.border} ${currentTheme.text} md:cursor-none

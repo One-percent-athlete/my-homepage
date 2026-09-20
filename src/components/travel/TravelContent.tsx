@@ -11,11 +11,8 @@ import WhyMeSection from "@/components/travel/WhyMeSection";
 import TravelCTA from "@/components/travel/TravelCTA";
 import LogoShowcase from "@/components/travel/LogoShowcase";
 
-interface TravelContentProps {
-  scrollY: number;
-}
 
-export default function TravelContent({ scrollY }: TravelContentProps) {
+export default function TravelContent() {
   const { language } = useLanguage();
 
   return (
@@ -24,7 +21,7 @@ export default function TravelContent({ scrollY }: TravelContentProps) {
       
       <div className="travel-world relative min-h-screen">
         {/* Hero Section */}
-        <TravelHero scrollY={scrollY} language={language} />
+        <TravelHero language={language} />
 
         {/* Destinations Grid */}
         <DestinationsGrid language={language} />

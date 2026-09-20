@@ -301,29 +301,6 @@ export default function SkillCardGrid({
 
   return (
     <div ref={gridRef} className="relative">
-      {/* Animated background particles */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(20)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-1 h-1 bg-teal-400 rounded-full opacity-20"
-            initial={{ 
-              x: Math.random() * 1000, 
-              y: Math.random() * 800,
-              scale: 0 
-            }}
-            animate={{ 
-              scale: [0, 1, 0],
-              opacity: [0, 0.3, 0],
-            }}
-            transition={{ 
-              duration: 3 + Math.random() * 2,
-              repeat: Infinity,
-              delay: Math.random() * 2,
-            }}
-          />
-        ))}
-      </div>
 
       {/* Section title with animation - Now using props */}
       <motion.div

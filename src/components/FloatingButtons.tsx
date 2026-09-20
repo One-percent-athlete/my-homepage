@@ -18,7 +18,7 @@ const worlds = [
 ];
 const hiddenWorld = { href: "/between", label: "The Between", icon: Orbit, color: "#ff67d4" };
 const worldLabels: Record<string, Record<"en" | "ja" | "zh", string>> = {
-  "/": { en: "Base", ja: "基地", zh: "基地" }, "/web": { en: "Build", ja: "開発", zh: "开发" }, "/travel": { en: "Explore", ja: "旅", zh: "探索" }, "/ski": { en: "Summit", ja: "雪山", zh: "雪山" }, "/blog": { en: "Journal", ja: "記録", zh: "日志" }, "/gallery": { en: "Archive", ja: "写真", zh: "影像" }, "/contact": { en: "Signal", ja: "通信", zh: "联络" }, "/between": { en: "The Between", ja: "狭間", zh: "间界" },
+  "/": { en: "Home", ja: "基地", zh: "基地" }, "/web": { en: "Work", ja: "開発", zh: "开发" }, "/travel": { en: "Travel", ja: "旅", zh: "探索" }, "/ski": { en: "Ski", ja: "雪山", zh: "雪山" }, "/blog": { en: "Journal", ja: "記録", zh: "日志" }, "/gallery": { en: "Gallery", ja: "写真", zh: "影像" }, "/contact": { en: "Contact", ja: "お問い合わせ", zh: "联系我" }, "/between": { en: "The Between", ja: "狭間", zh: "间界" },
 };
 const dockCopy = {
   en: { close: "Close map", navigator: "World navigator", anomaly: "Anomalous signal detected", fragments: "fragments recovered", current: "Current", visited: "Visited", unknown: "Unknown", signal: "Signal language", discovered: "Hidden world discovered", enter: "Enter The Between" },

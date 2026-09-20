@@ -516,29 +516,6 @@ export default function ProjectCardGrid({
         ))}
       </motion.div>
 
-      {/* Background Animation */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10 cursor-none">
-        {[...Array(8)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-1 h-1 bg-teal-400 rounded-full opacity-10 cursor-none"
-            initial={{ 
-              x: Math.random() * 1200, 
-              y: Math.random() * 800,
-              scale: 0 
-            }}
-            animate={{ 
-              scale: [0, 1, 0],
-              opacity: [0, 0.15, 0],
-            }}
-            transition={{ 
-              duration: 4 + Math.random() * 3,
-              repeat: Infinity,
-              delay: Math.random() * 5,
-            }}
-          />
-        ))}
-      </div>
     </div>
   );
 }
