@@ -6,24 +6,30 @@
 .space-journey[data-scene="orbit"] .space-atmosphere{background-image:url('/images/space/orbital-field.png');opacity:.85}
 .mission-site .star-field,.mission-site .hero-orbit{display:none}
 /* Let the journey continue between sections, without putting scenery over photos. */
-.mission-site .missions-section{background:#03091466}
-.mission-site .final-transmission{background:#03091466}
-.mission-site .loadout-section{background:#060e1bba;color:#edf4fb}
+.mission-site .missions-section{background:#03091414}
+.mission-site .final-transmission{background:#03091414}
+.mission-site .loadout-section{background:#060e1b26;color:#edf4fb}
+.mission-site .signal-strip{background:#07132166;color:#b4c1d0}
 .mission-site .loadout-copy h2,.mission-site .loadout-copy a{color:#edf4fb}
-.mission-site .loadout-copy>p{color:#a4b2c4}
+.mission-site .loadout-copy>p,.mission-site .section-heading>p{color:#c0ccdc}
 .mission-site .loadout-copy .eyebrow{color:#c8f44b}
-.mission-site .capability-console{background:#071321ed;border-color:#779bb54d;box-shadow:15px 15px 0 #02081180}
+.mission-site .capability-console{background:#071321a6;border-color:#779bb54d;box-shadow:15px 15px 0 #02081133}
 .mission-site .console-head{border-color:#779bb54d}
 .mission-site .console-status{color:#c8f44b}
 .mission-site .capability-list span{color:#9aacbf}
 .mission-site .capability-list>div{border-color:#779bb52b}
-.web-world .web-deep-section,.web-world .web-deep-section.projects,.web-world .web-final{background:#03091488!important}
-.travel-world .travel-log-shade{background:#0209163d}
+.web-world .web-deep-section,.web-world .web-deep-section.projects,.web-world .web-final{background:#0309141f!important}
+.web-world .web-toolbelt{background:#07132159!important}
+.web-world .build-console{background:#071321a6;box-shadow:18px 18px 0 #05101433;backdrop-filter:none}
+.web-world .build-mode-tabs button:not(.active),.web-world .console-next{background:#05101266}
+.web-world .terminal-output code{background:#03090b80}
+.web-world .build-output>p,.web-world .web-lab-copy>p{color:#bccbd9}
+.travel-world .travel-log-shade{background:#02091614}
 .travel-world .travel-hero-copy{max-width:min(850px,63%);padding-right:0}
 .travel-world .travel-kicker,.travel-world .travel-hero-copy h1 em{color:#9bc9ff}
 .travel-world .travel-hero-copy>p{color:#c4d2e6}
 .travel-world .travel-hero-copy>a{background:#acd1ff;color:#061223}
-.travel-world .route-selector{background:#071322e8;border-color:#9bc9ff57}
+.travel-world .route-selector{background:#071322ad;border-color:#9bc9ff57;backdrop-filter:none}
 .travel-world .route-tabs button.active{background:#acd1ff;color:#061223}
 .travel-world .route-tabs button,.travel-world .route-readout>span{color:#9caec6}
 .travel-world .route-readout p,.travel-world .route-readout>svg{color:#acd1ff}
@@ -32,3 +38,16 @@
 @media(max-width:600px){.space-atmosphere{opacity:.6}.space-portals{opacity:.7}}
 @media(max-width:900px){.travel-world .travel-hero-copy{max-width:100%}}
 @media(prefers-reduced-motion:reduce){.space-atmosphere{will-change:auto}}
+
+/* Sections pass the viewer in normal document flow; no scroll interception. */
+.flight-section{transform:var(--flight-transform,none);opacity:var(--flight-opacity,1);transform-origin:50% 50%;transition:none;backface-visibility:hidden}
+.flight-section.flight-in-view{will-change:transform,opacity}
+.flight-section:focus-within{transform:none;opacity:1}
+.mission-site,.web-world,.travel-world{overflow-x:clip}
+/* Floating travel panels must not pile translucent text over the previous panel. */
+.travel-world .travel-story-stack{background:transparent}
+.travel-world .travel-story-panel.flight-section{position:relative!important;margin-block:8vh;box-shadow:none;border-top-color:#9bc9ff33}
+.travel-world .travel-story-details-panel,.travel-world .travel-story-cta-panel{background:#07132226}
+.travel-world :is(.travel-story-details-panel,.travel-story-cta-panel)>.travel-parallax-background{display:none}
+.travel-world :is(.travel-story-details-panel,.travel-story-cta-panel)>.travel-story-shade{background:#02091626}
+@media(prefers-reduced-motion:reduce){.flight-section{transform:none!important;opacity:1!important;will-change:auto!important}}

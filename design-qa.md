@@ -47,3 +47,15 @@ Browser screenshots: C:/Projects/my-homepage/audit/threshold-desktop.png, nebula
 - [x] Motion tests, type checks and lint completed.
 
 No outstanding P0/P1/P2 findings within this background change. Physical-device GPU/battery profiling remains a follow-up. No production deployment performed.
+
+## Follow-up: transparent floating sections
+
+User requested more transparent sections followed by sections flying out/in as the visitor scrolls. Home, Work and Travel now share scroll-driven depth transforms. Incoming sections approach from negative depth with a small tilt; departing sections move forward, drift sideways and fade. Long sections remain at full opacity while their content occupies the reading area. Normal scrolling and document order remain intact.
+
+Section tint was reduced to roughly 8–15%; interactive consoles retain roughly 65% dark tint. Supporting copy was lightened where needed. Travel's informational panels now expose the nebula; photographic story panels retain their images. Travel panels no longer stick over each other, avoiding overlapping translucent text.
+
+Verified in the local browser at 1440 x 900 and 390 x 844, plus the default desktop viewport. Evidence in C:/Projects/my-homepage/audit/: transparency-home.png, transparency-work.png, floating-home-transition.png, floating-travel-mobile.png, floating-travel-details.png, floating-work.png. Home departure at scrollY 810 showed positive depth of 105.7px and opacity 0.40, with the incoming missions section fully readable. Mobile Travel had no horizontal overflow and all five story panels used relative positioning. Work's Shape button responded to keyboard Enter; its focused section had opacity 1 and transform none. No browser console errors were observed during the follow-up.
+
+Five section-flight tests and eight space-journey tests pass. The section component harness verifies runtime reduced-motion changes, observer disconnection, style cleanup and removal of pending/listening scroll work. TypeScript and targeted ESLint pass. Motion is 62% smaller on phones, disabled for reduced-motion preferences, and never intercepts wheel/touch/key scrolling. No idle animation loop is used for sections.
+
+Follow-up result: passed. Physical-device performance testing remains outside this local browser check.
