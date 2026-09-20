@@ -103,10 +103,10 @@ test('private routes do not create or animate the space scene', () => {
   view.unmount();
 });
 
-test('each public destination selects its own scene and respects reduced motion', () => {
-  for (const [route, scene] of [['/', 'threshold'], ['/travel', 'nebula'], ['/web', 'orbit']]) {
+test('public destinations share the homepage scene and respect reduced motion', () => {
+  for (const route of ['/', '/travel', '/web', '/ski', '/gallery', '/blog', '/contact']) {
     const view = mountJourney(false, route);
-    assert.equal(view.canvas.dataset.scene, scene);
+    assert.equal(view.canvas.dataset.scene, 'threshold');
     view.scroll(900); view.settle();
     assert.equal(view.canvas.dataset.distance, '1.500');
     view.media.matches = true; view.media.dispatchEvent(new Event('change'));

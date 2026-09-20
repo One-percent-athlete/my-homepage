@@ -59,3 +59,13 @@ Verified in the local browser at 1440 x 900 and 390 x 844, plus the default desk
 Five section-flight tests and eight space-journey tests pass. The section component harness verifies runtime reduced-motion changes, observer disconnection, style cleanup and removal of pending/listening scroll work. TypeScript and targeted ESLint pass. Motion is 62% smaller on phones, disabled for reduced-motion preferences, and never intercepts wheel/touch/key scrolling. No idle animation loop is used for sections.
 
 Follow-up result: passed. Physical-device performance testing remains outside this local browser check.
+
+## Follow-up: one shared scene and inset photographs
+
+This request supersedes the earlier three-route art direction: all public routes now use the homepage Thresholds scene. Private routes remain excluded. Footer background is transparent, its top border is removed, and the existing per-page icon colors and glows are preserved.
+
+Home's field note and Travel's three photographic story panels are now inset, at most 1080px wide and approximately 65svh tall on desktop. On phones the Travel panels measure 335 x 460px in a 390px viewport, leaving visible space around the images. The Ski hero video/photo is a separate 240px-tall desktop frame or 190px mobile frame, with the heading and run selector against space. Ski's six lower content groups also participate in section flight, using wrappers to avoid conflicts with their existing internal animations.
+
+Browser verification: Travel panels visually checked at 1440 x 900 and 390 x 844; screenshot unified-travel-photos.png saved in the audit directory. Footer computed background rgba(0,0,0,0), border-top 0px; colored orange Travel icons verified visually. Ski hero checked at desktop and mobile sizes; seven animated groups detected. Keyboard activation of All Mountain changed the selected heading to Own the whole resort. No console errors observed. Shared-scene tests cover Home, Travel, Work, Ski, Gallery, Journal and Contact; all 13 motion tests pass. TypeScript and targeted lint pass.
+
+Current follow-up result: passed. No deployment performed.

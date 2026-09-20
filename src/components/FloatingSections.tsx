@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { sectionFlight } from "@/lib/section-flight";
 
-const selector = ".mission-site > section, .web-world > section, .travel-world > section, .travel-story-stack > section";
+const selector = ".mission-site > section, .web-world > section, .travel-world > section, .travel-story-stack > section, .ski-game-hero, [data-flight-panel]";
 
 export default function FloatingSections() {
   const pathname = usePathname();

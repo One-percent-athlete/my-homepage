@@ -48,7 +48,7 @@ export default function Footer() {
 
   return (
     <footer
-      className={`relative z-20 w-full text-gray-300 bg-gray-800 border-t-4 ${currentTheme.border} overflow-x-hidden pt-8 md:pt-16 md:pb-24 px-4 transition-colors duration-500`}
+      className={`relative z-20 w-full text-gray-300 bg-transparent overflow-x-hidden pt-8 md:pt-16 md:pb-24 px-4 transition-colors duration-500`}
     >
       {/* Background text */}
       <p

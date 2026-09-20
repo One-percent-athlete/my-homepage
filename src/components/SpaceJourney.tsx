@@ -15,7 +15,7 @@ const stars = Array.from({ length: 150 }, (_, index) => {
 
 export default function SpaceJourney() {
   const pathname = usePathname();
-  const variant = pathname.startsWith("/travel") ? "nebula" : pathname.startsWith("/web") ? "orbit" : "threshold";
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const backdropRef = useRef<HTMLDivElement>(null);
   const privatePage = pathname.startsWith("/mission-control") || pathname.startsWith("/blog/create");
@@ -47,7 +47,7 @@ export default function SpaceJourney() {
 
       // Draw far-to-near, with entry/exit fades so recycled gates never pop in.
       const gates = Array.from({ length: 12 }, (_, index) => sceneDepth(1.1 + index * 2, distance, 0.2, 24.2)).sort((a, b) => b - a);
-      if (variant === "threshold" && portal.complete && portal.naturalWidth) {
+      if (portal.complete && portal.naturalWidth) {
         for (const depth of gates) {
           const gateWidth = extent / depth;
           const gateHeight = gateWidth * portal.naturalHeight / portal.naturalWidth;
@@ -71,12 +71,12 @@ export default function SpaceJourney() {
       }
       context.globalAlpha = 1;
       // Atmosphere moves much more slowly than the portals and nearby particles.
-      const zoom = variant === "nebula" ? 0.018 : 0.006;
-      const rotation = variant === "orbit" ? Math.sin(distance * 0.08) * 4 : 0;
-      backdrop.style.transform = `scale(${1.08 + Math.min(distance, 20) * zoom}) translate3d(${Math.sin(distance * 0.09) * -1.8}%, ${Math.sin(distance * 0.07) * 1.2}%, 0) rotate(${rotation}deg)`;
+
+
+      backdrop.style.transform = `scale(${1.08 + Math.min(distance, 20) * 0.006}) translate3d(${Math.sin(distance * 0.09) * -1.8}%, ${Math.sin(distance * 0.07) * 1.2}%, 0)`;
       canvas.dataset.distance = distance.toFixed(3);
       canvas.dataset.motion = media.matches ? "reduced" : "scroll";
-      canvas.dataset.scene = variant;
+      canvas.dataset.scene = "threshold";
     }
 
     function tick(time: number) {
@@ -116,7 +116,7 @@ export default function SpaceJourney() {
     }
 
     portal.onload = schedule;
-    if (variant === "threshold") portal.src = "/images/space/threshold-frame.png";
+    portal.src = "/images/space/threshold-frame.png";
     resize();
     const onScroll = () => { if (!media.matches) schedule(); };
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -132,10 +132,10 @@ export default function SpaceJourney() {
       document.removeEventListener("visibilitychange", schedule);
       media.removeEventListener("change", motionChange);
     };
-  }, [pathname, privatePage, variant]);
+  }, [pathname, privatePage]);
 
   if (privatePage) return null;
-  return <div className="space-journey" data-scene={variant} aria-hidden="true">
+  return <div className="space-journey" data-scene="threshold" aria-hidden="true">
     <div ref={backdropRef} className="space-atmosphere" />
     <canvas ref={canvasRef} className="space-portals" />
   </div>;

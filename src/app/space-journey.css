@@ -2,8 +2,6 @@
 .space-journey{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;background:#02050c;isolation:isolate;contain:strict}
 .space-atmosphere{position:absolute;inset:-4%;background:url('/images/space/threshold-nebula.png') center/cover no-repeat;opacity:.72;will-change:transform}
 .space-portals{position:absolute;inset:0;width:100%;height:100%;opacity:.85}
-.space-journey[data-scene="nebula"] .space-atmosphere{background-image:url('/images/space/exploration-nebula.png');opacity:.8}
-.space-journey[data-scene="orbit"] .space-atmosphere{background-image:url('/images/space/orbital-field.png');opacity:.85}
 .mission-site .star-field,.mission-site .hero-orbit{display:none}
 /* Let the journey continue between sections, without putting scenery over photos. */
 .mission-site .missions-section{background:#03091414}
@@ -43,7 +41,7 @@
 .flight-section{transform:var(--flight-transform,none);opacity:var(--flight-opacity,1);transform-origin:50% 50%;transition:none;backface-visibility:hidden}
 .flight-section.flight-in-view{will-change:transform,opacity}
 .flight-section:focus-within{transform:none;opacity:1}
-.mission-site,.web-world,.travel-world{overflow-x:clip}
+.mission-site,.web-world,.travel-world,.ski-world{overflow-x:clip}
 /* Floating travel panels must not pile translucent text over the previous panel. */
 .travel-world .travel-story-stack{background:transparent}
 .travel-world .travel-story-panel.flight-section{position:relative!important;margin-block:8vh;box-shadow:none;border-top-color:#9bc9ff33}
@@ -51,3 +49,27 @@
 .travel-world :is(.travel-story-details-panel,.travel-story-cta-panel)>.travel-parallax-background{display:none}
 .travel-world :is(.travel-story-details-panel,.travel-story-cta-panel)>.travel-story-shade{background:#02091626}
 @media(prefers-reduced-motion:reduce){.flight-section{transform:none!important;opacity:1!important;will-change:auto!important}}
+
+/* Inset photographs leave the shared scene visible around each floating panel. */
+.mission-site .field-note,.travel-world .travel-story-panel:not(.travel-story-details-panel):not(.travel-story-cta-panel){width:min(1080px,84%);min-height:clamp(380px,65svh,680px);margin:12vh auto;padding:clamp(28px,4vw,58px);overflow:hidden;border:1px solid #bddaff33;border-radius:12px}
+.mission-site .field-content blockquote{font-size:clamp(28px,3.4vw,48px)}
+.travel-world .travel-story-copy{width:100%;padding-bottom:24px}
+.travel-world .travel-story-copy h2{font-size:clamp(38px,5.5vw,72px)}
+.travel-world .travel-story-count{right:28px;bottom:22px}
+.ski-world .ski-game-hero{display:grid;grid-template-columns:1fr 1fr;gap:28px 5vw;width:min(1180px,88%);min-height:0;margin:70px auto 100px;padding:32px 0;overflow:visible}
+.ski-world .ski-hero-media{position:relative;grid-column:2;grid-row:1;height:240px;overflow:hidden;border-radius:12px;border:1px solid #bddaff33}
+.ski-world .ski-hero-media>video,.ski-world .ski-hero-media>.ski-fallback{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ski-world .ski-game-copy{grid-column:1;grid-row:1 / span 2;align-self:center;max-width:none;padding:0}
+.ski-world .ski-game-copy h1{font-size:clamp(44px,5.3vw,76px)}
+.ski-world .ski-run-console{position:relative;grid-column:2;grid-row:2;inset:auto;width:100%;background:#06131ca6;backdrop-filter:none;box-shadow:none}
+.ski-world>main{max-width:1120px}
+.ski-world [data-flight-panel]>section{background-attachment:scroll;min-height:0}
+@media(max-width:700px){
+  .mission-site .field-note,.travel-world .travel-story-panel:not(.travel-story-details-panel):not(.travel-story-cta-panel){width:calc(100% - 40px);min-height:460px;margin-block:70px;padding:26px 22px}
+  .travel-world .travel-story-copy h2{font-size:clamp(36px,10vw,52px)}
+  .ski-world .ski-game-hero{grid-template-columns:1fr;gap:28px;width:calc(100% - 40px);margin:45px auto 70px;padding:0}
+  .ski-world .ski-game-copy,.ski-world .ski-hero-media,.ski-world .ski-run-console{grid-column:1;grid-row:auto}
+  .ski-world .ski-game-copy{order:-1}
+  .ski-world .ski-game-copy h1{font-size:clamp(40px,11vw,65px)}
+  .ski-world .ski-hero-media{height:190px}
+}
