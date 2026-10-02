@@ -30,7 +30,7 @@ export default function SpaceJourney() {
     const context = canvas.getContext("2d", { alpha: true });
     if (!context) return;
 
-    const paintEarth = pathname.startsWith("/travel") && globeRef.current ? createEarthPainter(globeRef.current) : null;
+    const paintEarth = ["/travel","/ski"].includes(pathname) && globeRef.current ? createEarthPainter(globeRef.current) : null;
     const reading = () => isTunnelRoute(pathname) && getReadingMode() === "read";
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
     const portal = new window.Image();
@@ -54,7 +54,7 @@ export default function SpaceJourney() {
       const journeyFrame = { distance, width, height, reduced: media.matches };
 
       // Draw far-to-near, with entry/exit fades so recycled gates never pop in.
-      const gates = Array.from({ length: isTunnelRoute(pathname) ? 18 : 12 }, (_, index) => ({ index, depth: sceneDepth(1.1 + index * 2, distance, 0.2, 24.2) })).sort((a, b) => b.depth - a.depth);
+      const gates = Array.from({ length: ["/travel","/ski"].includes(pathname) ? 17 : isTunnelRoute(pathname) ? 18 : 12 }, (_, index) => ({ index, depth: sceneDepth(1.1 + index * 2, distance, 0.2, 24.2) })).sort((a, b) => b.depth - a.depth);
       if (portal.complete && portal.naturalWidth) {
         for (const { index, depth } of gates) {
           if (isTunnelRoute(pathname) && !media.matches) {
@@ -90,7 +90,7 @@ export default function SpaceJourney() {
 
       const atmospherePace = pathname.startsWith("/ski") ? 0.18 : pathname.startsWith("/travel") ? 0.45 : 1;
       backdrop.style.transform = `scale(${1.08 + Math.min(distance, 20) * 0.006 * atmospherePace}) translate3d(${Math.sin(distance * 0.09) * -1.8 * atmospherePace}%, ${Math.sin(distance * 0.07) * 1.2 * atmospherePace}%, 0)`;
-      paintEarth?.(1.8 + distance * 0.65);
+      if (document.body.dataset.motionWorld !== "summit" || !globeRef.current?.dataset.rotation) paintEarth?.(1.8 + distance * 0.65);
       canvas.parentElement?.style.setProperty("--alpine-drift", `${Math.sin(distance * .12) * 14}px`);
       canvas.dataset.distance = distance.toFixed(3);
       canvas.dataset.motion = media.matches ? "reduced" : "scroll";
@@ -104,7 +104,7 @@ export default function SpaceJourney() {
       const target = media.matches ? 0 : travelDistance(window.scrollY, height) + extraDistance;
       const elapsed = previousTime ? Math.min(64, time - previousTime) : 16;
       previousTime = time;
-      current += (target - current) * (1 - Math.exp(-elapsed / 75));
+      current += (target - current) * (1 - Math.exp(-elapsed / (pathname === "/travel" || pathname === "/ski" ? 45 : 75)));
       if (Math.abs(target - current) < 0.001) current = target;
       paint(current);
       if (current !== target) frame = requestAnimationFrame(tick);

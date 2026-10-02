@@ -10,6 +10,7 @@ import "./page-state.css";
 import "./work-refinements.css";
 import "./reading-mode.css";
 import "./world-atmospheres.css";
+import "./world-reading.css";
 import { LanguageProvider } from "./context/LanguageContext";
 import SiteMotion from "@/components/SiteMotion";
 import FloatingSections from "@/components/FloatingSections";

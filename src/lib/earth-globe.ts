@@ -13,7 +13,7 @@ const continents: number[][][] = [
 ];
 
 export function createEarthPainter(canvas: HTMLCanvasElement) {
- const size = 320;
+ const size = 224;
  canvas.width = size; canvas.height = size;
  const context = canvas.getContext('2d');
  if (!context) return null;
@@ -35,19 +35,26 @@ export function createEarthPainter(canvas: HTMLCanvasElement) {
  for(let y=0;y<360;y+=30){map.beginPath();map.moveTo(0,y);map.lineTo(720,y);map.stroke();}
  const pixels = map.getImageData(0,0,720,360).data;
  const output = context.createImageData(size,size);
- const samples: { offset:number; longitude:number; row:number; light:number }[] = [];
- const radius = 155;
+ const samples: { offset:number; column:number; row:number; light:number }[] = [];
+ const radius = size * .484375;
  for(let y=0;y<size;y++) for(let x=0;x<size;x++) {
   const nx=(x-size/2)/radius, ny=(y-size/2)/radius;
   const r=nx*nx+ny*ny; if(r>1) continue;
   const z=Math.sqrt(1-r);
-  samples.push({offset:(y*size+x)*4,longitude:Math.atan2(nx,z),row:Math.min(359,Math.floor((Math.asin(ny)/Math.PI+.5)*360)),light:.22+.78*Math.max(0,-nx*.45-ny*.25+z*.85)});
+  samples.push({offset:(y*size+x)*4,column:Math.atan2(nx,z)/(Math.PI*2)*720+360,row:Math.min(359,Math.floor((Math.asin(ny)/Math.PI+.5)*360)),light:.22+.78*Math.max(0,-nx*.45-ny*.25+z*.85)});
  }
+ let lastRotation: number | null = null;
  return (rotation: number) => {
+  canvas.dataset.rotation=rotation.toFixed(3);
+  if(lastRotation!==null && Math.abs(lastRotation-rotation)<.002) return;
+  lastRotation=rotation;
+  const rotationColumns=rotation/(Math.PI*2)*720;
   for(const sample of samples){
-   const column=((Math.floor((sample.longitude+rotation)/(Math.PI*2)*720+360)%720)+720)%720;
+   const column=((Math.floor(sample.column+rotationColumns)%720)+720)%720;
    const source=(sample.row*720+column)*4;
-   for(let channel=0;channel<3;channel++) output.data[sample.offset+channel]=pixels[source+channel]*sample.light;
+   output.data[sample.offset]=pixels[source]*sample.light;
+   output.data[sample.offset+1]=pixels[source+1]*sample.light;
+   output.data[sample.offset+2]=pixels[source+2]*sample.light;
    output.data[sample.offset+3]=255;
   }
   context.putImageData(output,0,0);

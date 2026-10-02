@@ -33,7 +33,7 @@ export default function FloatingButtons() {
   const [journeyPage, setJourneyPage] = useState<string | null>(null);
   const [visited, setVisited] = useState<string[]>([]);
   const [fragmentCount, setFragmentCount] = useState(0);
-  const activePath = ["/", "/web", "/contact"].includes(pathname) ? journeyPage ?? pathname : pathname;
+  const activePath = ["/", "/web", "/contact", "/travel", "/ski"].includes(pathname) ? journeyPage ?? pathname : pathname;
   const hiddenUnlocked = fragmentCount >= 3 || pathname === "/between";
   const availableWorlds = hiddenUnlocked ? [...worlds, hiddenWorld] : worlds;
   const current = availableWorlds.find(world => activePath === world.href || (world.href !== "/" && activePath.startsWith(world.href + "/"))) ?? worlds[0];

@@ -34,6 +34,7 @@ export default function WorldTransition() {
       const url = new URL(anchor.href, window.location.href);
       if (url.origin !== window.location.origin || url.pathname === pathname || !(url.pathname in worlds) || url.hash || url.search) return;
       if (["/", "/web", "/contact"].includes(pathname) && ["/", "/web", "/contact"].includes(url.pathname)) return;
+      if (["/travel", "/ski"].includes(pathname) && ["/travel", "/ski"].includes(url.pathname)) return;
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
       event.preventDefault();
       if (busy.current) return;

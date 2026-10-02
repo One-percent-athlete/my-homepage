@@ -90,7 +90,7 @@ test('live scrolling settles, reverses, and stops scheduling after unmount', () 
 
 // Render the real HomeTunnel component with lightweight React/DOM adapters.
 // This verifies that native scroll events update live content, not only math.
-function mountHomeContent(view, { world = 'home', count = 6, workStart, contactStart, initialChapter = 0, nested = false, holdLastChapter = false } = {}) {
+function mountHomeContent(view, { world = 'home', count = 6, workStart, contactStart, skiStart, initialChapter = 0, nested = false, holdLastChapter = false } = {}) {
   const states = [];
   const refs = [];
   const effects = [];
@@ -154,7 +154,7 @@ function mountHomeContent(view, { world = 'home', count = 6, workStart, contactS
   }
   function render() {
     stateIndex = refIndex = effectIndex = 0;
-    tree = exports.default({ children: nested ? [chapters[0], jsx('fragment', {children: chapters.slice(1)})] : chapters, labels, instruction: 'Scroll to navigate', world, workStart, contactStart, initialChapter, holdLastChapter });
+    tree = exports.default({ children: nested ? [chapters[0], jsx('fragment', {children: chapters.slice(1)})] : chapters, labels, instruction: 'Scroll to navigate', world, workStart, contactStart, skiStart, initialChapter, holdLastChapter });
     initialTree ??= tree;
     gates = []; buttons = []; contents = [];
     attach(tree);
@@ -521,4 +521,24 @@ test('Travel and Ski section planes share the portal projection on forward and r
   view.scroll(0);view.settle();assert.equal(view.canvas.dataset.distance,'0.000');
   content.unmount();view.unmount();
  }
+});
+
+test('Travel flows into Ski, updates the scenery, and reverses without route loading',()=>{
+ for(const [route,initialChapter] of [['/travel',0],['/ski',8]]){
+  const view=mountJourney(false,route);const content=mountHomeContent(view,{world:'travel',count:17,skiStart:8,initialChapter,holdLastChapter:true});view.settle();
+  assert.equal(view.document.body.dataset.journeyPage,initialChapter===8?'/ski':'/travel');
+  view.scroll(9600);view.settle();assert.equal(view.document.body.dataset.journeyPage,'/ski');assert.equal(view.document.body.dataset.motionWorld,'summit');
+  assert.ok(content.contents[8].includes('ski-world'));assert.equal(content.gates[8].inert,false);
+  view.scroll(7200);view.settle();assert.equal(view.document.body.dataset.motionWorld,'travel');
+  assert.equal(content.clickRoute('/ski').defaultPrevented,true);view.settle();assert.equal(view.window.scrollY,9600);
+  assert.equal(content.clickRoute('/travel').defaultPrevented,true);view.settle();assert.equal(view.window.scrollY,0);
+  content.unmount();view.unmount();
+ }
+});
+
+test('the two Read editions update their active world and scenery while scrolling',()=>{
+ const view=mountJourney(true,'/travel');const content=mountHomeContent(view,{world:'travel',count:17,skiStart:8,holdLastChapter:true});
+ view.scroll(8000);assert.equal(view.document.body.dataset.motionWorld,'summit');assert.equal(view.document.body.dataset.journeyPage,'/ski');
+ view.scroll(1000);assert.equal(view.document.body.dataset.motionWorld,'travel');
+ content.unmount();view.unmount();
 });

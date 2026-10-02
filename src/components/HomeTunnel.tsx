@@ -14,7 +14,7 @@ function flattenChapters(children: ReactNode): ReactNode[] {
   return Children.toArray(children).flatMap(child => isValidElement<{ children: ReactNode }>(child) && child.type === Fragment ? flattenChapters(child.props.children) : [child]);
 }
 
-export default function HomeTunnel({ children, labels, instruction, world = "home", workStart, contactStart, initialChapter = 0, showNavigation = true, holdLastChapter = false }: { children: ReactNode; labels: string[]; instruction: string; world?: TunnelWorld; workStart?: number; contactStart?: number; initialChapter?: number; showNavigation?: boolean; holdLastChapter?: boolean }) {
+export default function HomeTunnel({ children, labels, instruction, world = "home", workStart, contactStart, skiStart, initialChapter = 0, showNavigation = true, holdLastChapter = false }: { children: ReactNode; labels: string[]; instruction: string; world?: TunnelWorld; workStart?: number; contactStart?: number; skiStart?: number; initialChapter?: number; showNavigation?: boolean; holdLastChapter?: boolean }) {
   const chapters = flattenChapters(children);
   const [ready, setReady] = useState(false);
   const painted = useRef(false);
@@ -31,7 +31,7 @@ export default function HomeTunnel({ children, labels, instruction, world = "hom
   const navigation = useRef<HTMLDivElement>(null);
   const activeRef = useRef(0);
   const announcedWorld = useRef("");
-  const chapterWorld = (index: number): TunnelWorld => contactStart !== undefined && index >= contactStart ? "contact" : workStart === undefined ? world : index >= workStart ? "web" : "home";
+  const chapterWorld = (index: number): TunnelWorld => skiStart !== undefined ? index >= skiStart ? "ski" : "travel" : contactStart !== undefined && index >= contactStart ? "contact" : workStart === undefined ? world : index >= (workStart ?? Infinity) ? "web" : "home";
 
   useEffect(() => {
     if (ready || (mounted && staticMode)) window.dispatchEvent(new Event("journey-ready"));
@@ -79,6 +79,7 @@ export default function HomeTunnel({ children, labels, instruction, world = "hom
     activeRef.current = index;
     setActive(index);
     if (staticMode) {
+      if (world === "travel" || world === "ski") gates.current.forEach(element => element?.querySelectorAll<HTMLVideoElement>("video").forEach(video => { if (typeof video.pause === "function") video.pause(); }));
       gates.current.forEach(element => { if (element) { element.inert = false; element.setAttribute("aria-hidden", "false"); } });
       const element = gates.current[index];
       if (element) window.scrollTo({ top: Math.max(0, window.scrollY + element.getBoundingClientRect().top - 150), behavior: "instant" });
@@ -87,7 +88,7 @@ export default function HomeTunnel({ children, labels, instruction, world = "hom
       setReady(false);
       window.scrollTo({ top: index * 2 / 1.5 * window.innerHeight, behavior: "instant" });
     }
-  }, [mounted, staticMode, initialChapter]);
+  }, [mounted, staticMode, initialChapter, world]);
 
   useEffect(() => {
     if (!mounted || staticMode) return;
@@ -97,12 +98,12 @@ export default function HomeTunnel({ children, labels, instruction, world = "hom
       const finished = !holdLastChapter && workStart === undefined && frame.distance > gateOrigin(chapters.length - 1) - 0.2;
       if (layer.current) layer.current.dataset.finished = String(finished);
       if (index !== activeRef.current) { activeRef.current = index; setActive(index); }
-      if (workStart !== undefined) {
-        const route = contactStart !== undefined && index >= contactStart ? "/contact" : index >= workStart ? "/web" : "/";
+      if (workStart !== undefined || skiStart !== undefined) {
+        const route = skiStart !== undefined ? index >= skiStart ? "/ski" : "/travel" : contactStart !== undefined && index >= contactStart ? "/contact" : index >= (workStart ?? Infinity) ? "/web" : "/";
         if (route !== announcedWorld.current) {
           announcedWorld.current = route;
           document.body.dataset.journeyPage = route;
-          document.body.dataset.motionWorld = route === "/contact" ? "contact" : route === "/web" ? "build" : "base";
+          document.body.dataset.motionWorld = route === "/ski" ? "summit" : route === "/travel" ? "travel" : route === "/contact" ? "contact" : route === "/web" ? "build" : "base";
           window.dispatchEvent(new CustomEvent("journey-page", { detail: route }));
         }
       }
@@ -122,6 +123,13 @@ export default function HomeTunnel({ children, labels, instruction, world = "hom
         element.style.visibility = visible ? "visible" : "hidden";
         element.style.zIndex = String(chapters.length - chapter);
         element.style.pointerEvents = interactive ? "auto" : "none";
+        if ((world === "travel" || world === "ski") && element.dataset.active !== String(interactive)) {
+          element.dataset.active = String(interactive);
+          element.querySelectorAll<HTMLVideoElement>("video").forEach(video => {
+            if (interactive && typeof video.play === "function") void video.play().catch(() => {});
+            else if (typeof video.pause === "function") video.pause();
+          });
+        }
         element.inert = !interactive;
         element.setAttribute("aria-hidden", String(!interactive));
         element.dataset.depth = gate.depth.toFixed(3);
@@ -144,6 +152,10 @@ export default function HomeTunnel({ children, labels, instruction, world = "hom
     const onAnchor = (event: MouseEvent) => {
       if (event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return;
       const routeLink = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>("a[href]") : null;
+      if (skiStart !== undefined && routeLink && !routeLink.hasAttribute("download") && (!routeLink.target || routeLink.target === "_self")) {
+        const url = new URL(routeLink.href,window.location.href);
+        if (url.origin === window.location.origin && ["/travel","/ski"].includes(url.pathname) && !url.hash && !url.search) {event.preventDefault();window.scrollTo({top:(url.pathname === "/ski" ? skiStart : 0)*2/1.5*window.innerHeight,behavior:"instant"});return;}
+      }
       if (workStart !== undefined && routeLink && !routeLink.hasAttribute("download") && (!routeLink.target || routeLink.target === "_self")) {
         const url = new URL(routeLink.href, window.location.href);
         if (url.origin === window.location.origin && ["/", "/web", ...(contactStart !== undefined ? ["/contact"] : [])].includes(url.pathname) && (!url.hash || url.pathname === "/contact") && !url.search) {
@@ -167,7 +179,7 @@ export default function HomeTunnel({ children, labels, instruction, world = "hom
     document.addEventListener("click", onAnchor, true);
     if (!initialHashHandled.current) { initialHashHandled.current = true; onHash(); }
     return () => { unsubscribe(); window.removeEventListener("hashchange", onHash); document.removeEventListener("click", onAnchor, true); delete document.body.dataset.journeyPage; };
-  }, [mounted, staticMode, chapters.length, workStart, contactStart, holdLastChapter]);
+  }, [mounted, staticMode, chapters.length, workStart, contactStart, skiStart, holdLastChapter, world]);
 
   useEffect(() => {
     if (!mounted || !staticMode) return;
@@ -176,10 +188,10 @@ export default function HomeTunnel({ children, labels, instruction, world = "hom
       let chapter = 0;
       gates.current.forEach((element,index) => { if (element && element.getBoundingClientRect().top <= point) chapter = index; });
       activeRef.current = chapter;
-      if (workStart === undefined) return;
-      const route = contactStart !== undefined && chapter >= contactStart ? "/contact" : chapter >= workStart ? "/web" : "/";
+      if (workStart === undefined && skiStart === undefined) return;
+      const route = skiStart !== undefined ? chapter >= skiStart ? "/ski" : "/travel" : contactStart !== undefined && chapter >= contactStart ? "/contact" : chapter >= (workStart ?? Infinity) ? "/web" : "/";
       document.body.dataset.journeyPage = route;
-      document.body.dataset.motionWorld = route === "/contact" ? "contact" : route === "/web" ? "build" : "base";
+      document.body.dataset.motionWorld = route === "/ski" ? "summit" : route === "/travel" ? "travel" : route === "/contact" ? "contact" : route === "/web" ? "build" : "base";
       window.dispatchEvent(new CustomEvent("journey-page", { detail: route }));
     };
     update();
@@ -189,6 +201,9 @@ export default function HomeTunnel({ children, labels, instruction, world = "hom
       const anchor = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>("a[href]") : null;
       if (!anchor || anchor.hasAttribute("download") || (anchor.target && anchor.target !== "_self")) return;
       const url = new URL(anchor.href, window.location.href);
+      if (skiStart !== undefined && url.origin === window.location.origin && ["/travel","/ski"].includes(url.pathname) && !url.hash && !url.search) {
+        event.preventDefault(); gates.current[url.pathname === "/ski" ? skiStart : 0]?.scrollIntoView(); return;
+      }
       if (workStart === undefined || url.origin !== window.location.origin || !["/", "/web", ...(contactStart !== undefined ? ["/contact"] : [])].includes(url.pathname) || url.hash || url.search) return;
       event.preventDefault();
       if (url.pathname === "/contact") document.getElementById("journey-contact-start")?.scrollIntoView();
@@ -197,17 +212,18 @@ export default function HomeTunnel({ children, labels, instruction, world = "hom
     };
     document.addEventListener("click", navigate, true);
     return () => { window.removeEventListener("scroll", update); document.removeEventListener("click", navigate, true); delete document.body.dataset.journeyPage; };
-  }, [mounted, staticMode, workStart, contactStart]);
+  }, [mounted, staticMode, workStart, contactStart, skiStart]);
 
   if (!mounted) return <LoadingScreen />;
 
 
+  const renderChapter = (chapter: ReactNode, index: number) => <div className="home-tunnel-gate" data-reading-chapter={index} id={index === contactStart ? "journey-contact-start" : index === workStart ? "journey-work-start" : undefined} inert={staticMode ? false : undefined} aria-hidden={staticMode ? false : undefined} key={index} ref={element => { gates.current[index] = element; }}>
+        <div className={`home-gate-content ${worldClasses[chapterWorld(index)]}${chapterWorld(index) !== "home" ? " tunnel-world-content" : ""}`}>{chapter}</div>
+      </div>;
   return <>
     {!staticMode && <div className="home-tunnel-runway" style={{ height: `${100 + (chapters.length - (workStart === undefined && !holdLastChapter ? 0 : 1)) * 2 / 1.5 * 100}${workStart === undefined && !holdLastChapter ? "svh" : "vh"}` }} aria-hidden="true" />}
-    {createPortal(<div ref={layer} className={staticMode ? "home-tunnel-static reading-layout" : "home-tunnel-layer"} data-world={world}>
-      <div className={staticMode ? "reading-chapters" : "home-tunnel-stage"} style={{ visibility: staticMode || ready ? "visible" : "hidden" }}>{chapters.map((chapter, index) => <div className="home-tunnel-gate" data-reading-chapter={index} id={index === contactStart ? "journey-contact-start" : index === workStart ? "journey-work-start" : undefined} inert={staticMode ? false : undefined} aria-hidden={staticMode ? false : undefined} key={index} ref={element => { gates.current[index] = element; }}>
-        <div className={`home-gate-content ${worldClasses[chapterWorld(index)]}${chapterWorld(index) !== "home" ? " tunnel-world-content" : ""}`}>{chapter}</div>
-      </div>)}</div>
+    {createPortal(<div ref={layer} className={staticMode ? "home-tunnel-static reading-layout" : "home-tunnel-layer"} data-world={skiStart !== undefined ? "adventure" : world}>
+      <div className={staticMode ? "reading-chapters" : "home-tunnel-stage"} style={{ visibility: staticMode || ready ? "visible" : "hidden" }}>{staticMode && skiStart !== undefined ? <>{["travel","ski"].map((group,groupIndex)=><div key={group} className="reading-layout reading-world-group" data-world={group}><div className="reading-chapters">{chapters.slice(groupIndex===0?0:skiStart,groupIndex===0?skiStart:chapters.length).map((chapter,index)=>renderChapter(chapter,index+(groupIndex===0?0:skiStart)))}</div></div>)}</> : chapters.map(renderChapter)}</div>
       {showNavigation && !staticMode && <nav className="home-tunnel-navigation" aria-label={instruction}>
         <span>{instruction}</span>
         <button type="button" aria-label={labels[Math.max(0, active - 1)]} disabled={active === 0} onClick={() => goTo(active - 1)}>↑</button>

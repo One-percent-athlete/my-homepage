@@ -279,7 +279,7 @@ export default function SkiPackages({ language, packageIndex }: SkiPackagesProps
                     {heroButton}
                     <motion.span
                       animate={{ x: [0, 5, 0] }}
-                      transition={{ duration: 1.5, repeat: Infinity }}
+                      transition={{ duration: 1.5, repeat: 0 }}
                     >
                       →
                     </motion.span>
@@ -296,7 +296,7 @@ export default function SkiPackages({ language, packageIndex }: SkiPackagesProps
               <motion.div
                 className={`absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r ${pkg.color} rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
                 animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 2, repeat: Infinity }}
+                transition={{ duration: 2, repeat: 0 }}
               />
             </motion.div>
           ))}
@@ -332,7 +332,7 @@ export default function SkiPackages({ language, packageIndex }: SkiPackagesProps
             </span>
             <motion.span
               animate={{ x: [0, 5, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
+              transition={{ duration: 1.5, repeat: 0 }}
             >
               →
             </motion.span>

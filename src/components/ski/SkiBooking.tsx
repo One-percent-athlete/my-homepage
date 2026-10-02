@@ -141,7 +141,7 @@ export default function SkiBooking({ language }: SkiBookingProps) {
                   }}
                   transition={{ 
                     duration: 2, 
-                    repeat: Infinity,
+                    repeat: 0,
                     delay: i * 0.5
                   }}
                 />
@@ -179,7 +179,7 @@ export default function SkiBooking({ language }: SkiBookingProps) {
             </span>
             <motion.span
               animate={{ x: [0, 5, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
+              transition={{ duration: 1.5, repeat: 0 }}
             >
               →
             </motion.span>

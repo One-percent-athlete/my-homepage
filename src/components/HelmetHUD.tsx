@@ -35,7 +35,7 @@ export default function HelmetHUD() {
       else setVisited(recordWorldVisit(route));
     };
     const world = (event: Event) => { const route = (event as CustomEvent<string>).detail; setJourneyPage(route); visit(route); };
-    const currentRoute = () => ["/", "/web", "/contact"].includes(pathname) ? document.body.dataset.journeyPage ?? pathname : pathname;
+    const currentRoute = () => ["/", "/web", "/contact", "/travel", "/ski"].includes(pathname) ? document.body.dataset.journeyPage ?? pathname : pathname;
     const route = currentRoute();
     setJourneyPage(document.body.dataset.journeyPage ?? null);
     visit(route);
@@ -54,7 +54,7 @@ export default function HelmetHUD() {
   }, [progressOpen]);
   useEffect(() => { setProgressOpen(false); }, [pathname, journeyPage]);
   if (pathname.startsWith("/mission-control") || pathname.startsWith("/blog/create") || pathname.startsWith("/demos/")) return null;
-  const route = ["/", "/web", "/contact"].includes(pathname) ? journeyPage ?? pathname : pathname;
+  const route = ["/", "/web", "/contact", "/travel", "/ski"].includes(pathname) ? journeyPage ?? pathname : pathname;
   const name = route === "/case-studies" ? names["/web"] : names[route] ?? names[Object.keys(names).find(path => path !== "/" && route.startsWith(`${path}/`)) ?? "/"];
   const index = { en: 0, ja: 1, zh: 2 }[language];
   const progress = explorationProgress(visited ?? []);

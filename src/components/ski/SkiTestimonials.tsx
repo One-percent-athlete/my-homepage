@@ -220,7 +220,7 @@ export default function SkiTestimonials({ language }: SkiTestimonialsProps) {
                         transition={{ 
                           duration: 1, 
                           delay: starIndex * 0.1,
-                          repeat: Infinity,
+                          repeat: 0,
                           repeatDelay: 3
                         }}
                       >
@@ -240,7 +240,7 @@ export default function SkiTestimonials({ language }: SkiTestimonialsProps) {
               <motion.div
                 className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-2xl"
                 animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 2, repeat: Infinity }}
+                transition={{ duration: 2, repeat: 0 }}
               />
             </motion.div>
           ))}
@@ -276,7 +276,7 @@ export default function SkiTestimonials({ language }: SkiTestimonialsProps) {
             </span>
             <motion.span
               animate={{ x: [0, 5, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
+              transition={{ duration: 1.5, repeat: 0 }}
             >
               →
             </motion.span>

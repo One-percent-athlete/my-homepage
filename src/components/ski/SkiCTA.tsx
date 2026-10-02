@@ -134,7 +134,7 @@ export default function SkiCTA({ language }: SkiCTAProps) {
               {ctaButton}
               <motion.span
                 animate={{ x: [0, 8, 0] }}
-                transition={{ duration: 2, repeat: Infinity }}
+                transition={{ duration: 2, repeat: 0 }}
                 className="text-2xl"
               >
                 →
@@ -145,12 +145,12 @@ export default function SkiCTA({ language }: SkiCTAProps) {
             <motion.div
               className="absolute -top-2 -right-2 w-6 h-6 bg-white/30 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
               animate={{ scale: [1, 1.3, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
+              transition={{ duration: 2, repeat: 0 }}
             />
             <motion.div
               className="absolute -bottom-2 -left-2 w-4 h-4 bg-white/30 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
               animate={{ scale: [1, 1.4, 1] }}
-              transition={{ duration: 2.5, repeat: Infinity, delay: 0.5 }}
+              transition={{ duration: 2.5, repeat: 0, delay: 0.5 }}
             />
           </motion.a>
 

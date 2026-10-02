@@ -17,6 +17,8 @@ function renderComponent(path, props = {}, language = 'en', exportName = 'defaul
       if (id === 'react/jsx-runtime') return { jsx, jsxs: jsx, Fragment: 'fragment' };
       if (id === 'framer-motion') return { motion: new Proxy({}, { get: (_, tag) => tag }), AnimatePresence: 'fragment' };
       if (id === '@/app/context/LanguageContext') return { useLanguage: () => ({ language }) };
+      if (id === '@/components/travel/TravelChapters') return {useTravelJourney:()=>renderComponent('../src/components/travel/TravelChapters.tsx',{},language,'useTravelJourney')};
+      if (id === '@/components/ski/SkiChapters') return {useSkiJourney:()=>renderComponent('../src/components/ski/SkiChapters.tsx',{},language,'useSkiJourney')};
       if (id === '@/components/WorkJourney') return { useWorkJourney: () => renderComponent('../src/components/WorkJourney.tsx', {}, language, 'useWorkJourney') };
       if (id === '@/lib/build-stories') { const data={}; vm.runInNewContext(ts.transpileModule(readFileSync(new URL('../src/lib/build-stories.ts',import.meta.url),'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS}}).outputText,{exports:data}); return data; }
       if (id === '@/lib/exploration') return { recordWorldStep() {} };
@@ -43,15 +45,18 @@ test('Work offers sixteen reusable chapters in every language', () => {
   }
 });
 
-test('Travel and Ski keep every section inside labeled square chapters', () => {
+test('Travel and Ski share a continuous seventeen-chapter journey with no right indicator',()=>{
  for(const language of ['en','ja','zh']){
-  for(const [path,count] of [['../src/components/travel/TravelContent.tsx',8],['../src/components/ski/SkiContent.tsx',9]]){
-   const tree=renderComponent(path,{},language);const tunnels=findAll(tree,node=>node.type==='@/components/HomeTunnel');
-   assert.equal(tunnels.length,1);assert.equal(tunnels[0].props.labels.length,count);
-   assert.equal(tunnels[0].props.children.flat(Infinity).length,count);assert.equal(tunnels[0].props.holdLastChapter,true);
+  const travel=renderComponent('../src/components/travel/TravelChapters.tsx',{},language,'useTravelJourney');
+  const ski=renderComponent('../src/components/ski/SkiChapters.tsx',{},language,'useSkiJourney');
+  assert.equal(travel.content.props.children.flat(Infinity).length,8);assert.equal(ski.content.props.children.flat(Infinity).length,9);
+  assert.deepEqual(Array.from(findAll(ski.content,node=>node.type==='@/components/ski/SkiPackages'),node=>node.props.packageIndex),[0,1,2]);
+  for(const initialWorld of ['travel','ski']){
+   const tree=renderComponent('../src/components/AdventureJourney.tsx',{initialWorld},language);
+   const tunnel=findAll(tree,node=>node.type==='@/components/HomeTunnel')[0];
+   assert.equal(tunnel.props.labels.length,17);assert.equal(tunnel.props.skiStart,8);
+   assert.equal(tunnel.props.initialChapter,initialWorld==='ski'?8:0);assert.equal(tunnel.props.showNavigation,false);
   }
-  const ski=renderComponent('../src/components/ski/SkiContent.tsx',{},language);
-  assert.deepEqual(Array.from(findAll(ski,node=>node.type==='@/components/ski/SkiPackages'),node=>node.props.packageIndex),[0,1,2]);
  }
 });
 
