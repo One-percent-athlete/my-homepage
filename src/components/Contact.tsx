@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
+import { CheckCircle2, ArrowUpRight } from "lucide-react";
 import { motion } from "framer-motion";
 import {
   FaInstagram,
@@ -94,9 +95,9 @@ const contactData: {
 };
 
 const contactCopy = {
-  en: { title:"Get in Touch", subtitle:"Have a project in mind? Tell me about your idea, what you need, and when you’d like to get started.", phone:"Phone", form:"Send a Message", name:"Your Name", email:"Your Email", phonePlaceholder:"Your Phone Number", message:"Your Message", sending:"Sending...", send:"Send Message", success:"Message sent successfully!", error:"Failed to send message. Try again." },
-  ja: { title:"お問い合わせ", subtitle:"プロジェクトのアイデアはありますか？ご相談内容や目標、希望の時期を聞かせてください。", phone:"電話", form:"メッセージを送る", name:"お名前", email:"メールアドレス", phonePlaceholder:"電話番号", message:"メッセージ", sending:"送信中...", send:"送信する", success:"メッセージを送信しました。", error:"送信できませんでした。もう一度お試しください。" },
-  zh: { title:"联系我", subtitle:"有项目想法吗？告诉我你的想法、需求，以及希望开始的时间。", phone:"电话", form:"发送消息", name:"姓名", email:"电子邮箱", phonePlaceholder:"电话号码", message:"留言内容", sending:"发送中...", send:"发送消息", success:"消息发送成功！", error:"发送失败，请重试。" },
+  en: { title:"What would you like to build together?", subtitle:"Tell me what you’re imagining—a useful app, a new website, or an idea you’re still figuring out. We can start with a conversation.", phone:"Phone", form:"Tell me about your idea", name:"Your Name", email:"Your Email", phonePlaceholder:"Your Phone Number", message:"What do you have in mind?", sending:"Sending...", send:"Send Message", success:"Thanks for reaching out", received:"Your message has been received.", reply:"I’ll reply to", next:"to talk about your idea and the next steps.", another:"Send another message", back:"Explore my work", sent:"Your message", error:"Your message hasn’t been sent. Your draft is still here—please try again, or email me directly." },
+  ja: { title:"一緒に、何をつくりましょうか？", subtitle:"便利なアプリ、新しいウェブサイト、まだ形になっていないアイデア。思い描いていることを聞かせてください。まずは会話から始めましょう。", phone:"電話", form:"アイデアを聞かせてください", name:"お名前", email:"メールアドレス", phonePlaceholder:"電話番号", message:"どんなことを考えていますか？", sending:"送信中...", send:"送信する", success:"ご連絡ありがとうございます", received:"メッセージを受け取りました。", reply:"返信先：", next:"アイデアや次のステップについて、このアドレスに返信します。", another:"別のメッセージを送る", back:"作品を見る", sent:"送信したメッセージ", error:"送信できませんでした。入力内容は残っています。再度お試しいただくか、メールで直接ご連絡ください。" },
+  zh: { title:"你想和我一起创造什么？", subtitle:"实用的应用、新的网站，或还在构思的想法，都可以告诉我。我们可以从一次交流开始。", phone:"电话", form:"聊聊你的想法", name:"姓名", email:"电子邮箱", phonePlaceholder:"电话号码", message:"你有什么想法？", sending:"发送中...", send:"发送消息", success:"谢谢你的联系", received:"你的消息已收到。", reply:"我会回复至", next:"一起聊聊你的想法和下一步。", another:"再发送一条消息", back:"探索我的作品", sent:"你的消息", error:"消息尚未发送，草稿已保留。请重试，或直接通过邮件联系我。" },
 };
 
 export default function Contact({ embedded = false }: { embedded?: boolean }) {
@@ -125,11 +126,17 @@ export default function Contact({ embedded = false }: { embedded?: boolean }) {
   const [phone, setPhone] = useState("");
   const [message, setMessage] = useState("");
   const [website, setWebsite] = useState("");
+  const [submitted, setSubmitted] = useState<{name:string;email:string;message:string} | null>(null);
+  const sendingRef = useRef(false);
+  const successRef = useRef<HTMLHeadingElement>(null);
+  const nameRef = useRef<HTMLInputElement>(null);
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
+  useEffect(() => { if (status === "success") successRef.current?.focus(); }, [status]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (status === "sending") return;
+    if (sendingRef.current || status === "success") return;
+    sendingRef.current = true;
     setStatus("sending");
 
     try {
@@ -139,17 +146,22 @@ export default function Contact({ embedded = false }: { embedded?: boolean }) {
         body: JSON.stringify({ name, email, phone, message, website }),
       });
 
-      if (res.ok) {
+      const acknowledgment: unknown = await res.json();
+      if (res.ok && acknowledgment && typeof acknowledgment === "object" && "status" in acknowledgment && acknowledgment.status === "success") {
+        setSubmitted({name:name.trim(),email:email.trim(),message:message.trim()});
         setStatus("success");
         setName("");
         setEmail("");
         setPhone("");
         setMessage("");
+        setWebsite("");
       } else {
         setStatus("error");
       }
     } catch {
       setStatus("error");
+    } finally {
+      sendingRef.current = false;
     }
   };
 
@@ -188,6 +200,14 @@ export default function Contact({ embedded = false }: { embedded?: boolean }) {
         transition={{ duration: 0.25 }}
         className="contact-primary-form p-8 bg-gray-900/80 rounded-3xl"
       >
+        {status === "success" && submitted ? <div className="contact-success" role="status" aria-live="polite">
+          <CheckCircle2 size={44} aria-hidden="true"/>
+          <p className="contact-success-kicker">{t.received}</p>
+          <h2 id="contact-form-title" ref={successRef} tabIndex={-1}>{language === "ja" ? `${submitted.name}さん、${t.success}。` : language === "zh" ? `${t.success}，${submitted.name}。` : `${t.success}, ${submitted.name}.`}</h2>
+          <p>{t.reply} <strong>{submitted.email}</strong> {t.next}</p>
+          <div className="contact-sent-summary"><small>{t.sent}</small><p>{submitted.message.length > 240 ? submitted.message.slice(0,240) + "…" : submitted.message}</p></div>
+          <div className="contact-success-actions"><a href="/web">{t.back} <ArrowUpRight size={16} aria-hidden="true"/></a><button type="button" onClick={() => {setStatus("idle");setSubmitted(null);requestAnimationFrame(() => nameRef.current?.focus());}}>{t.another}</button></div>
+        </div> : <>
         <h2 id="contact-form-title" className="text-2xl font-bold mb-6 text-yellow-400">{t.form}</h2>
         <div className="absolute -left-[10000px]" aria-hidden="true">
           <label htmlFor="website">Website</label>
@@ -197,6 +217,7 @@ export default function Contact({ embedded = false }: { embedded?: boolean }) {
         <fieldset disabled={status === "sending"}>
         <label className="contact-label" htmlFor="contact-name">{t.name}</label>
         <input
+          ref={nameRef}
           id="contact-name"
           name="name"
           type="text"
@@ -250,9 +271,9 @@ export default function Contact({ embedded = false }: { embedded?: boolean }) {
 
         </fieldset>
         <div role="status" aria-live="polite">
-          {status === "success" && <p className="mt-4 text-green-400 font-semibold">{t.success}</p>}
           {status === "error" && <p className="mt-4 text-red-500 font-semibold">{t.error}</p>}
         </div>
+        </>}
       </motion.form>
       <aside className="contact-secondary">
         <h2>{extra.direct}</h2>
