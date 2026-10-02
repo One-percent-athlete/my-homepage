@@ -1,0 +1,58 @@
+/* Chapter controls stay alongside the journey; site chrome returns at rest. */
+.home-tunnel-navigation{left:auto;right:14px;top:50%;bottom:auto;transform:translateY(-50%);flex-direction:column;gap:5px;padding:7px 5px;max-height:calc(100svh - 170px)}
+.home-tunnel-navigation>span{display:none}
+.home-tunnel-navigation>div{flex-direction:column;gap:3px;max-width:none;max-height:calc(100svh - 270px);overflow-x:hidden;overflow-y:auto;scrollbar-width:none}
+.home-tunnel-navigation button{min-width:30px;width:30px;height:28px;flex-shrink:0;font-size:10px}
+.home-tunnel-navigation button:disabled{opacity:.3}
+.home-tunnel-navigation button:focus-visible{outline:2px solid #c8ff42;outline-offset:-2px}
+.public-header{position:fixed;inset:0 0 auto;transition:transform .2s ease,opacity .2s ease,visibility .2s}
+body:has(.public-header):not(:has(.home-tunnel)){padding-top:80px}
+body:has(.public-footer):not(:has(.home-tunnel)){padding-bottom:76px}
+.world-dock{bottom:66px}
+.public-footer{position:fixed;inset:auto 0 0;z-index:100;display:flex;align-items:center;justify-content:space-between;gap:18px;min-height:52px;padding:8px clamp(14px,4vw,60px);background:#030911ed;border-top:1px solid #ffffff24;color:#a5b9c8;transition:transform .2s ease,opacity .2s ease,visibility .2s}
+.footer-signature{font:500 10px monospace;letter-spacing:.04em;white-space:nowrap}
+.footer-links{display:flex;align-items:center;gap:7px}
+.footer-links a{display:grid;place-items:center;width:32px;height:32px;border:1px solid #9bc9ff40;border-radius:3px;color:#b8d8ee;cursor:pointer}
+.footer-links a:hover,.footer-links a:focus-visible{color:#c8ff42;border-color:#c8ff42}
+.footer-links a:focus-visible{outline:2px solid #c8ff42;outline-offset:2px}
+body[data-chrome-scrolling="true"] .public-header{transform:translateY(-100%);opacity:0;visibility:hidden;pointer-events:none}
+body[data-chrome-scrolling="true"] .public-footer{transform:translateY(100%);opacity:0;visibility:hidden;pointer-events:none}
+body[data-chrome-scrolling="true"] :is(.public-header:focus-within,.public-header:has(.public-navigation.is-open),.public-footer:focus-within){transform:none;opacity:1;visibility:visible;pointer-events:auto}
+
+/* Reuse the working contact form inside the final projected square. */
+.home-gate-content.contact-world>.contact-refresh{position:relative;width:100%;height:100%;min-height:0!important;padding:28px;overflow:auto;scrollbar-width:thin;scrollbar-color:#9bc9ff55 transparent;background:transparent!important}
+.home-gate-content.contact-world>.contact-refresh>h1{font-size:40px;line-height:1.1;margin-bottom:10px}
+.home-gate-content.contact-world>.contact-refresh>p{font-size:14px;line-height:1.5;margin-bottom:20px;max-width:700px}
+.home-gate-content .contact-layout{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:22px}
+.home-gate-content .contact-primary-form{padding:18px}
+.home-gate-content .contact-primary-form h2{font-size:22px;margin-bottom:14px}
+.home-gate-content .contact-label{font-size:12px;margin-bottom:5px}
+.home-gate-content .contact-primary-form input,.home-gate-content .contact-primary-form textarea{font-size:14px;padding:9px;margin-bottom:10px}
+.home-gate-content .contact-primary-form textarea{height:85px;resize:vertical}
+.home-gate-content .contact-field-hint{font-size:11px;margin-bottom:10px}
+.home-gate-content .contact-primary-form button{min-height:38px;padding:8px 16px;font-size:13px}
+.home-gate-content .contact-secondary>h2{font-size:20px;margin-bottom:10px}
+.home-gate-content .contact-methods .contact-method{padding-block:10px!important}
+.home-gate-content .contact-method-label,.home-gate-content .contact-method a{font-size:12px}
+.home-gate-content .contact-messaging summary{font-size:12px}
+.home-gate-content .contact-qr{padding:7px;font-size:10px}
+.home-gate-content .contact-qr img{width:85px;height:85px}
+.home-tunnel-static>.contact-world{padding:0;min-height:0;background:transparent!important}
+@media(max-width:699px){
+  .home-tunnel-navigation{right:5px;padding:5px 3px;gap:3px}
+  .home-tunnel-navigation button{min-width:25px;width:25px;height:27px;font-size:9px}
+  .home-tunnel-navigation>div{max-width:none;overflow-x:hidden;overflow-y:auto}
+  .public-footer{flex-direction:column;gap:5px;padding:6px 10px;min-height:66px}
+  .world-dock{bottom:80px}
+  .footer-signature{font-size:9px}
+  .footer-links{gap:6px}.footer-links a{width:30px;height:30px}
+  .home-gate-content.contact-world>.contact-refresh{padding:18px}
+  .home-gate-content.contact-world>.contact-refresh>h1{font-size:28px}
+  .home-gate-content.contact-world>.contact-refresh>p{font-size:12px;margin-bottom:12px}
+  .home-gate-content .contact-layout{grid-template-columns:1fr;gap:20px}
+  .home-gate-content .contact-primary-form{padding:12px}
+  .home-gate-content .contact-primary-form h2{font-size:19px;margin-bottom:10px}
+  .home-gate-content .contact-primary-form input,.home-gate-content .contact-primary-form textarea{font-size:16px;padding:7px;margin-bottom:8px}
+  .home-gate-content .contact-primary-form textarea{height:72px}
+}
+@media(prefers-reduced-motion:reduce){.public-header,.public-footer{transition:none}}

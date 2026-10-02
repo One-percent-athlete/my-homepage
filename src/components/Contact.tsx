@@ -99,7 +99,8 @@ const contactCopy = {
   zh: { title:"联系我", subtitle:"有项目想法吗？告诉我你的想法、需求，以及希望开始的时间。", phone:"电话", form:"发送消息", name:"姓名", email:"电子邮箱", phonePlaceholder:"电话号码", message:"留言内容", sending:"发送中...", send:"发送消息", success:"消息发送成功！", error:"发送失败，请重试。" },
 };
 
-export default function Contact() {
+export default function Contact({ embedded = false }: { embedded?: boolean }) {
+  const Container = embedded ? "section" : "main";
   const { language } = useLanguage();
   const t = contactCopy[language];
   useEffect(() => {
@@ -154,11 +155,11 @@ export default function Contact() {
 
   return (
     <>
-    <main
+    <Container
       id="contact"
       className="contact-world contact-refresh relative pb-12 px-6 text-center overflow-hidden text-white"
     >
-      <FloatingButtons />
+      {!embedded && <FloatingButtons />}
       {/* Title & Subtitle */}
       <motion.h1
         initial={{ opacity: 0, y: -40 }}
@@ -312,7 +313,7 @@ export default function Contact() {
       </details>
       </aside>
       </div>
-    </main>
+    </Container>
       </>
   );
 }

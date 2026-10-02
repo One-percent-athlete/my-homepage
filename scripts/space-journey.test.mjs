@@ -87,7 +87,7 @@ test('live scrolling settles, reverses, and stops scheduling after unmount', () 
 
 // Render the real HomeTunnel component with lightweight React/DOM adapters.
 // This verifies that native scroll events update live content, not only math.
-function mountHomeContent(view, { world = 'home', count = 6, workStart, initialChapter = 0, nested = false } = {}) {
+function mountHomeContent(view, { world = 'home', count = 6, workStart, contactStart, initialChapter = 0, nested = false } = {}) {
   const states = [];
   const refs = [];
   const effects = [];
@@ -98,8 +98,9 @@ function mountHomeContent(view, { world = 'home', count = 6, workStart, initialC
   const source = readFileSync(new URL('../src/components/HomeTunnel.tsx', import.meta.url), 'utf8');
   const compiled = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX } }).outputText;
   const jsx = (type, props) => ({ type, props });
+  class LinkElement { constructor(anchor) { this.anchor=anchor; } closest() { return this.anchor; } }
   vm.runInNewContext(compiled, {
-    exports, window: view.window, document: view.document, Element: class {}, CustomEvent, URL,
+    exports, window: view.window, document: view.document, Element: LinkElement, CustomEvent, URL,
     require: id => {
       if (id === 'react') return {
         Children: { toArray: children => Array.isArray(children) ? children : [children] },
@@ -121,7 +122,7 @@ function mountHomeContent(view, { world = 'home', count = 6, workStart, initialC
       throw new Error(`Unexpected import: ${id}`);
     },
   });
-  view.window.location = { hash: '', href: 'http://localhost:3000/' };
+  view.window.location = { hash: '', href: 'http://localhost:3000/', origin: 'http://localhost:3000' };
   view.window.scrollTo = ({ top }) => view.scroll(top);
   const labels = Array.from({ length: count }, (_, index) => ['Identity', 'Facts', 'Missions', 'Loadout', 'Field note', 'Contact'][index] ?? `Chapter ${index + 1}`);
   const chapters = labels.map((label, index) => jsx('section', { id: ['about', 'facts', 'missions', 'loadout', 'field', 'contact'][index] ?? `chapter-${index + 1}`, children: label }));
@@ -147,7 +148,7 @@ function mountHomeContent(view, { world = 'home', count = 6, workStart, initialC
   }
   function render() {
     stateIndex = refIndex = effectIndex = 0;
-    tree = exports.default({ children: nested ? [chapters[0], jsx('fragment', {children: chapters.slice(1)})] : chapters, labels, instruction: 'Scroll to navigate', world, workStart, initialChapter });
+    tree = exports.default({ children: nested ? [chapters[0], jsx('fragment', {children: chapters.slice(1)})] : chapters, labels, instruction: 'Scroll to navigate', world, workStart, contactStart, initialChapter });
     gates = []; buttons = []; contents = [];
     attach(tree);
     effects.forEach(effect => { if (effect.pending) { effect.pending = false; effect.cleanup = effect.callback(); } });
@@ -158,6 +159,14 @@ function mountHomeContent(view, { world = 'home', count = 6, workStart, initialC
     get tree() { return tree; },
     get contents() { return contents; },
     chapterButton(index) { return buttons.filter(button => button.children === String(index + 1).padStart(2, '0'))[0]; },
+    clickRoute(path, props={}) {
+      const anchor={href:new URL(path,view.window.location.href).href,target:"",hasAttribute:()=>false};
+      const event=new Event("click",{cancelable:true});
+      Object.defineProperty(event,"target",{value:new LinkElement(anchor)});
+      Object.assign(event,{button:0,...props});
+      view.document.dispatchEvent(event);
+      return event;
+    },
     rerender: render,
     unmount() { effects.forEach(effect => effect.cleanup?.()); },
   };
@@ -381,5 +390,51 @@ test('direct Work entry starts at Work while keeping Home available behind it', 
   assert.equal(content.gates[6].inert,false);
   view.scroll(0);view.settle();
   assert.equal(view.document.body.dataset.journeyPage,'/');
+  content.unmount();view.unmount();
+});
+
+test('Contact follows the world portals and restores the Work header on reverse scroll', () => {
+  const view=mountJourney();
+  const content=mountHomeContent(view,{count:16,workStart:6,contactStart:15});
+  view.scroll(16800); view.settle();
+  assert.equal(view.document.body.dataset.journeyPage,'/web');
+  assert.equal(content.gates[14].inert,false);
+  view.scroll(18000); view.settle();
+  assert.equal(view.document.body.dataset.journeyPage,'/contact');
+  assert.equal(view.document.body.dataset.motionWorld,'contact');
+  assert.ok(content.contents[15].includes('contact-world'));
+  assert.equal(content.gates[15].inert,false);
+  view.input('wheel',{deltaY:900,deltaX:0,deltaMode:0});view.settle();
+  assert.equal(content.gates[15].inert,false,'the final form stays interactive at the end');
+  view.scroll(16800);view.settle();
+  assert.equal(view.document.body.dataset.journeyPage,'/web');
+  content.unmount();view.unmount();
+});
+
+test('direct Contact entry starts at the final form and allows scrolling back to Home', () => {
+  const view=mountJourney(false,'/contact');
+  const content=mountHomeContent(view,{count:16,workStart:6,contactStart:15,initialChapter:15});
+  view.settle();
+  assert.equal(view.window.scrollY,18000);
+  assert.equal(view.document.body.dataset.journeyPage,'/contact');
+  assert.equal(content.gates[15].inert,false);
+  view.scroll(0);view.settle();
+  assert.equal(view.document.body.dataset.journeyPage,'/');
+  content.unmount();view.unmount();
+});
+
+test('Contact and Work navigation jump within the journey while modified clicks stay normal',()=>{
+  const view=mountJourney();
+  const content=mountHomeContent(view,{count:16,workStart:6,contactStart:15});
+  assert.equal(content.clickRoute('/contact').defaultPrevented,true);view.settle();
+  assert.equal(view.window.scrollY,18000);
+  assert.equal(view.document.body.dataset.journeyPage,'/contact');
+  assert.equal(content.clickRoute('/web').defaultPrevented,true);view.settle();
+  assert.equal(view.window.scrollY,7200);
+  assert.equal(view.document.body.dataset.journeyPage,'/web');
+  assert.equal(content.clickRoute('/contact',{ctrlKey:true}).defaultPrevented,false);
+  assert.equal(view.window.scrollY,7200);
+  assert.equal(content.clickRoute('/').defaultPrevented,true);view.settle();
+  assert.equal(view.window.scrollY,0);
   content.unmount();view.unmount();
 });

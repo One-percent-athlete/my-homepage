@@ -10,28 +10,10 @@ import {
   FaEnvelope,
   FaPhoneAlt,
 } from "react-icons/fa";
-import { usePathname } from "next/navigation";
 import { useLanguage } from "@/app/context/LanguageContext";
 
 export default function Footer() {
   const { language } = useLanguage();
-  const footerNote = { en:"Built with love · Powered by Next.js & Tailwind CSS", ja:"心を込めて制作 · Next.js & Tailwind CSS で構築", zh:"用心打造 · 基于 Next.js 与 Tailwind CSS" }[language];
-  // Same color themes as FloatingButtons
-  const themes = {
-    "/": { border: "border-blue-500", text: "text-blue-500", shadow: "shadow-[0_0_10px_rgba(59,130,246,0.5)] hover:shadow-[0_0_20px_rgba(59,130,246,0.7)]" },
-    "/web": { border: "border-teal-400", text: "text-teal-400", shadow: "shadow-[0_0_10px_rgba(45,212,191,0.5)] hover:shadow-[0_0_20px_rgba(45,212,191,0.7)]" },
-    "/travel": { border: "border-orange-400", text: "text-orange-400", shadow: "shadow-[0_0_10px_rgba(251,146,60,0.5)] hover:shadow-[0_0_20px_rgba(251,146,60,0.7)]" },
-    "/ski": { border: "border-sky-400", text: "text-sky-400", shadow: "shadow-[0_0_10px_rgba(56,189,248,0.5)] hover:shadow-[0_0_20px_rgba(56,189,248,0.7)]" },
-    "/blog": { border: "border-purple-400", text: "text-purple-400", shadow: "shadow-[0_0_10px_rgba(192,132,252,0.5)] hover:shadow-[0_0_20px_rgba(192,132,252,0.7)]" },
-    "/gallery": { border: "border-amber-300", text: "text-amber-300", shadow: "shadow-[0_0_10px_rgba(252,211,77,0.45)] hover:shadow-[0_0_20px_rgba(252,211,77,0.65)]" },
-    "/between": { border: "border-pink-400", text: "text-pink-400", shadow: "shadow-[0_0_10px_rgba(244,114,182,0.45)] hover:shadow-[0_0_20px_rgba(244,114,182,0.65)]" },
-    "/contact": { border: "border-yellow-400", text: "text-yellow-400", shadow: "shadow-[0_0_10px_rgba(251,146,60,0.5)] hover:shadow-[0_0_20px_rgba(251,146,60,0.7)]" },
-  };
-
-  const pathname = usePathname();
-  const themePath = Object.keys(themes).find((path) => path !== "/" && pathname.startsWith(path)) as keyof typeof themes | undefined;
-  const currentTheme = themePath ? themes[themePath] : themes["/"];
-
   const contactLinks = [
     { label: "Email", icon: FaEnvelope, href: "mailto:one.percent.athlete@gmail.com" },
     { label: "Phone", icon: FaPhoneAlt, href: "tel:+817045618976" },
@@ -46,66 +28,11 @@ export default function Footer() {
     { label: "WeChat QR code", icon: FaWeixin, url: "/contact#messaging-apps" },
   ];
 
-  return (
-    <footer
-      className={`relative z-20 w-full text-gray-300 bg-transparent overflow-x-hidden pt-8 md:pt-16 md:pb-24 px-4 transition-colors duration-500`}
-    >
-      {/* Background text */}
-      <p
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-                  font-extrabold text-[8vw] sm:text-[7vw] md:text-[6vw] lg:text-[4vw]
-                  select-none pointer-events-none text-center break-words"
-        style={{
-          color: "rgba(255, 204, 0, 0.15)",
-          textShadow: "2px 2px 20px rgba(255,204,0,0.3)",
-          lineHeight: 1.1,
-        }}
-      >
-        ONE PERCENT 37X
-      </p>
-
-      {/* Main content */}
-      <div className="relative z-10 max-w-7xl mx-auto flex flex-col items-center gap-6 pb-10">
-        {/* Links container */}
-        <div className="flex flex-wrap justify-center gap-3 w-full max-w-[220px] sm:max-w-none">
-          {/* Contact links */}
-          {contactLinks.map(({ icon: Icon, href, label }, idx) => (
-            <a
-              key={idx}
-              aria-label={label}
-              href={href}
-              className={`flex items-center justify-center w-12 h-12 sm:w-12 sm:h-12 md:w-14 md:h-14 
-                        rounded-full border ${currentTheme.border} ${currentTheme.text} md:cursor-none
-                        bg-transparent ${currentTheme.shadow}
-                        transition transform hover:scale-110 duration-300`}
-            >
-              <Icon size={18} className="md:w-5 md:h-5" />
-            </a>
-          ))}
-
-          {/* Social links */}
-          {socialLinks.map(({ icon: Icon, url, label }, idx) => (
-            <a
-              key={idx}
-              aria-label={label}
-              href={url}
-              target={url.startsWith("/") ? undefined : "_blank"}
-              rel="noopener noreferrer"
-              className={`flex items-center justify-center w-12 h-12 sm:w-12 sm:h-12 md:w-14 md:h-14 
-                        rounded-full border ${currentTheme.border} ${currentTheme.text} md:cursor-none
-                        bg-transparent ${currentTheme.shadow}
-                        transition transform hover:scale-110 duration-300`}
-            >
-              <Icon size={18} className="md:w-5 md:h-5" />
-            </a>
-          ))}
-        </div>
-      </div>
-
-      {/* Bottom note */}
-      <div className="text-center text-xs sm:text-sm text-gray-400 md:mt-10 relative z-10">
-        {footerNote}
-      </div>
-    </footer>
-  );
+  return <footer className="public-footer">
+    <span className="footer-signature">© {new Date().getFullYear()} Ryu Suzuki / 37°N</span>
+    <nav className="footer-links" aria-label={{ en: "Contact and social links", ja: "連絡先・SNS", zh: "联系方式与社交平台" }[language]}>
+      {contactLinks.map(({ icon: Icon, href, label }) => <a key={label} href={href} aria-label={label}><Icon size={15} aria-hidden="true" /></a>)}
+      {socialLinks.map(({ icon: Icon, url, label }) => <a key={label} href={url} aria-label={label} target={url.startsWith("/") ? undefined : "_blank"} rel={url.startsWith("/") ? undefined : "noopener noreferrer"}><Icon size={15} aria-hidden="true" /></a>)}
+    </nav>
+  </footer>;
 }

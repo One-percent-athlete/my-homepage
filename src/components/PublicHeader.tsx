@@ -20,7 +20,7 @@ export default function PublicHeader() {
     setJourneyPage(document.body.dataset.journeyPage ?? null);
     return () => window.removeEventListener("journey-page", update);
   }, [pathname]);
-  const activePage = pathname === "/" || pathname === "/web" ? journeyPage ?? pathname : pathname;
+  const activePage = ["/", "/web", "/contact"].includes(pathname) ? journeyPage ?? pathname : pathname;
   const { language, setLanguage } = useLanguage();
   const [open, setOpen] = useState(false);
   const header = useRef<HTMLElement>(null);
@@ -39,7 +39,7 @@ export default function PublicHeader() {
     <div className="public-header-controls">
       <nav id="public-navigation" className={`public-navigation${open ? " is-open" : ""}`} aria-label={t.nav}>
         {routes.map((href, index) => <Link key={href} href={href} onClick={() => setOpen(false)} aria-current={activePage === href || activePage.startsWith(`${href}/`) ? "page" : undefined}>{t.links[index]}</Link>)}
-        <Link href="/contact" className="public-contact-link" onClick={() => setOpen(false)} aria-current={pathname === "/contact" ? "page" : undefined}>{t.contact}<ArrowUpRight size={15} aria-hidden="true" /></Link>
+        <Link href="/contact" className="public-contact-link" onClick={() => setOpen(false)} aria-current={activePage === "/contact" ? "page" : undefined}>{t.contact}<ArrowUpRight size={15} aria-hidden="true" /></Link>
       </nav>
       <label className="header-language"><span className="sr-only">{t.language}</span><select value={language} onChange={event => setLanguage(event.target.value as "en" | "ja" | "zh")}><option value="en">EN</option><option value="ja">日本語</option><option value="zh">中文</option></select></label>
       <button ref={trigger} type="button" className="public-menu-toggle" aria-label={open ? t.close : t.menu} aria-expanded={open} aria-controls="public-navigation" onClick={() => setOpen(!open)}>{open ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}</button>

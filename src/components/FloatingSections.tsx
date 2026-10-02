@@ -11,7 +11,7 @@ export default function FloatingSections() {
 
   useEffect(() => {
     // Tunnel pages already move as a single projected square and content plane.
-    if (["/", "/web", "/travel", "/ski"].includes(pathname)) return;
+    if (["/", "/web", "/contact", "/travel", "/ski"].includes(pathname)) return;
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
     let frame = 0;
     let disposed = false;

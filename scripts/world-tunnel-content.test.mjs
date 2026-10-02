@@ -106,17 +106,33 @@ test('ski package chapters retain each lesson option and its contact action', ()
   }
 });
 
-test('Home composes the full fifteen-chapter journey and Work opens at chapter six', () => {
+test('Home composes the full sixteen-chapter journey and Work opens at chapter six', () => {
   for (const language of ['en','ja','zh']) {
     const tree=renderComponent('../src/components/MainJourney.tsx',{},language);
     const [tunnel]=findAll(tree,node=>node.type==='@/components/HomeTunnel');
     assert.equal(tunnel.props.workStart,6);
-    assert.equal(tunnel.props.labels.length,15);
+    assert.equal(tunnel.props.contactStart,15);
+    const [contact]=findAll(tunnel,node=>node.type==='@/components/Contact');
+    assert.equal(contact.props.embedded,true);
+    assert.equal(tunnel.props.labels.length,16);
     const flatten=node=>node?.type==='fragment' ? node.props.children.flatMap(flatten) : [node];
-    assert.equal(tunnel.props.children.flatMap(flatten).length,15);
+    assert.equal(tunnel.props.children.flatMap(flatten).length,16);
     assert.equal(findAll(tunnel,node=>node.type==='@/components/WorldPortals').length,1);
   }
   const work=renderComponent('../src/app/web/page.tsx');
   assert.equal(work.type,'@/components/MainJourney');
   assert.equal(work.props.initialWorld,'web');
+});
+
+test('Contact keeps the existing form, validation and contact methods inside its square', () => {
+  const tree=renderComponent('../src/components/Contact.tsx',{embedded:true});
+  assert.equal(findAll(tree,node=>node.type==='@/components/FloatingButtons').length,0);
+  assert.equal(findAll(tree,node=>node.type==='section' && node.props.id==='contact').length,1);
+  const [form]=findAll(tree,node=>node.type==='form');
+  assert.equal(typeof form.props.onSubmit,'function');
+  assert.equal(findAll(form,node=>node.props.id==='contact-email')[0].props.required,true);
+  assert.equal(findAll(form,node=>node.props.id==='contact-message')[0].props.minLength,10);
+  assert.ok(findAll(tree,node=>node.type==='a' && node.props.href?.startsWith('mailto:')).length>0);
+  const route=renderComponent('../src/app/contact/page.tsx');
+  assert.equal(route.props.initialWorld,'contact');
 });
