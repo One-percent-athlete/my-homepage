@@ -10,6 +10,8 @@ import ProjectCardGrid from "@/components/web/ProjectCardGrid";
 import { recordWorldStep } from "@/lib/exploration";
 import { useLanguage } from "@/app/context/LanguageContext";
 
+import { buildStories } from "@/lib/build-stories";
+
 const icons=[Sparkles,Layers3,Braces];
 const copy={
   en:{kicker:"WORLD 01 · THE BUILD LAB",line1:"Ideas enter.",line2:"Working products leave.",intro:"I design and build digital experiences that make complicated things feel clear, useful and unexpectedly fun.",start:"Start a build",run:"Run the system",interactive:"INTERACTIVE",active:"ACTIVE MODULE",next:"Run next module",tools:"TOOLS IN ORBIT",matrix:"CAPABILITY MATRIX",skills:"Tools I build with",skillsSub:"My toolkit for bringing ideas to life.",files:"MISSION FILES",projects:"Selected builds",projectsSub:"Open a live, interactive demo and try the product experience for yourself",slot:"BUILD SLOT AVAILABLE",final1:"Have a stubborn idea?",final2:"Good. I like those.",channel:"Open a project channel",modes:[{id:"strategy",label:"01 / Think",title:"Find the signal",copy:"Clarify the real problem, the audience and the smallest valuable version worth building.",output:["problem: identified","audience: mapped","direction: aligned"]},{id:"design",label:"02 / Shape",title:"Design the system",copy:"Turn the idea into a distinctive interface with a practical, reusable interaction system.",output:["flows: simplified","interface: prototyped","experience: memorable"]},{id:"build",label:"03 / Launch",title:"Ship the product",copy:"Build a fast, secure product and keep refining it with evidence from real people.",output:["frontend: responsive","backend: connected","status: ready to launch"]}]},
@@ -18,16 +20,17 @@ const copy={
 };
 
 export function useWorkJourney(){
-  const {language}=useLanguage();const t=copy[language];const [activeMode,setActiveMode]=useState(0);const mode=t.modes[activeMode];const Icon=icons[activeMode];
+  const {language}=useLanguage();const t=copy[language];const builds=buildStories[language];const [activeMode,setActiveMode]=useState(0);const mode=t.modes[activeMode];const Icon=icons[activeMode];
   useEffect(()=>{recordWorldStep("build",0,t.modes.length)},[t.modes.length]);
   const selectMode=(index:number)=>{setActiveMode(index);recordWorldStep("build",index,t.modes.length)};
-  return { labels: [t.kicker, t.tools, ...Array.from({length:6},(_,index)=>`${t.projects} / ${String(index+1).padStart(2,"0")}`), t.slot], content: <>
+  return { labels: [t.kicker, t.tools, ...builds.map(project=>project.title), {en:"Real project stories",ja:"実際のプロジェクト",zh:"真实项目故事"}[language], t.slot], content: <>
       <section className="web-lab-hero">
         <div className="web-lab-copy"><p className="world-kicker"><span/> {t.kicker}</p><h1>{t.line1}<br/><em>{t.line2}</em></h1><p>{t.intro}</p><div className="web-lab-actions"><Link href="/contact">{t.start} <ArrowUpRight size={18}/></Link><a href="#process">{t.run} <ArrowDown size={18}/></a></div></div>
         <div className="build-console" id="process"><div className="build-console-head"><span><i/> RYU_BUILD_SYSTEM</span><small>{t.interactive}</small></div><div className="build-mode-tabs">{t.modes.map((item,index)=><button key={item.id} onClick={()=>selectMode(index)} className={index===activeMode?"active":""}>{item.label}</button>)}</div><motion.div key={`${language}-${mode.id}`} initial={{opacity:0,y:12}} animate={{opacity:1,y:0}} className="build-output"><Icon size={34}/><span>{t.active}</span><h2>{mode.title}</h2><p>{mode.copy}</p><div className="terminal-output">{mode.output.map((line,index)=><code key={line}><b>{String(index+1).padStart(2,"0")}</b> {line}<i>✓</i></code>)}</div></motion.div><button className="console-next" onClick={()=>selectMode((activeMode+1)%t.modes.length)}><Play size={14} fill="currentColor"/> {t.next}</button></div>
       </section>
       <section className="web-toolbelt unified-toolkit"><p className="section-chip">{t.tools}</p><SkillCardGrid sectionTitle={t.skills} sectionSubtitle={t.skillsSub}/></section>
-      {Array.from({length:6},(_,index)=><section key={index} className="web-deep-section projects"><div className="section-chip"><Braces size={16}/> {t.files} / {String(index+1).padStart(2,"0")}</div><ProjectCardGrid sectionTitle={t.projects} sectionSubtitle={t.projectsSub} startIndex={index} count={1}/></section>)}
+      {builds.map((project,index)=><section key={project.slug} id={index===0?"projects":undefined} className="web-deep-section projects"><div className="section-chip"><Braces size={16}/> {t.files} / {String(index+1).padStart(2,"0")}</div><ProjectCardGrid sectionTitle={t.projects} sectionSubtitle={t.projectsSub} startIndex={index} count={1}/></section>)}
+      <section className="web-final"><p className="world-kicker">CASE STUDIES</p><h2>{{en:"Behind the demos.",ja:"デモの背景にある仕事。",zh:"演示背后的工作。"}[language]}</h2><Link href="/case-studies">{{en:"Read the real project stories",ja:"実際のプロジェクトを見る",zh:"阅读真实项目故事"}[language]} <ArrowUpRight size={19}/></Link></section>
       <section className="web-final"><p className="world-kicker">{t.slot}</p><h2>{t.final1}<br/><em>{t.final2}</em></h2><Link href="/contact">{t.channel} <ArrowUpRight size={19}/></Link></section>
     </> };
 }

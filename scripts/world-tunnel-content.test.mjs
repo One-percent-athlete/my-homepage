@@ -18,6 +18,7 @@ function renderComponent(path, props = {}, language = 'en', exportName = 'defaul
       if (id === 'framer-motion') return { motion: new Proxy({}, { get: (_, tag) => tag }), AnimatePresence: 'fragment' };
       if (id === '@/app/context/LanguageContext') return { useLanguage: () => ({ language }) };
       if (id === '@/components/WorkJourney') return { useWorkJourney: () => renderComponent('../src/components/WorkJourney.tsx', {}, language, 'useWorkJourney') };
+      if (id === '@/lib/build-stories') { const data={}; vm.runInNewContext(ts.transpileModule(readFileSync(new URL('../src/lib/build-stories.ts',import.meta.url),'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS}}).outputText,{exports:data}); return data; }
       if (id === '@/lib/exploration') return { recordWorldStep() {} };
       if (id === 'lucide-react' || id.startsWith('react-icons/')) return new Proxy({}, { get: (_, icon) => icon });
       if (id.startsWith('@/components/') || id === '@/app/page' || id === 'next/link' || id === 'next/image') return { __esModule: true, default: id };
@@ -33,11 +34,11 @@ function findAll(node, predicate) {
   return [...(predicate(node) ? [node] : []), ...findAll(node.props?.children, predicate)];
 }
 
-test('Work offers nine reusable chapters in every language', () => {
+test('Work offers sixteen reusable chapters in every language', () => {
   for (const language of ['en','ja','zh']) {
     const work = renderComponent('../src/components/WorkJourney.tsx', {}, language, 'useWorkJourney');
-    assert.equal(work.content.props.children.flat(Infinity).length, 9);
-    assert.equal(work.labels.length, 9);
+    assert.equal(work.content.props.children.flat(Infinity).length, 16);
+    assert.equal(work.labels.length, 16);
     assert.ok(work.labels.every(label => label.length > 0));
   }
 });
@@ -79,20 +80,25 @@ test('unified toolkit retains nine tools without role explanations in every lang
   }
 });
 
-test('each build has its own chapter and retains its original live demo link', () => {
+test('workflow and original demos retain separate chapters and real stories have a dedicated route', () => {
   for (const language of ['en', 'ja', 'zh']) {
     const work=renderComponent('../src/components/WorkJourney.tsx',{},language,'useWorkJourney');
     const chapters=findAll(work.content,node=>node.type==='@/components/web/ProjectCardGrid');
-    assert.equal(chapters.length,6);
+    assert.equal(chapters.length,12);
     assert.ok(chapters.every(node=>node.props.count===1));
-    const batches = [0,1,2,3,4,5].map(startIndex => {
-      const tree = renderComponent('../src/components/web/ProjectCardGrid.tsx', { startIndex, count: 1 }, language);
-      const links = findAll(tree, node => node.type === 'a' && node.props.href?.startsWith('/demos/'));
-      return new Set(links.map(node => node.props.href));
-    });
-    assert.ok(batches.every(batch=>batch.size===1));
-    assert.equal(new Set(batches.flatMap(batch=>[...batch])).size, 6);
-    assert.ok(batches[5].has('/demos/smart-matching'));
+    const titles=[];
+    for (let startIndex=0;startIndex<12;startIndex++) {
+      const tree=renderComponent('../src/components/web/ProjectCardGrid.tsx',{startIndex,count:1},language);
+      titles.push(findAll(tree,node=>node.type==='h2')[0].props.children);
+      assert.equal(findAll(tree,node=>node.type==='dt').length,3);
+      assert.ok(findAll(tree,node=>node.type==='dd').every(node=>node.props.children.length>10));
+      const links=findAll(tree,node=>node.type==='a');
+      assert.equal(links.length,1);
+      const expected='/demos/'+['ski-school','automobile-operations','company-meals','uniform-ordering','traveler-guide-matching','task-schedule','product-management','modern-landing','interactive-portfolio','ecommerce-platform','smart-matching','chatbot'][startIndex];
+      assert.equal(links[0].props.href,expected,'real projects and demos must use their respective links');
+    }
+    assert.equal(new Set(titles).size,12);
+    assert.equal(findAll(work.content,node=>node.type==='next/link' && node.props.href==='/case-studies').length,1);
   }
 });
 
@@ -111,18 +117,18 @@ test('ski package chapters retain each lesson option and its contact action', ()
   }
 });
 
-test('Home composes the full seventeen-chapter journey and Work opens at chapter six', () => {
+test('Home composes the full twenty-four-chapter journey and Work opens at chapter six', () => {
   for (const language of ['en','ja','zh']) {
     const tree=renderComponent('../src/components/MainJourney.tsx',{},language);
     const [tunnel]=findAll(tree,node=>node.type==='@/components/HomeTunnel');
     assert.equal(tunnel.props.workStart,6);
-    assert.equal(tunnel.props.contactStart,16);
+    assert.equal(tunnel.props.contactStart,23);
     assert.equal(tunnel.props.showNavigation,false);
     const [contact]=findAll(tunnel,node=>node.type==='@/components/Contact');
     assert.equal(contact.props.embedded,true);
-    assert.equal(tunnel.props.labels.length,17);
+    assert.equal(tunnel.props.labels.length,24);
     const flatten=node=>Array.isArray(node) ? node.flatMap(flatten) : node?.type==='fragment' ? node.props.children.flatMap(flatten) : [node];
-    assert.equal(tunnel.props.children.flatMap(flatten).length,17);
+    assert.equal(tunnel.props.children.flatMap(flatten).length,24);
     assert.equal(findAll(tunnel,node=>node.type==='@/components/WorldPortals').length,1);
   }
   const work=renderComponent('../src/app/web/page.tsx');

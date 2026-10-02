@@ -72,3 +72,21 @@ body[data-reading-mode="read"] .toolkit-orbit-track{width:100%;animation:none}
 body[data-reading-mode="read"] .toolkit-orbit-group{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:100%;padding:0}
 body[data-reading-mode="read"] .toolkit-orbit-group[aria-hidden]{display:none}
 body[data-reading-mode="read"] .toolkit-orbit-group li{width:100%;min-height:135px;gap:16px}
+/* Each build exposes its story in both Journey and Read mode. */
+.build-stories{display:flex;flex-direction:column;gap:32px;flex:1;min-height:0}
+.build-case-study .build-feature-body{grid-template-columns:1fr 1fr;gap:32px}
+.build-case-study .build-feature-copy h2{font-size:clamp(30px,3.8vw,46px)}
+.build-case-study .build-demo-scope{font:10px/1.6 monospace;color:#91b4c4;margin-top:14px}
+.build-story{margin:0;display:grid;gap:0;border:1px solid #9bdfff30;background:#07203080}
+.build-story>div{padding:18px 22px}
+.build-story>div+div{border-top:1px solid #9bdfff25}
+.build-story dt{display:flex;gap:12px;align-items:center;font:11px/1.5 monospace;color:#70e6f4}
+.build-story dt span{color:#718fa2;font-size:10px}
+.build-story dd{margin:8px 0 0;color:#bbd0dc;font-size:14px;line-height:1.65}
+.build-story>div:last-child{background:#52e8ff08}
+@media(max-width:699px){
+ .build-case-study .build-feature-body{grid-template-columns:1fr;gap:22px;align-content:start}
+ .build-case-study .build-feature-copy h2{font-size:30px}
+ .build-story>div{padding:15px}
+ .build-story dd{font-size:13px;line-height:1.6}
+}
