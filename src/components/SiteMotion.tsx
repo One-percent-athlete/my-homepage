@@ -22,7 +22,7 @@ const DEPTH_SELECTOR = [
 
 function worldFor(pathname: string) {
   if (pathname.startsWith("/mission-control") || pathname.startsWith("/blog/create")) return "private";
-  if (pathname.startsWith("/web")) return "build";
+  if (pathname.startsWith("/web") || pathname === "/case-studies") return "build";
   if (pathname.startsWith("/travel")) return "travel";
   if (pathname.startsWith("/ski")) return "summit";
   if (pathname.startsWith("/between")) return "between";

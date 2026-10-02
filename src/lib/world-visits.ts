@@ -3,6 +3,7 @@ const knownWorlds = [...PUBLIC_WORLDS, "/between"];
 let memoryVisits: string[] = [];
 
 export function visitedWorldFor(pathname: string) {
+  if (pathname === "/case-studies") return "/web";
   if (pathname.startsWith("/blog/create") || pathname.startsWith("/mission-control")) return null;
   return knownWorlds.find(route => pathname === route || (route !== "/" && pathname.startsWith(`${route}/`))) ?? null;
 }
@@ -28,4 +29,8 @@ export function recordWorldVisit(pathname: string) {
 export function explorationProgress(visited: string[]) {
   const count = PUBLIC_WORLDS.filter(route => visited.includes(route)).length;
   return { count, total: PUBLIC_WORLDS.length, percentage: Math.round(count / PUBLIC_WORLDS.length * 100) };
+}
+
+export function nextUnvisitedWorld(visited: string[]) {
+  return PUBLIC_WORLDS.find(route => !visited.includes(route)) ?? null;
 }

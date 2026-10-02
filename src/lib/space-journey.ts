@@ -34,7 +34,7 @@ export function subscribeJourneyFrame(listener: (frame: JourneyFrame) => void) {
 
 export const gateOrigin = (index: number) => 1.1 + index * 2;
 
-export const isTunnelRoute = (pathname: string) => ["/", "/web", "/contact", "/between"].includes(pathname);
+export const isTunnelRoute = (pathname: string) => ["/", "/web", "/contact", "/between", "/travel", "/ski"].includes(pathname);
 
 /** Shared projection for a tunnel square and its live HTML contents. */
 export function homeGateProjection(index: number, frame: JourneyFrame) {

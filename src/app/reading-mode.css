@@ -47,3 +47,14 @@ body[data-reading-mode="read"]:has(.home-tunnel) .space-portals{opacity:.4}
  .reading-layout .constellation-map{width:90%;margin:45px auto}.reading-layout .constellation-node{width:64px;height:64px;font-size:8px}.reading-layout .constellation-core{width:68px;height:68px}.reading-layout .constellation-message{width:150px;top:70%}.reading-layout .constellation-message p{font-size:12px}
  .reading-layout .protocol-console>section,.reading-layout .artifact-lab article{padding:22px;min-height:0}.reading-layout .protocol-console section strong,.reading-layout .artifact-lab h3{font-size:30px}
 }
+
+/* World chapters return to natural flow in Read mode. */
+.reading-layout .home-gate-content>.tunnel-chapter{height:auto;overflow:visible}
+.reading-layout .tunnel-chapter>section{height:auto;min-height:0;overflow:visible;padding:clamp(24px,4vw,48px)}
+.reading-layout .home-gate-content.travel-world>.travel-log-hero{display:grid;grid-template-columns:1.1fr .9fr;gap:28px}
+.reading-layout .travel-hero-copy h1{font-size:clamp(36px,5vw,60px)}
+.reading-layout .travel-story-copy h2{font-size:clamp(32px,5vw,60px)}
+.reading-layout .home-gate-content.travel-world>.travel-story-panel{height:auto;min-height:420px;padding:40px;margin:0;overflow:visible}
+.reading-layout .home-gate-content.ski-world>.ski-game-hero{height:auto;min-height:0;grid-template-rows:190px auto;padding:32px;margin:0}
+.reading-layout .tunnel-chapter>section .grid{max-width:none}
+@media(max-width:699px){.reading-layout .home-gate-content.travel-world>.travel-log-hero{grid-template-columns:1fr}.reading-layout .home-gate-content.ski-world>.ski-game-hero{display:flex;flex-direction:column;align-items:stretch;padding:20px}.reading-layout .ski-hero-media{position:relative;inset:auto;height:180px;opacity:1}.reading-layout .ski-game-copy h1{font-size:36px}.reading-layout .home-gate-content.travel-world>.travel-story-panel{padding:24px;min-height:380px}}

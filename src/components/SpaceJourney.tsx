@@ -91,6 +91,7 @@ export default function SpaceJourney() {
       const atmospherePace = pathname.startsWith("/ski") ? 0.18 : pathname.startsWith("/travel") ? 0.45 : 1;
       backdrop.style.transform = `scale(${1.08 + Math.min(distance, 20) * 0.006 * atmospherePace}) translate3d(${Math.sin(distance * 0.09) * -1.8 * atmospherePace}%, ${Math.sin(distance * 0.07) * 1.2 * atmospherePace}%, 0)`;
       paintEarth?.(1.8 + distance * 0.65);
+      canvas.parentElement?.style.setProperty("--alpine-drift", `${Math.sin(distance * .12) * 14}px`);
       canvas.dataset.distance = distance.toFixed(3);
       canvas.dataset.motion = media.matches ? "reduced" : "scroll";
       canvas.dataset.scene = "threshold";
@@ -219,6 +220,7 @@ export default function SpaceJourney() {
     <div ref={backdropRef} className="space-atmosphere"><div className="world-air world-air-build"/><div className="world-air world-air-travel"/><div className="world-air world-air-summit"/></div>
     <div className="world-digital"><div className="digital-grid"/><div className="digital-circuit"/></div>
     <div className="travel-earth"><canvas ref={globeRef} className="earth-sphere"/></div>
+    <div className="world-alpine"><div className="alpine-aurora"/><svg className="alpine-contours" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMax slice"><path className="alpine-ridge" d="M-60 900V720L130 570 270 650 460 380 620 550 850 300 1050 590 1220 420 1500 700V900Z"/><g fill="none"><path d="M-60 750L130 600 270 680 460 410 620 580 850 330 1050 620 1220 450 1500 730"/><path d="M-60 790L130 650 270 730 460 470 620 630 850 400 1050 680 1220 510 1500 780"/><path d="M-60 830L130 720 270 790 460 550 620 710 850 490 1050 750 1220 600 1500 830"/><path d="M-60 870L130 800 270 840 460 650 620 790 850 620 1050 820 1220 740 1500 880"/><path d="M460 380L430 450 478 438 620 550M850 300L785 415 864 390 950 465M1220 420L1160 510 1230 495 1320 560"/></g></svg><div className="alpine-snow"/></div>
     <canvas ref={canvasRef} className="space-portals" />
   </div>;
 }

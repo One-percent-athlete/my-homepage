@@ -281,7 +281,7 @@ test('Work shares the exact square projection and reaches its final chapter', ()
 });
 
 test('world pages retain the static reading layout for reduced motion', () => {
-  for (const world of ['web']) {
+  for (const world of ['web','travel','ski']) {
     const view = mountJourney(true, `/${world}`);
     const content = mountHomeContent(view, { world, count: 9 });
     assert.equal(content.tree.props.children[1].props.className, 'home-tunnel-static reading-layout');
@@ -510,4 +510,15 @@ test('Travel globe follows forward and reverse scroll and stays still with reduc
  live.scroll(0);live.settle();assert.equal(live.globe.dataset.rotation,start);live.unmount();
  const reduced=mountJourney(true,'/travel');const initial=reduced.globe.dataset.rotation;
  reduced.scroll(900);reduced.settle();assert.equal(reduced.globe.dataset.rotation,initial);reduced.unmount();
+});
+
+test('Travel and Ski section planes share the portal projection on forward and reverse scroll',()=>{
+ for(const world of ['travel','ski']){
+  const view=mountJourney(false,'/'+world);const content=mountHomeContent(view,{world,count:9});view.settle();
+  view.scroll(720);view.settle();const projection=homeGateProjection(1,{distance:Number(view.canvas.dataset.distance),width:1200,height:900,reduced:false});
+  const scale=Number(content.gates[1].style.transform.match(/scale\(([^)]+)\)/)[1]);
+  assert.ok(Math.abs(parseFloat(content.gates[1].style.width)*scale-projection.width)<.001);
+  view.scroll(0);view.settle();assert.equal(view.canvas.dataset.distance,'0.000');
+  content.unmount();view.unmount();
+ }
 });

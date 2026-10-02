@@ -44,3 +44,12 @@ test('exploration still works with malformed or unavailable browser storage',()=
   blocked.recordWorldVisit('/');blocked.recordWorldVisit('/web');
   assert.equal(blocked.explorationProgress(blocked.getVisitedWorlds()).count,2);
 });
+
+test('next destination excludes visited worlds and disappears when exploration is complete',()=>{
+ const store=visitStore();store.recordWorldVisit('/');store.recordWorldVisit('/case-studies');
+ assert.equal(store.nextUnvisitedWorld(store.getVisitedWorlds()),'/travel');
+ const reloaded=visitStore({saved:store.saved});assert.equal(reloaded.nextUnvisitedWorld(reloaded.getVisitedWorlds()),'/travel');
+ for(const world of reloaded.PUBLIC_WORLDS)reloaded.recordWorldVisit(world);
+ assert.equal(reloaded.nextUnvisitedWorld(reloaded.getVisitedWorlds()),null);
+ assert.equal(reloaded.explorationProgress(reloaded.getVisitedWorlds()).percentage,100);
+});

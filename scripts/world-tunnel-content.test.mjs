@@ -43,18 +43,16 @@ test('Work offers sixteen reusable chapters in every language', () => {
   }
 });
 
-test('Travel and Ski retain their content outside the tunnel', () => {
-  for (const language of ['en','ja','zh']) {
-    for (const path of ['../src/components/travel/TravelContent.tsx','../src/components/ski/SkiContent.tsx']) {
-      const tree = renderComponent(path, {}, language);
-      assert.equal(findAll(tree, node => node.type === '@/components/HomeTunnel').length, 0);
-      assert.equal(findAll(tree, node => node.type === 'main').length, 1);
-    }
-    const ski = renderComponent('../src/components/ski/SkiContent.tsx', {}, language);
-    const packages = findAll(ski, node => node.type === '@/components/ski/SkiPackages');
-    assert.equal(packages.length, 1);
-    assert.equal(packages[0].props.packageIndex, undefined);
+test('Travel and Ski keep every section inside labeled square chapters', () => {
+ for(const language of ['en','ja','zh']){
+  for(const [path,count] of [['../src/components/travel/TravelContent.tsx',8],['../src/components/ski/SkiContent.tsx',9]]){
+   const tree=renderComponent(path,{},language);const tunnels=findAll(tree,node=>node.type==='@/components/HomeTunnel');
+   assert.equal(tunnels.length,1);assert.equal(tunnels[0].props.labels.length,count);
+   assert.equal(tunnels[0].props.children.flat(Infinity).length,count);assert.equal(tunnels[0].props.holdLastChapter,true);
   }
+  const ski=renderComponent('../src/components/ski/SkiContent.tsx',{},language);
+  assert.deepEqual(Array.from(findAll(ski,node=>node.type==='@/components/ski/SkiPackages'),node=>node.props.packageIndex),[0,1,2]);
+ }
 });
 
 test('the final portals link to all four other worlds in every language', () => {
