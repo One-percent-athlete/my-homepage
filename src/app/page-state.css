@@ -9,7 +9,9 @@
 .page-recovery>div :is(button,a){padding:12px 20px;border:1px solid #9beaff60;border-radius:2px;color:#c5edf7;background:#0a2230;cursor:pointer}
 .page-recovery>div :is(button,a):focus-visible{outline:2px solid #b1ecff;outline-offset:4px}
 /* One permanent map replaces both the folding map and numbered chapter rail. */
-.world-dock.permanent{left:auto;right:16px;width:72px;transition:none}
+.world-dock.permanent{left:auto;right:16px;width:72px;transition:transform .2s ease,opacity .2s ease,visibility .2s}
+body[data-chrome-scrolling="true"] .world-dock.permanent{transform:translate(calc(100% + 20px),-50%);opacity:0;visibility:hidden;pointer-events:none}
+body[data-chrome-scrolling="true"] .world-dock.permanent:focus-within{transform:translateY(-50%);opacity:1;visibility:visible;pointer-events:auto}
 .world-dock.permanent .dock-tabs a{flex-direction:column;gap:4px;padding:7px 3px;min-height:55px}
 .world-dock.permanent .dock-tabs strong{display:block;max-width:64px;font-size:9px;letter-spacing:0;text-align:center;overflow-wrap:anywhere}
 .world-dock.permanent .dock-icon{height:24px;width:26px}
@@ -24,4 +26,4 @@ body:has(.world-dock.permanent):not(:has(.home-tunnel)){padding-left:14px;paddin
   .home-tunnel-stage{clip-path:inset(110px 68px 92px 12px)}
   body:has(.world-dock.permanent):not(:has(.home-tunnel)){padding-left:8px;padding-right:70px}
 }
-@media(prefers-reduced-motion:reduce){.loading-orbit{animation:none;border-color:#b1ecff}}
+@media(prefers-reduced-motion:reduce){.loading-orbit{animation:none;border-color:#b1ecff}.world-dock.permanent{transition:none}}
