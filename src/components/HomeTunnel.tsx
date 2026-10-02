@@ -165,9 +165,9 @@ export default function HomeTunnel({ children, labels, instruction, world = "hom
   return <>
     <div className="home-tunnel-runway" style={{ height: `${100 + (chapters.length - (workStart === undefined ? 0 : 1)) * 2 / 1.5 * 100}${workStart === undefined ? "svh" : "vh"}` }} aria-hidden="true" />
     {createPortal(<div ref={layer} className="home-tunnel-layer" data-world={world}>
-      {chapters.map((chapter, index) => <div className="home-tunnel-gate" key={index} ref={element => { gates.current[index] = element; }}>
+      <div className="home-tunnel-stage">{chapters.map((chapter, index) => <div className="home-tunnel-gate" key={index} ref={element => { gates.current[index] = element; }}>
         <div className={`home-gate-content ${worldClasses[chapterWorld(index)]}${chapterWorld(index) !== "home" ? " tunnel-world-content" : ""}`}>{chapter}</div>
-      </div>)}
+      </div>)}</div>
       <nav className="home-tunnel-navigation" aria-label={instruction}>
         <span>{instruction}</span>
         <button type="button" aria-label={labels[Math.max(0, active - 1)]} disabled={active === 0} onClick={() => goTo(active - 1)}>↑</button>

@@ -21,21 +21,30 @@ const worldLabels: Record<string, Record<"en" | "ja" | "zh", string>> = {
   "/": { en: "Home", ja: "基地", zh: "基地" }, "/web": { en: "Work", ja: "開発", zh: "开发" }, "/travel": { en: "Travel", ja: "旅", zh: "探索" }, "/ski": { en: "Ski", ja: "雪山", zh: "雪山" }, "/blog": { en: "Journal", ja: "記録", zh: "日志" }, "/gallery": { en: "Gallery", ja: "写真", zh: "影像" }, "/contact": { en: "Contact", ja: "お問い合わせ", zh: "联系我" }, "/between": { en: "The Between", ja: "狭間", zh: "间界" },
 };
 const dockCopy = {
-  en: { close: "Close map", navigator: "World navigator", anomaly: "Anomalous signal detected", fragments: "fragments recovered", current: "Current", visited: "Visited", unknown: "Unknown", signal: "Signal language", discovered: "Hidden world discovered", enter: "Enter The Between" },
-  ja: { close: "マップを閉じる", navigator: "ワールドナビ", anomaly: "未知の信号を検出", fragments: "個の断片を回収", current: "現在地", visited: "訪問済み", unknown: "未発見", signal: "表示言語", discovered: "隠された世界を発見", enter: "The Betweenへ" },
-  zh: { close: "关闭地图", navigator: "世界导航", anomaly: "检测到异常信号", fragments: "个碎片已回收", current: "当前", visited: "已访问", unknown: "未知", signal: "显示语言", discovered: "发现隐藏世界", enter: "进入世界之间" },
+  en: { close: "Collapse map", navigator: "World navigator", anomaly: "Anomalous signal detected", fragments: "fragments recovered", current: "Current", visited: "Visited", unknown: "Unknown", signal: "Signal language", discovered: "Hidden world discovered", enter: "Enter The Between" },
+  ja: { close: "ラベルを閉じる", navigator: "ワールドナビ", anomaly: "未知の信号を検出", fragments: "個の断片を回収", current: "現在地", visited: "訪問済み", unknown: "未発見", signal: "表示言語", discovered: "隠された世界を発見", enter: "The Betweenへ" },
+  zh: { close: "收起标签", navigator: "世界导航", anomaly: "检测到异常信号", fragments: "个碎片已回收", current: "当前", visited: "已访问", unknown: "未知", signal: "显示语言", discovered: "发现隐藏世界", enter: "进入世界之间" },
 };
 
 export default function FloatingButtons() {
   const dockRef = useRef<HTMLElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
   const pathname = usePathname();
+  const [journeyPage, setJourneyPage] = useState<string | null>(null);
+  const activePath = ["/", "/web", "/contact"].includes(pathname) ? journeyPage ?? pathname : pathname;
+  useEffect(() => {
+    const update = (event: Event) => setJourneyPage((event as CustomEvent<string>).detail);
+    window.addEventListener("journey-page", update);
+    setJourneyPage(document.body.dataset.journeyPage ?? null);
+    return () => window.removeEventListener("journey-page", update);
+  }, [pathname]);
   const { language, setLanguage } = useLanguage();
   const [expanded, setExpanded] = useState(false);
   const [visited, setVisited] = useState<string[]>([]);
   const [fragmentCount,setFragmentCount]=useState(0);
   const hiddenUnlocked = fragmentCount >= 3 || pathname === "/between";
   const availableWorlds = hiddenUnlocked ? [...worlds, hiddenWorld] : worlds;
-  const current = availableWorlds.find((world) => pathname === world.href || (world.href !== "/" && pathname.startsWith(`${world.href}/`))) ?? worlds[0];
+  const current = availableWorlds.find((world) => activePath === world.href || (world.href !== "/" && activePath.startsWith(`${world.href}/`))) ?? worlds[0];
   const copy = dockCopy[language];
 
   useEffect(() => {
@@ -64,7 +73,7 @@ export default function FloatingButtons() {
 
   useEffect(() => {
     if (!expanded) return;
-    const closeOnEscape = (event: KeyboardEvent) => { if (event.key === "Escape") setExpanded(false); };
+    const closeOnEscape = (event: KeyboardEvent) => { if (event.key === "Escape") { setExpanded(false); triggerRef.current?.focus(); } };
     const closeOutside = (event: PointerEvent) => { if (!dockRef.current?.contains(event.target as Node)) setExpanded(false); };
     document.addEventListener("keydown", closeOnEscape);
     document.addEventListener("pointerdown", closeOutside);
@@ -78,21 +87,21 @@ export default function FloatingButtons() {
           <Sparkles size={16}/><span><small>{copy.discovered}</small><strong>{copy.enter}</strong></span><Orbit size={18}/>
         </Link>
       )}
-      <button className="dock-trigger" onClick={() => setExpanded(!expanded)} aria-expanded={expanded} aria-controls="world-navigator-panel" aria-label={expanded ? copy.close : copy.navigator} style={{ "--dock-accent": current.color } as React.CSSProperties}>
+      <button ref={triggerRef} className="dock-trigger" onClick={() => setExpanded(!expanded)} aria-expanded={expanded} aria-controls="world-navigator-panel" aria-label={expanded ? copy.close : copy.navigator} style={{ "--dock-accent": current.color } as React.CSSProperties}>
         {expanded ? <X size={20} /> : <Compass size={20} />}
         <span>{expanded ? copy.close : worldLabels[current.href][language]}</span>
         {!expanded && <b>{fragmentCount < 3 && fragmentCount > 0 ? `${fragmentCount}F` : `${visited.length}/${availableWorlds.length}`}</b>}
       </button>
 
-      <div className="dock-panel" id="world-navigator-panel" aria-hidden={!expanded}>
+      <div className="dock-panel" id="world-navigator-panel">
         <div className="dock-heading"><span>{fragmentCount > 0 && fragmentCount < 3 ? copy.anomaly : copy.navigator}</span><small>{fragmentCount > 0 && fragmentCount < 3 ? `${fragmentCount}/3 ${copy.fragments}` : `${visited.length}/${availableWorlds.length}`}</small></div>
-        <nav className="dock-tabs">
+        <nav className="dock-tabs" aria-label={copy.navigator}>
           {availableWorlds.map((world) => {
             const Icon = world.icon;
             const active = current.href === world.href;
             const found = visited.includes(world.href);
             return (
-              <Link key={world.href} href={world.href} onClick={() => setExpanded(false)} className={active ? "active" : ""} style={{ "--dock-accent": world.color } as React.CSSProperties} aria-current={active ? "page" : undefined}>
+              <Link key={world.href} href={world.href} aria-label={worldLabels[world.href][language]} title={worldLabels[world.href][language]} onClick={() => setExpanded(false)} className={active ? "active" : ""} style={{ "--dock-accent": world.color } as React.CSSProperties} aria-current={active ? "page" : undefined}>
                 <span className="dock-icon"><Icon size={19} />{found && <i />}</span>
                 <strong>{worldLabels[world.href][language]}</strong>
                 <small>{active ? copy.current : found ? copy.visited : copy.unknown}</small>
@@ -100,7 +109,7 @@ export default function FloatingButtons() {
             );
           })}
         </nav>
-        <div className="dock-languages"><Languages size={16} /><span>{copy.signal}</span>{(["en", "ja", "zh"] as const).map((lang) => <button key={lang} className={language === lang ? "active" : ""} onClick={() => setLanguage(lang)}>{lang.toUpperCase()}</button>)}</div>
+        <div className="dock-languages" inert={!expanded}><Languages size={16} /><span>{copy.signal}</span>{(["en", "ja", "zh"] as const).map((lang) => <button key={lang} className={language === lang ? "active" : ""} onClick={() => setLanguage(lang)}>{lang.toUpperCase()}</button>)}</div>
       </div>
     </aside>
   );
