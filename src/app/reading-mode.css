@@ -28,7 +28,7 @@
 .reading-layout .between-heading{margin-bottom:40px}.reading-layout .between-heading h2{font-size:clamp(32px,4vw,52px)}
 .reading-layout .constellation-map{width:min(520px,85%);margin:40px auto}
 body[data-reading-mode="read"]:has(.home-tunnel) .space-atmosphere{transform:none!important}
-body[data-reading-mode="read"]:has(.home-tunnel) .space-portals{opacity:.12}
+body[data-reading-mode="read"]:has(.home-tunnel) .space-portals{opacity:.4}
 @media(max-width:699px){
  .reading-mode-switch{top:112px;font-size:11px}.reading-mode-switch button{min-height:40px;padding:8px 13px}
  .reading-layout{padding:170px 70px 115px 12px}.reading-chapters{gap:26px}
