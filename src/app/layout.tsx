@@ -8,6 +8,7 @@ import "./journey-chrome.css";
 import "./helmet-hud.css";
 import "./page-state.css";
 import "./work-refinements.css";
+import "./reading-mode.css";
 import { LanguageProvider } from "./context/LanguageContext";
 import SiteMotion from "@/components/SiteMotion";
 import FloatingSections from "@/components/FloatingSections";

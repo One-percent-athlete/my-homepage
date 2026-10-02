@@ -57,6 +57,7 @@ function mountJourney(reduced = false, route = '/') {
       if (id === 'react') return { useRef: () => ({ current: refs.shift() }), useEffect: fn => effects.push(fn) };
       if (id === 'react/jsx-runtime') return { jsx: () => null, jsxs: () => null };
       if (id === 'next/navigation') return { usePathname: () => route };
+      if (id === '@/lib/reading-mode') return {getReadingMode:()=>document.body.dataset.readingMode==='read'?'read':'journey',READING_MODE_EVENT:'reading-mode-change'};
       if (id === '@/lib/space-journey') return { sceneDepth, travelDistance, depthOpacity, homeGateProjection, publishJourneyFrame, isTunnelRoute };
       throw new Error(`Unexpected import: ${id}`);
     },
@@ -119,6 +120,7 @@ function mountHomeContent(view, { world = 'home', count = 6, workStart, contactS
       if (id === 'react/jsx-runtime') return { jsx, jsxs: jsx, Fragment: 'fragment' };
       if (id === '@/components/LoadingScreen') return { __esModule: true, default: 'LoadingScreen' };
       if (id === 'react-dom') return { createPortal: child => child };
+      if (id === '@/lib/reading-mode') return {getReadingMode:()=>view.document.body.dataset.readingMode==='read'?'read':'journey',READING_MODE_EVENT:'reading-mode-change'};
       if (id === '@/lib/space-journey') return { gateOrigin, homeGateProjection, subscribeJourneyFrame, travelDistance };
       throw new Error(`Unexpected import: ${id}`);
     },
@@ -140,7 +142,7 @@ function mountHomeContent(view, { world = 'home', count = 6, workStart, contactS
   function attach(node) {
     if (Array.isArray(node)) { node.forEach(attach); return; }
     if (!node || typeof node !== 'object') return;
-    const element = { style: {}, dataset: {}, attributes: {}, inert: false, querySelectorAll: () => ids(node), setAttribute(name, value) { this.attributes[name] = value; } };
+    const element = { getBoundingClientRect:()=>({top: Number(node.props?.["data-reading-chapter"] ?? 0)*1000-view.window.scrollY}), style: {}, dataset: {}, attributes: {}, inert: false, querySelectorAll: () => ids(node), setAttribute(name, value) { this.attributes[name] = value; } };
     if (node.props?.className === 'home-tunnel-gate') gates.push(element);
     if (node.props?.className?.includes('home-gate-content')) contents.push(node.props.className);
     if (node.type === 'button') buttons.push(node.props);
@@ -216,8 +218,9 @@ test('chapter controls advance the native camera to the requested section', () =
 test('reduced motion keeps all sections in the normal readable document', () => {
   const view = mountJourney(true);
   const content = mountHomeContent(view);
-  assert.equal(content.tree.props.className, 'home-tunnel-static');
-  assert.equal(content.gates.length, 0);
+  assert.equal(content.tree.props.children[1].props.className, 'home-tunnel-static reading-layout');
+  assert.equal(content.gates.length, 6);
+  assert.ok(content.gates.every(gate=>gate.inert===false));
   content.unmount(); view.unmount();
 });
 
@@ -279,8 +282,9 @@ test('world pages retain the static reading layout for reduced motion', () => {
   for (const world of ['web']) {
     const view = mountJourney(true, `/${world}`);
     const content = mountHomeContent(view, { world, count: 9 });
-    assert.equal(content.tree.props.className, 'home-tunnel-static world-tunnel-static');
-    assert.equal(content.gates.length, 0);
+    assert.equal(content.tree.props.children[1].props.className, 'home-tunnel-static reading-layout');
+    assert.equal(content.gates.length, 9);
+    assert.ok(content.gates.every(gate=>gate.inert===false));
     content.unmount(); view.unmount();
   }
 });
@@ -467,5 +471,33 @@ test('startup shows a loader until the correct first projection is ready',()=>{
   const before=view.window.scrollY;
   view.input('wheel',{deltaY:1200});view.settle();
   assert.equal(view.window.scrollY,before,'extra input cannot scroll the final action away');
+  content.unmount();view.unmount();
+ });
+
+ test('reading mode pauses the camera and switching back follows the chapter being read',()=>{
+  const view=mountJourney(false,'/web');
+  const content=mountHomeContent(view,{count:18,workStart:6,contactStart:17,initialChapter:6});
+  view.settle();content.chapterButton(8).onClick();view.settle();
+  const frozen=view.canvas.dataset.distance;
+  view.document.body.dataset.readingMode='read';view.window.dispatchEvent(new Event('reading-mode-change'));
+  content.rerender();content.rerender();
+  assert.equal(content.tree.props.children[1].props.className,'home-tunnel-static reading-layout');
+  assert.equal(view.window.scrollY,7850,'Read opens the same chapter');
+  view.scroll(9400);view.settle();
+  assert.equal(view.canvas.dataset.distance,frozen,'reading scroll never advances the camera');
+  view.window.location.hash='#missions';
+  view.document.body.dataset.readingMode='journey';view.window.dispatchEvent(new Event('reading-mode-change'));
+  content.rerender();view.settle();content.rerender();
+  assert.equal(view.window.scrollY,10800,'Journey returns to chapter nine rather than an old URL fragment');
+  assert.equal(content.gates[9].inert,false);
+  content.unmount();view.unmount();
+ });
+ test('a saved reading preference opens Work in the stationary layout',()=>{
+  const view=mountJourney(false,'/web');
+  view.document.body.dataset.readingMode='read';
+  const content=mountHomeContent(view,{count:18,workStart:6,contactStart:17,initialChapter:6});
+  content.rerender();
+  assert.equal(content.tree.props.children[1].props.className,'home-tunnel-static reading-layout');
+  assert.equal(view.window.scrollY,5850);
   content.unmount();view.unmount();
  });

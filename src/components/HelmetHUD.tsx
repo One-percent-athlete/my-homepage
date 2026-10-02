@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useLanguage } from "@/app/context/LanguageContext";
 
 import { explorationProgress, getVisitedWorlds, recordWorldVisit } from "@/lib/world-visits";
+import ReadingModeSwitch from "@/components/ReadingModeSwitch";
 
 const names: Record<string, string[]> = {
   "/": ["HOME", "ホーム", "首页"], "/web": ["WORK", "開発", "作品"],
@@ -46,5 +47,6 @@ export default function HelmetHUD() {
     <div className="visor-outline" aria-hidden="true" /><i aria-hidden="true" className="visor-corner tl" /><i aria-hidden="true" className="visor-corner tr" /><i className="visor-corner bl" /><i className="visor-corner br" />
     <div className="visor-telemetry" role="status" aria-label={`${explored}: ${progress.count} / ${progress.total}`}><span className="hud-live" />{name[index]}<span className="hud-divider">/</span><span title={`${explored}: ${progress.count}/${progress.total}`}>{visited ? `${progress.percentage}%` : "…"}</span><small>{progress.count}/{progress.total}</small><div className="hud-progress" aria-hidden="true" style={{ "--hud-progress": `${progress.percentage}%` } as React.CSSProperties} /></div>
     <span className="visor-signature">37°N / RYU</span>
+    {["/", "/web", "/contact", "/between"].includes(pathname) && <ReadingModeSwitch />}
   </div>;
 }

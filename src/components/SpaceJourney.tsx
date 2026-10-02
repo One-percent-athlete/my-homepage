@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
+import { getReadingMode, READING_MODE_EVENT } from "@/lib/reading-mode";
 import { depthOpacity, sceneDepth, travelDistance, homeGateProjection, publishJourneyFrame, isTunnelRoute } from "@/lib/space-journey";
 
 // Seeded positions keep the star field stable across route changes and back-scroll.
@@ -27,6 +28,7 @@ export default function SpaceJourney() {
     const context = canvas.getContext("2d", { alpha: true });
     if (!context) return;
 
+    const reading = () => isTunnelRoute(pathname) && getReadingMode() === "read";
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
     const portal = new window.Image();
     let width = 1;
@@ -92,7 +94,7 @@ export default function SpaceJourney() {
 
     function tick(time: number) {
       frame = 0;
-      if (disposed || document.hidden) return;
+      if (disposed || document.hidden || reading()) return;
       const target = media.matches ? 0 : travelDistance(window.scrollY, height) + extraDistance;
       const elapsed = previousTime ? Math.min(64, time - previousTime) : 16;
       previousTime = time;
@@ -103,7 +105,7 @@ export default function SpaceJourney() {
     }
 
     function schedule() {
-      if (disposed || document.hidden || frame) return;
+      if (disposed || document.hidden || reading() || frame) return;
       previousTime = 0;
       frame = requestAnimationFrame(tick);
     }
@@ -115,7 +117,7 @@ export default function SpaceJourney() {
       density = Math.min(window.devicePixelRatio || 1, width < 600 ? 1.25 : 1.5);
       canvas.width = Math.round(width * density);
       canvas.height = Math.round(height * density);
-      current = media.matches ? 0 : travelDistance(window.scrollY, height) + extraDistance;
+      current = media.matches || reading() ? 0 : travelDistance(window.scrollY, height) + extraDistance;
       paint(current);
     }
 
@@ -125,6 +127,13 @@ export default function SpaceJourney() {
       extraDistance = 0;
       current = media.matches ? 0 : travelDistance(window.scrollY, height);
       paint(current);
+    }
+
+    function readingChange() {
+      cancelAnimationFrame(frame);
+      frame = 0;
+      extraDistance = 0;
+      if (!reading()) schedule();
     }
 
     // Native scroll handles the page. Only unused input at the bottom advances
@@ -179,6 +188,8 @@ export default function SpaceJourney() {
     window.addEventListener("keydown", onKeyDown);
     document.addEventListener("visibilitychange", schedule);
     media.addEventListener("change", motionChange);
+    window.addEventListener(READING_MODE_EVENT, readingChange);
+    window.addEventListener("storage", readingChange);
     return () => {
       disposed = true;
       cancelAnimationFrame(frame);
@@ -193,6 +204,8 @@ export default function SpaceJourney() {
       window.removeEventListener("keydown", onKeyDown);
       document.removeEventListener("visibilitychange", schedule);
       media.removeEventListener("change", motionChange);
+      window.removeEventListener(READING_MODE_EVENT, readingChange);
+      window.removeEventListener("storage", readingChange);
     };
   }, [pathname, privatePage]);
 

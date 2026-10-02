@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import { gateOrigin, homeGateProjection, subscribeJourneyFrame, type JourneyFrame, travelDistance } from "@/lib/space-journey";
 
 import LoadingScreen from "@/components/LoadingScreen";
+import { getReadingMode, READING_MODE_EVENT } from "@/lib/reading-mode";
 
 type TunnelWorld = "home" | "web" | "travel" | "ski" | "contact" | "between";
 const worldClasses: Record<TunnelWorld, string> = { home: "mission-site", web: "web-world", travel: "travel-world", ski: "ski-world", contact: "contact-world", between: "between-world" };
@@ -19,18 +20,22 @@ export default function HomeTunnel({ children, labels, instruction, world = "hom
   const painted = useRef(false);
   const [mounted, setMounted] = useState(false);
   const [reduced, setReduced] = useState(false);
+  const [reading, setReading] = useState(false);
+  const staticMode = reduced || reading;
+  const previousMode = useRef<boolean | null>(null);
+  const pendingChapter = useRef<number | null>(initialChapter);
+  const initialHashHandled = useRef(false);
   const [active, setActive] = useState(0);
   const gates = useRef<(HTMLDivElement | null)[]>([]);
   const layer = useRef<HTMLDivElement>(null);
   const navigation = useRef<HTMLDivElement>(null);
   const activeRef = useRef(0);
   const announcedWorld = useRef("");
-  const initialPositionSet = useRef(false);
   const chapterWorld = (index: number): TunnelWorld => contactStart !== undefined && index >= contactStart ? "contact" : workStart === undefined ? world : index >= workStart ? "web" : "home";
 
   useEffect(() => {
-    if (ready) window.dispatchEvent(new Event("journey-ready"));
-  }, [ready]);
+    if (ready || (mounted && staticMode)) window.dispatchEvent(new Event("journey-ready"));
+  }, [ready, mounted, staticMode]);
 
   function goTo(index: number) {
     if (index < 0 || index >= chapters.length) return;
@@ -47,24 +52,45 @@ export default function HomeTunnel({ children, labels, instruction, world = "hom
 
   useEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setReduced(media.matches);
+    const update = () => { pendingChapter.current = activeRef.current; setReduced(media.matches); };
+    const mode = () => { pendingChapter.current = activeRef.current; setReading(getReadingMode() === "read"); };
+    setReading(getReadingMode() === "read");
     update();
     setMounted(true);
     media.addEventListener("change", update);
-    return () => media.removeEventListener("change", update);
+    window.addEventListener(READING_MODE_EVENT, mode);
+    window.addEventListener("storage", mode);
+    return () => { media.removeEventListener("change", update); window.removeEventListener(READING_MODE_EVENT, mode); window.removeEventListener("storage", mode); };
   }, []);
 
   useEffect(() => {
-    if (!mounted || initialPositionSet.current) return;
-    initialPositionSet.current = true;
-    if (initialChapter > 0) {
-      if (reduced) document.getElementById(initialChapter === contactStart ? "journey-contact-start" : "journey-work-start")?.scrollIntoView();
-      else window.scrollTo({ top: initialChapter * 2 / 1.5 * window.innerHeight, behavior: "instant" });
+    if (!mounted || previousMode.current === staticMode) return;
+    let index = previousMode.current === null ? initialChapter : pendingChapter.current ?? activeRef.current;
+    if (previousMode.current === null && window.location.hash) {
+      try {
+        const id = decodeURIComponent(window.location.hash.slice(1));
+        const target = gates.current.findIndex(gate => Array.from(gate?.querySelectorAll("[id]") ?? []).some(node => node.id === id));
+        if (target >= 0) index = target;
+      } catch { /* An invalid fragment leaves the normal entry chapter intact. */ }
     }
-  }, [mounted, reduced, initialChapter, contactStart]);
+    initialHashHandled.current = true;
+    previousMode.current = staticMode;
+    pendingChapter.current = null;
+    activeRef.current = index;
+    setActive(index);
+    if (staticMode) {
+      gates.current.forEach(element => { if (element) { element.inert = false; element.setAttribute("aria-hidden", "false"); } });
+      const element = gates.current[index];
+      if (element) window.scrollTo({ top: Math.max(0, window.scrollY + element.getBoundingClientRect().top - 150), behavior: "instant" });
+    } else {
+      painted.current = false;
+      setReady(false);
+      window.scrollTo({ top: index * 2 / 1.5 * window.innerHeight, behavior: "instant" });
+    }
+  }, [mounted, staticMode, initialChapter]);
 
   useEffect(() => {
-    if (!mounted || reduced) return;
+    if (!mounted || staticMode) return;
     function paint(frame: JourneyFrame) {
       if (!painted.current && Math.abs(frame.distance - travelDistance(window.scrollY, frame.height)) > 0.05) return;
       const index = Math.min(chapters.length - 1, Math.max(0, Math.floor((frame.distance + 0.7) / 2)));
@@ -139,18 +165,21 @@ export default function HomeTunnel({ children, labels, instruction, world = "hom
     };
     window.addEventListener("hashchange", onHash);
     document.addEventListener("click", onAnchor, true);
-    onHash();
+    if (!initialHashHandled.current) { initialHashHandled.current = true; onHash(); }
     return () => { unsubscribe(); window.removeEventListener("hashchange", onHash); document.removeEventListener("click", onAnchor, true); delete document.body.dataset.journeyPage; };
-  }, [mounted, reduced, chapters.length, workStart, contactStart, holdLastChapter]);
+  }, [mounted, staticMode, chapters.length, workStart, contactStart, holdLastChapter]);
 
   useEffect(() => {
-    if (!mounted || !reduced || workStart === undefined) return;
+    if (!mounted || !staticMode) return;
     const update = () => {
-      const start = document.getElementById("journey-work-start");
-      const contact = document.getElementById("journey-contact-start");
-      const route = contact && contact.getBoundingClientRect().top < window.innerHeight / 2 ? "/contact" : start && start.getBoundingClientRect().top < window.innerHeight / 2 ? "/web" : "/";
+      const point = window.innerHeight * .35;
+      let chapter = 0;
+      gates.current.forEach((element,index) => { if (element && element.getBoundingClientRect().top <= point) chapter = index; });
+      activeRef.current = chapter;
+      if (workStart === undefined) return;
+      const route = contactStart !== undefined && chapter >= contactStart ? "/contact" : chapter >= workStart ? "/web" : "/";
       document.body.dataset.journeyPage = route;
-      document.body.dataset.motionWorld = route === "/web" ? "build" : "base";
+      document.body.dataset.motionWorld = route === "/contact" ? "contact" : route === "/web" ? "build" : "base";
       window.dispatchEvent(new CustomEvent("journey-page", { detail: route }));
     };
     update();
@@ -160,7 +189,7 @@ export default function HomeTunnel({ children, labels, instruction, world = "hom
       const anchor = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>("a[href]") : null;
       if (!anchor || anchor.hasAttribute("download") || (anchor.target && anchor.target !== "_self")) return;
       const url = new URL(anchor.href, window.location.href);
-      if (url.origin !== window.location.origin || !["/", "/web", ...(contactStart !== undefined ? ["/contact"] : [])].includes(url.pathname) || url.hash || url.search) return;
+      if (workStart === undefined || url.origin !== window.location.origin || !["/", "/web", ...(contactStart !== undefined ? ["/contact"] : [])].includes(url.pathname) || url.hash || url.search) return;
       event.preventDefault();
       if (url.pathname === "/contact") document.getElementById("journey-contact-start")?.scrollIntoView();
       else if (url.pathname === "/web") document.getElementById("journey-work-start")?.scrollIntoView();
@@ -168,24 +197,24 @@ export default function HomeTunnel({ children, labels, instruction, world = "hom
     };
     document.addEventListener("click", navigate, true);
     return () => { window.removeEventListener("scroll", update); document.removeEventListener("click", navigate, true); delete document.body.dataset.journeyPage; };
-  }, [mounted, reduced, workStart, contactStart]);
+  }, [mounted, staticMode, workStart, contactStart]);
 
   if (!mounted) return <LoadingScreen />;
-  if (reduced) return <div className={`home-tunnel-static ${world !== "home" ? "world-tunnel-static" : ""}`.trim()}>{workStart === undefined ? children : chapters.map((chapter, index) => <div key={index} id={index === contactStart ? "journey-contact-start" : index === workStart ? "journey-work-start" : undefined} className={worldClasses[chapterWorld(index)]}>{chapter}</div>)}</div>;
+
 
   return <>
-    <div className="home-tunnel-runway" style={{ height: `${100 + (chapters.length - (workStart === undefined && !holdLastChapter ? 0 : 1)) * 2 / 1.5 * 100}${workStart === undefined && !holdLastChapter ? "svh" : "vh"}` }} aria-hidden="true" />
-    {createPortal(<div ref={layer} className="home-tunnel-layer" data-world={world}>
-      <div className="home-tunnel-stage" style={{ visibility: ready ? "visible" : "hidden" }}>{chapters.map((chapter, index) => <div className="home-tunnel-gate" key={index} ref={element => { gates.current[index] = element; }}>
+    {!staticMode && <div className="home-tunnel-runway" style={{ height: `${100 + (chapters.length - (workStart === undefined && !holdLastChapter ? 0 : 1)) * 2 / 1.5 * 100}${workStart === undefined && !holdLastChapter ? "svh" : "vh"}` }} aria-hidden="true" />}
+    {createPortal(<div ref={layer} className={staticMode ? "home-tunnel-static reading-layout" : "home-tunnel-layer"} data-world={world}>
+      <div className={staticMode ? "reading-chapters" : "home-tunnel-stage"} style={{ visibility: staticMode || ready ? "visible" : "hidden" }}>{chapters.map((chapter, index) => <div className="home-tunnel-gate" data-reading-chapter={index} id={index === contactStart ? "journey-contact-start" : index === workStart ? "journey-work-start" : undefined} inert={staticMode ? false : undefined} aria-hidden={staticMode ? false : undefined} key={index} ref={element => { gates.current[index] = element; }}>
         <div className={`home-gate-content ${worldClasses[chapterWorld(index)]}${chapterWorld(index) !== "home" ? " tunnel-world-content" : ""}`}>{chapter}</div>
       </div>)}</div>
-      {showNavigation && <nav className="home-tunnel-navigation" aria-label={instruction}>
+      {showNavigation && !staticMode && <nav className="home-tunnel-navigation" aria-label={instruction}>
         <span>{instruction}</span>
         <button type="button" aria-label={labels[Math.max(0, active - 1)]} disabled={active === 0} onClick={() => goTo(active - 1)}>↑</button>
         <div ref={navigation}>{labels.map((label, index) => <button type="button" key={index} onClick={() => goTo(index)} aria-label={label} aria-current={index === active ? "step" : undefined}>{String(index + 1).padStart(2, "0")}</button>)}</div>
         <button type="button" aria-label={labels[Math.min(chapters.length - 1, active + 1)]} disabled={active === chapters.length - 1} onClick={() => goTo(active + 1)}>↓</button>
       </nav>}
     </div>, document.body)}
-    {!ready && <LoadingScreen />}
+    {!staticMode && !ready && <LoadingScreen />}
   </>;
 }

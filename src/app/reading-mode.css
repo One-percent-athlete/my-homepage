@@ -1,0 +1,49 @@
+.reading-mode-switch{position:absolute;top:120px;left:50%;transform:translateX(-50%);display:flex;pointer-events:auto;padding:3px;border:1px solid #9beaff45;background:#03121be8;backdrop-filter:blur(10px);border-radius:3px;font:11px monospace;letter-spacing:.03em}
+.reading-mode-switch button{min-height:36px;padding:7px 16px;color:#93b9c9;border:1px solid transparent;border-radius:2px;cursor:pointer}
+.reading-mode-switch button[aria-pressed="true"]{background:#8deaff18;color:#d1f6ff;border-color:#9beaff55}
+.reading-mode-switch button:focus-visible{outline:2px solid #b1ecff;outline-offset:2px}
+.reading-layout{position:relative;z-index:35;color:#e8f4fa;padding:180px 120px 110px 24px;max-width:1440px;margin:0 auto}
+.reading-chapters{display:flex;flex-direction:column;gap:48px}
+.reading-layout .home-tunnel-gate{position:relative!important;inset:auto!important;width:100%!important;height:auto!important;transform:none!important;opacity:1!important;visibility:visible!important;pointer-events:auto!important;z-index:auto!important;will-change:auto;scroll-margin-top:170px}
+.reading-layout .home-gate-content{position:relative!important;inset:auto!important;width:100%;height:auto;min-height:0;overflow:visible;--between:#ff67d4;--font-geist-mono:"SFMono-Regular",Consolas,monospace;background:#061421ef!important;border:1px solid #91dfff35;box-shadow:0 12px 40px #0003}
+.reading-layout .reading-chapters .home-tunnel-gate .home-gate-content{background:#061421ef!important}
+.reading-layout [id]{scroll-margin-top:170px}
+.reading-layout .home-gate-content>section{width:100%;height:auto;min-height:0;margin:0;padding:clamp(24px,4vw,56px);overflow:visible;transform:none!important;opacity:1!important}
+.reading-layout .mission-hero{display:grid;grid-template-columns:1.2fr .8fr;gap:28px}
+.reading-layout .hero-copy h1{font-size:clamp(36px,5vw,64px)}
+.reading-layout .hero-portrait{height:420px}.reading-layout .hero-index{display:none}
+.reading-layout .web-lab-hero{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:center}
+.reading-layout .web-lab-copy h1{font-size:clamp(36px,5vw,64px)}
+.reading-layout .web-deep-section{padding-block:40px!important}
+.reading-layout .capability-matrix{max-width:none}.reading-layout .capability-matrix h2{font-size:clamp(30px,4vw,42px)}
+.reading-layout .build-feature-body{min-height:390px}.reading-layout .build-feature-copy h2{font-size:clamp(32px,4vw,50px)}
+.reading-layout .field-note{min-height:450px!important}.reading-layout .field-content blockquote{font-size:clamp(28px,4vw,46px)}
+.reading-layout .signal-strip{flex-wrap:wrap;gap:20px}.reading-layout .signal-strip i{display:none}
+.reading-layout .mission-grid{margin-top:30px}.reading-layout .mission-card{min-height:360px}
+.reading-layout .other-worlds{gap:20px}.reading-layout .other-worlds h2{font-size:clamp(30px,4vw,48px)}
+.reading-layout .web-final h2,.reading-layout .final-transmission h2{font-size:clamp(34px,5vw,64px)}
+.reading-layout .contact-world{padding:0!important}.reading-layout #contact{max-width:none}
+.reading-layout .between-arrival,.reading-layout .between-final{min-height:550px!important;display:flex;align-items:center;justify-content:center;flex-direction:column}
+.reading-layout .between-arrival h1{font-size:clamp(48px,7vw,90px)}.reading-layout .between-final h2{max-width:850px;font-size:clamp(36px,5vw,64px)}
+.reading-layout .between-heading{margin-bottom:40px}.reading-layout .between-heading h2{font-size:clamp(32px,4vw,52px)}
+.reading-layout .constellation-map{width:min(520px,85%);margin:40px auto}
+body[data-reading-mode="read"]:has(.home-tunnel) .space-atmosphere{transform:none!important}
+body[data-reading-mode="read"]:has(.home-tunnel) .space-portals{opacity:.12}
+@media(max-width:699px){
+ .reading-mode-switch{top:112px;font-size:11px}.reading-mode-switch button{min-height:40px;padding:8px 13px}
+ .reading-layout{padding:170px 70px 115px 12px}.reading-chapters{gap:26px}
+ .reading-layout .home-gate-content>section{padding:22px}
+ .reading-layout .mission-hero,.reading-layout .web-lab-hero{grid-template-columns:1fr}
+ .reading-layout .hero-portrait{height:300px}.reading-layout .hero-copy h1,.reading-layout .web-lab-copy h1{font-size:34px}
+ .reading-layout .hero-intro,.reading-layout .web-lab-copy>p{font-size:16px;line-height:1.65}
+ .reading-layout .mission-grid{grid-template-columns:1fr;gap:18px}.reading-layout .mission-card{min-height:320px}
+ .reading-layout .section-heading{display:block}.reading-layout .section-heading h2{font-size:34px}.reading-layout .section-heading>p{margin-top:18px}
+ .reading-layout .loadout-section{display:block}.reading-layout .capability-console{margin-top:25px}
+ .reading-layout .capability-tiles button{min-height:100px}.reading-layout .capability-matrix header p{font-size:14px}
+ .reading-layout .build-feature-body{min-height:0;padding-block:22px}.reading-layout .build-feature-copy>p{font-size:16px}
+ .reading-layout .world-portal-grid{grid-template-columns:1fr}.reading-layout .world-portal{min-height:200px}
+ .reading-layout .between-heading{display:block}.reading-layout .between-heading>span{display:block;margin-top:15px}
+ .reading-layout .between-arrival,.reading-layout .between-final{min-height:450px!important}
+ .reading-layout .constellation-map{width:90%;margin:45px auto}.reading-layout .constellation-node{width:64px;height:64px;font-size:8px}.reading-layout .constellation-core{width:68px;height:68px}.reading-layout .constellation-message{width:150px;top:70%}.reading-layout .constellation-message p{font-size:12px}
+ .reading-layout .protocol-console>section,.reading-layout .artifact-lab article{padding:22px;min-height:0}.reading-layout .protocol-console section strong,.reading-layout .artifact-lab h3{font-size:30px}
+}

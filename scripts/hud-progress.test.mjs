@@ -21,6 +21,7 @@ function mountHUD({loading=false}={}){
     if(id==='next/navigation')return{usePathname:()=>'/'};
     if(id==='@/app/context/LanguageContext')return{useLanguage:()=>({language:'en'})};
     if(id==='@/lib/world-visits')return store;
+    if(id==='@/components/ReadingModeSwitch')return {__esModule:true,default:'ReadingModeSwitch'};
     throw new Error(id);
   }});
   function render(){stateIndex=effectIndex=0;tree=exports.default();effects.forEach(effect=>{if(effect.pending){effect.pending=false;effect.cleanup=effect.callback();}});}

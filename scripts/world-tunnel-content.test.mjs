@@ -33,11 +33,11 @@ function findAll(node, predicate) {
   return [...(predicate(node) ? [node] : []), ...findAll(node.props?.children, predicate)];
 }
 
-test('Work offers ten reusable chapters in every language', () => {
+test('Work offers nine reusable chapters in every language', () => {
   for (const language of ['en','ja','zh']) {
     const work = renderComponent('../src/components/WorkJourney.tsx', {}, language, 'useWorkJourney');
-    assert.equal(work.content.props.children.flat(Infinity).length, 10);
-    assert.equal(work.labels.length, 10);
+    assert.equal(work.content.props.children.flat(Infinity).length, 9);
+    assert.equal(work.labels.length, 9);
     assert.ok(work.labels.every(label => label.length > 0));
   }
 });
@@ -64,14 +64,16 @@ test('the final portals link to all four other worlds in every language', () => 
   }
 });
 
-test('combined capability matrix retains nine selectable tools in every language', () => {
+test('unified toolkit retains nine tools without role explanations in every language', () => {
   for (const language of ['en', 'ja', 'zh']) {
     const work=renderComponent('../src/components/WorkJourney.tsx',{},language,'useWorkJourney');
     assert.equal(findAll(work.content,node=>node.type==='@/components/web/SkillCardGrid').length,1);
     const tree=renderComponent('../src/components/web/SkillCardGrid.tsx',{},language);
     const titles=findAll(tree,node=>node.type==='h3').map(node=>node.props.children);
     assert.equal(titles.length,9);
-    assert.equal(findAll(tree,node=>node.type==='button' && node.props['aria-controls']==='capability-readout').length,9);
+    assert.equal(findAll(tree,node=>node.type==='button').length,0);
+    assert.equal(findAll(tree,node=>node.props?.id==='capability-readout').length,0);
+    assert.equal(findAll(work.content,node=>node.type==='@/components/web/LogoShowcase').length,0,'there is no duplicate showcase chapter');
     assert.equal(new Set(titles).size, 9);
     assert.ok(titles.includes('Python') && titles.includes('Node.js'));
   }
@@ -109,18 +111,18 @@ test('ski package chapters retain each lesson option and its contact action', ()
   }
 });
 
-test('Home composes the full eighteen-chapter journey and Work opens at chapter six', () => {
+test('Home composes the full seventeen-chapter journey and Work opens at chapter six', () => {
   for (const language of ['en','ja','zh']) {
     const tree=renderComponent('../src/components/MainJourney.tsx',{},language);
     const [tunnel]=findAll(tree,node=>node.type==='@/components/HomeTunnel');
     assert.equal(tunnel.props.workStart,6);
-    assert.equal(tunnel.props.contactStart,17);
+    assert.equal(tunnel.props.contactStart,16);
     assert.equal(tunnel.props.showNavigation,false);
     const [contact]=findAll(tunnel,node=>node.type==='@/components/Contact');
     assert.equal(contact.props.embedded,true);
-    assert.equal(tunnel.props.labels.length,18);
+    assert.equal(tunnel.props.labels.length,17);
     const flatten=node=>Array.isArray(node) ? node.flatMap(flatten) : node?.type==='fragment' ? node.props.children.flatMap(flatten) : [node];
-    assert.equal(tunnel.props.children.flatMap(flatten).length,18);
+    assert.equal(tunnel.props.children.flatMap(flatten).length,17);
     assert.equal(findAll(tunnel,node=>node.type==='@/components/WorldPortals').length,1);
   }
   const work=renderComponent('../src/app/web/page.tsx');
