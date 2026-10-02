@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { createEarthPainter } from "@/lib/earth-globe";
 import { usePathname } from "next/navigation";
 import { getReadingMode, READING_MODE_EVENT } from "@/lib/reading-mode";
 import { depthOpacity, sceneDepth, travelDistance, homeGateProjection, publishJourneyFrame, isTunnelRoute } from "@/lib/space-journey";
@@ -18,6 +19,7 @@ export default function SpaceJourney() {
   const pathname = usePathname();
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const globeRef = useRef<HTMLCanvasElement>(null);
   const backdropRef = useRef<HTMLDivElement>(null);
   const privatePage = pathname.startsWith("/mission-control") || pathname.startsWith("/blog/create");
 
@@ -28,6 +30,7 @@ export default function SpaceJourney() {
     const context = canvas.getContext("2d", { alpha: true });
     if (!context) return;
 
+    const paintEarth = pathname.startsWith("/travel") && globeRef.current ? createEarthPainter(globeRef.current) : null;
     const reading = () => isTunnelRoute(pathname) && getReadingMode() === "read";
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
     const portal = new window.Image();
@@ -87,6 +90,7 @@ export default function SpaceJourney() {
 
       const atmospherePace = pathname.startsWith("/ski") ? 0.18 : pathname.startsWith("/travel") ? 0.45 : 1;
       backdrop.style.transform = `scale(${1.08 + Math.min(distance, 20) * 0.006 * atmospherePace}) translate3d(${Math.sin(distance * 0.09) * -1.8 * atmospherePace}%, ${Math.sin(distance * 0.07) * 1.2 * atmospherePace}%, 0)`;
+      paintEarth?.(1.8 + distance * 0.65);
       canvas.dataset.distance = distance.toFixed(3);
       canvas.dataset.motion = media.matches ? "reduced" : "scroll";
       canvas.dataset.scene = "threshold";
@@ -213,6 +217,8 @@ export default function SpaceJourney() {
   if (privatePage) return null;
   return <div className="space-journey" data-scene="threshold" aria-hidden="true">
     <div ref={backdropRef} className="space-atmosphere"><div className="world-air world-air-build"/><div className="world-air world-air-travel"/><div className="world-air world-air-summit"/></div>
+    <div className="world-digital"><div className="digital-grid"/><div className="digital-circuit"/></div>
+    <div className="travel-earth"><canvas ref={globeRef} className="earth-sphere"/></div>
     <canvas ref={canvasRef} className="space-portals" />
   </div>;
 }

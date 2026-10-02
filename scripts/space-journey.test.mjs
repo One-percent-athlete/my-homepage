@@ -40,7 +40,8 @@ function mountJourney(reduced = false, route = '/') {
   const draws = [];
   const drawing = { setTransform() {}, clearRect() { draws.length = 0; }, drawImage(...args) { draws.push(args); }, beginPath() {}, arc() {}, fill() {} };
   const canvas = { dataset: {}, getContext: () => drawing };
-  const refs = [canvas, { style: {} }];
+  const globe = { dataset: {} };
+  const refs = [canvas, globe, { style: {} }];
   const effects = [];
   const pending = new Map();
   let sequence = 0;
@@ -58,6 +59,7 @@ function mountJourney(reduced = false, route = '/') {
       if (id === 'react/jsx-runtime') return { jsx: () => null, jsxs: () => null };
       if (id === 'next/navigation') return { usePathname: () => route };
       if (id === '@/lib/reading-mode') return {getReadingMode:()=>document.body.dataset.readingMode==='read'?'read':'journey',READING_MODE_EVENT:'reading-mode-change'};
+      if (id === '@/lib/earth-globe') return { createEarthPainter: target => rotation => { target.dataset.rotation = rotation.toFixed(3); } };
       if (id === '@/lib/space-journey') return { sceneDepth, travelDistance, depthOpacity, homeGateProjection, publishJourneyFrame, isTunnelRoute };
       throw new Error(`Unexpected import: ${id}`);
     },
@@ -65,7 +67,7 @@ function mountJourney(reduced = false, route = '/') {
   exports.default();
   const cleanup = effects.map(effect => effect());
   return {
-    canvas, media, pending, draws, window, document,
+    canvas, globe, media, pending, draws, window, document,
     input(type, props = {}) { const event = new Event(type); Object.assign(event, props); window.dispatchEvent(event); },
     scroll(y) { window.scrollY = y; window.dispatchEvent(new Event('scroll')); },
     settle() { for (let i = 0; pending.size && i < 200; i++) { const callbacks = [...pending.values()]; pending.clear(); now += 16; callbacks.forEach(fn => fn(now)); } assert.equal(pending.size, 0, 'animation must stop when idle'); },
@@ -501,3 +503,11 @@ test('startup shows a loader until the correct first projection is ready',()=>{
   assert.equal(view.window.scrollY,5850);
   content.unmount();view.unmount();
  });
+
+test('Travel globe follows forward and reverse scroll and stays still with reduced motion', () => {
+ const live=mountJourney(false,'/travel');live.settle();const start=live.globe.dataset.rotation;
+ live.scroll(900);live.settle();assert.ok(Number(live.globe.dataset.rotation)>Number(start));
+ live.scroll(0);live.settle();assert.equal(live.globe.dataset.rotation,start);live.unmount();
+ const reduced=mountJourney(true,'/travel');const initial=reduced.globe.dataset.rotation;
+ reduced.scroll(900);reduced.settle();assert.equal(reduced.globe.dataset.rotation,initial);reduced.unmount();
+});
