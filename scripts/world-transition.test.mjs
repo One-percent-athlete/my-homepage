@@ -16,8 +16,8 @@ function mountTransition({ reduced = false } = {}) {
   class Element { constructor(anchor) { this.anchor = anchor; } closest() { return this.anchor; } }
   const exports = {};
   vm.runInNewContext(compiled, {
-    exports, document, Element, URL,
-    window: { location: { href: 'http://localhost:3000/', origin: 'http://localhost:3000' }, matchMedia: () => ({ matches: reduced }) },
+    exports, document, Element, URL, Event,
+    window: { location: { href: 'http://localhost:3000/', origin: 'http://localhost:3000' }, matchMedia: () => ({ matches: reduced }), dispatchEvent() {} },
     setTimeout: (fn, delay) => { const id = ++sequence; timers.set(id, { fn, delay }); return id; },
     clearTimeout: id => timers.delete(id),
     require: id => {

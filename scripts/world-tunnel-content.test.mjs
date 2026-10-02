@@ -112,6 +112,7 @@ test('Home composes the full sixteen-chapter journey and Work opens at chapter s
     const [tunnel]=findAll(tree,node=>node.type==='@/components/HomeTunnel');
     assert.equal(tunnel.props.workStart,6);
     assert.equal(tunnel.props.contactStart,15);
+    assert.equal(tunnel.props.showNavigation,false);
     const [contact]=findAll(tunnel,node=>node.type==='@/components/Contact');
     assert.equal(contact.props.embedded,true);
     assert.equal(tunnel.props.labels.length,16);

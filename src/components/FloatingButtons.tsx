@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import { BookOpen, Code2, Compass, Contact, Globe2, Home, Images, Languages, MountainSnow, Orbit, Sparkles, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { BookOpen, Code2, Contact, Globe2, Home, Images, MountainSnow, Orbit } from "lucide-react";
 import { useLanguage } from "@/app/context/LanguageContext";
+import { getVisitedWorlds, recordWorldVisit } from "@/lib/world-visits";
 import { getBetweenAccessRemainingMs, getFragments } from "@/lib/exploration";
 
 const worlds = [
@@ -27,90 +28,53 @@ const dockCopy = {
 };
 
 export default function FloatingButtons() {
-  const dockRef = useRef<HTMLElement>(null);
-  const triggerRef = useRef<HTMLButtonElement>(null);
   const pathname = usePathname();
+  const { language } = useLanguage();
   const [journeyPage, setJourneyPage] = useState<string | null>(null);
-  const activePath = ["/", "/web", "/contact"].includes(pathname) ? journeyPage ?? pathname : pathname;
-  useEffect(() => {
-    const update = (event: Event) => setJourneyPage((event as CustomEvent<string>).detail);
-    window.addEventListener("journey-page", update);
-    setJourneyPage(document.body.dataset.journeyPage ?? null);
-    return () => window.removeEventListener("journey-page", update);
-  }, [pathname]);
-  const { language, setLanguage } = useLanguage();
-  const [expanded, setExpanded] = useState(false);
   const [visited, setVisited] = useState<string[]>([]);
-  const [fragmentCount,setFragmentCount]=useState(0);
+  const [fragmentCount, setFragmentCount] = useState(0);
+  const activePath = ["/", "/web", "/contact"].includes(pathname) ? journeyPage ?? pathname : pathname;
   const hiddenUnlocked = fragmentCount >= 3 || pathname === "/between";
   const availableWorlds = hiddenUnlocked ? [...worlds, hiddenWorld] : worlds;
-  const current = availableWorlds.find((world) => activePath === world.href || (world.href !== "/" && activePath.startsWith(`${world.href}/`))) ?? worlds[0];
+  const current = availableWorlds.find(world => activePath === world.href || (world.href !== "/" && activePath.startsWith(world.href + "/"))) ?? worlds[0];
   const copy = dockCopy[language];
-
   useEffect(() => {
-    try {
-      const saved = JSON.parse(window.localStorage.getItem("ryu-worlds") || "[]") as unknown;
-      const safe = Array.isArray(saved) ? saved.filter((item): item is string => typeof item === "string") : [];
-      const next = Array.from(new Set([...safe, current.href]));
-      setVisited(next);
-      window.localStorage.setItem("ryu-worlds", JSON.stringify(next));
-    } catch {
-      setVisited([current.href]);
-    }
-  }, [current.href]);
-
-  useEffect(()=>{
+    const update = (event: Event) => setJourneyPage((event as CustomEvent<string>).detail);
+    setJourneyPage(document.body.dataset.journeyPage ?? null);
+    window.addEventListener("journey-page", update);
+    return () => window.removeEventListener("journey-page", update);
+  }, [pathname]);
+  useEffect(() => {
+    const refresh = () => setVisited(getVisitedWorlds());
+    if (!document.querySelector('[data-page-state]')) setVisited(recordWorldVisit(activePath));
+    else refresh();
+    const ready = () => { if (document.querySelector('[data-page-state]')) refresh(); else setVisited(recordWorldVisit(document.body.dataset.journeyPage ?? activePath)); };
+    window.addEventListener("journey-ready", ready);
+    window.addEventListener("world-ready", ready);
+    window.addEventListener("world-visits", refresh);
+    window.addEventListener("storage", refresh);
+    return () => { window.removeEventListener("journey-ready", ready); window.removeEventListener("world-ready", ready); window.removeEventListener("world-visits", refresh); window.removeEventListener("storage", refresh); };
+  }, [activePath]);
+  useEffect(() => {
     let expiryTimer: ReturnType<typeof setTimeout> | undefined;
-    const refresh=()=>{
+    const refresh = () => {
       if (expiryTimer) clearTimeout(expiryTimer);
       setFragmentCount(getFragments().length);
       const remaining = getBetweenAccessRemainingMs();
       if (remaining > 0) expiryTimer = setTimeout(refresh, remaining + 50);
     };
-    refresh();window.addEventListener("ryu-progress",refresh);window.addEventListener("storage",refresh);
-    return()=>{if(expiryTimer)clearTimeout(expiryTimer);window.removeEventListener("ryu-progress",refresh);window.removeEventListener("storage",refresh)};
-  },[]);
-
-  useEffect(() => {
-    if (!expanded) return;
-    const closeOnEscape = (event: KeyboardEvent) => { if (event.key === "Escape") { setExpanded(false); triggerRef.current?.focus(); } };
-    const closeOutside = (event: PointerEvent) => { if (!dockRef.current?.contains(event.target as Node)) setExpanded(false); };
-    document.addEventListener("keydown", closeOnEscape);
-    document.addEventListener("pointerdown", closeOutside);
-    return () => { document.removeEventListener("keydown", closeOnEscape); document.removeEventListener("pointerdown", closeOutside); };
-  }, [expanded]);
-
-  return (
-    <aside ref={dockRef} className={`${expanded ? "world-dock expanded" : "world-dock"}${hiddenUnlocked ? " hidden-unlocked" : ""}`} aria-label={copy.navigator}>
-      {hiddenUnlocked && pathname !== "/between" && (
-        <Link href="/between" className="between-discovery" aria-label={copy.enter}>
-          <Sparkles size={16}/><span><small>{copy.discovered}</small><strong>{copy.enter}</strong></span><Orbit size={18}/>
-        </Link>
-      )}
-      <button ref={triggerRef} className="dock-trigger" onClick={() => setExpanded(!expanded)} aria-expanded={expanded} aria-controls="world-navigator-panel" aria-label={expanded ? copy.close : copy.navigator} style={{ "--dock-accent": current.color } as React.CSSProperties}>
-        {expanded ? <X size={20} /> : <Compass size={20} />}
-        <span>{expanded ? copy.close : worldLabels[current.href][language]}</span>
-        {!expanded && <b>{fragmentCount < 3 && fragmentCount > 0 ? `${fragmentCount}F` : `${visited.length}/${availableWorlds.length}`}</b>}
-      </button>
-
-      <div className="dock-panel" id="world-navigator-panel">
-        <div className="dock-heading"><span>{fragmentCount > 0 && fragmentCount < 3 ? copy.anomaly : copy.navigator}</span><small>{fragmentCount > 0 && fragmentCount < 3 ? `${fragmentCount}/3 ${copy.fragments}` : `${visited.length}/${availableWorlds.length}`}</small></div>
-        <nav className="dock-tabs" aria-label={copy.navigator}>
-          {availableWorlds.map((world) => {
-            const Icon = world.icon;
-            const active = current.href === world.href;
-            const found = visited.includes(world.href);
-            return (
-              <Link key={world.href} href={world.href} aria-label={worldLabels[world.href][language]} title={worldLabels[world.href][language]} onClick={() => setExpanded(false)} className={active ? "active" : ""} style={{ "--dock-accent": world.color } as React.CSSProperties} aria-current={active ? "page" : undefined}>
-                <span className="dock-icon"><Icon size={19} />{found && <i />}</span>
-                <strong>{worldLabels[world.href][language]}</strong>
-                <small>{active ? copy.current : found ? copy.visited : copy.unknown}</small>
-              </Link>
-            );
-          })}
-        </nav>
-        <div className="dock-languages" inert={!expanded}><Languages size={16} /><span>{copy.signal}</span>{(["en", "ja", "zh"] as const).map((lang) => <button key={lang} className={language === lang ? "active" : ""} onClick={() => setLanguage(lang)}>{lang.toUpperCase()}</button>)}</div>
-      </div>
-    </aside>
-  );
+    refresh(); window.addEventListener("ryu-progress", refresh); window.addEventListener("storage", refresh);
+    return () => { if (expiryTimer) clearTimeout(expiryTimer); window.removeEventListener("ryu-progress", refresh); window.removeEventListener("storage", refresh); };
+  }, []);
+  return <aside className={"world-dock permanent" + (hiddenUnlocked ? " hidden-unlocked" : "")} aria-label={copy.navigator}>
+    <nav className="dock-tabs" id="world-navigator-panel" aria-label={copy.navigator}>
+      {availableWorlds.map(world => {
+        const Icon = world.icon;
+        const active = current.href === world.href;
+        return <Link key={world.href} href={world.href} aria-label={worldLabels[world.href][language]} title={worldLabels[world.href][language]} className={active ? "active" : ""} style={{ "--dock-accent": world.color } as React.CSSProperties} aria-current={active ? "page" : undefined}>
+          <span className="dock-icon"><Icon size={19} aria-hidden="true" />{visited.includes(world.href) && <i />}</span><strong>{worldLabels[world.href][language]}</strong>
+        </Link>;
+      })}
+    </nav>
+  </aside>;
 }

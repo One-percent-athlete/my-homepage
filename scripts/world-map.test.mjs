@@ -11,6 +11,7 @@ function mountMap() {
   let stateIndex=0,refIndex=0,effectIndex=0,tree;
   const window=new EventTarget(),document=new EventTarget();
   document.body={dataset:{}};
+  document.querySelector=()=>null;
   const saved=new Map();
   window.localStorage={getItem:key=>saved.get(key)??null,setItem:(key,value)=>saved.set(key,value)};
   const jsx=(type,props)=>({type,props});
@@ -26,6 +27,7 @@ function mountMap() {
       if(id==='react/jsx-runtime')return{jsx,jsxs:jsx};
       if(id==='next/navigation')return{usePathname:()=>'/'};
       if(id==='@/app/context/LanguageContext')return{useLanguage:()=>({language:'en',setLanguage(){}})};
+      if(id==='@/lib/world-visits') return {getVisitedWorlds:()=>JSON.parse(saved.get('ryu-worlds')||'[]'), recordWorldVisit:route=>{const visits=[...new Set([...JSON.parse(saved.get('ryu-worlds')||'[]'),route])];saved.set('ryu-worlds',JSON.stringify(visits));return visits;}};
       if(id==='@/lib/exploration')return{getFragments:()=>[],getBetweenAccessRemainingMs:()=>0};
       if(id==='lucide-react')return new Proxy({},{get:(_,key)=>key});
       if(id==='next/link')return{__esModule:true,default:'Link'};
@@ -46,15 +48,13 @@ function mountMap() {
   };
 }
 
-test('world map destinations remain available when the labels are collapsed',()=>{
+test('permanent world map destinations remain directly available',()=>{
   const map=mountMap();
   const [panel]=map.find(node=>node.props.id==='world-navigator-panel');
   assert.equal(panel.props['aria-hidden'],undefined);
   const links=map.find(node=>node.type==='Link');
   assert.equal(links.length,7);
-  assert.ok(links.every(node=>node.props['aria-label'] && typeof node.props.onClick==='function'));
-  const [languages]=map.find(node=>node.props.className==='dock-languages');
-  assert.equal(languages.props.inert,true,'collapsed language controls do not intercept keyboard focus');
+  assert.ok(links.every(node=>node.props['aria-label'] ));
   map.unmount();
 });
 
@@ -68,16 +68,10 @@ test('world map follows the active journey location in both directions',()=>{
   map.unmount();
 });
 
-test('map labels collapse on selection and Escape restores focus to the map control',()=>{
+test('map remains permanently labeled with no toggle or duplicated language controls',()=>{
   const map=mountMap();
-  const toggle=()=>map.find(node=>node.props.className==='dock-trigger')[0];
-  let focused=false;map.refs[1].current={focus(){focused=true;}};
-  toggle().props.onClick();map.render();
-  assert.equal(toggle().props['aria-expanded'],true);
-  const key=new Event('keydown');Object.assign(key,{key:'Escape'});map.document.dispatchEvent(key);map.render();
-  assert.equal(toggle().props['aria-expanded'],false);assert.equal(focused,true);
-  toggle().props.onClick();map.render();
-  map.find(node=>node.type==='Link'&&node.props.href==='/travel')[0].props.onClick();map.render();
-  assert.equal(toggle().props['aria-expanded'],false);
+  assert.ok(map.find(node=>node.type==='aside')[0].props.className.includes('permanent'));
+  assert.equal(map.find(node=>node.type==='button').length,0);
+  assert.equal(map.find(node=>node.type==='strong').length,7);
   map.unmount();
 });

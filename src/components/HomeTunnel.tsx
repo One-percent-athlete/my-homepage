@@ -2,7 +2,9 @@
 
 import { Children, Fragment, isValidElement, useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { gateOrigin, homeGateProjection, subscribeJourneyFrame, type JourneyFrame } from "@/lib/space-journey";
+import { gateOrigin, homeGateProjection, subscribeJourneyFrame, type JourneyFrame, travelDistance } from "@/lib/space-journey";
+
+import LoadingScreen from "@/components/LoadingScreen";
 
 type TunnelWorld = "home" | "web" | "travel" | "ski" | "contact";
 const worldClasses: Record<TunnelWorld, string> = { home: "mission-site", web: "web-world", travel: "travel-world", ski: "ski-world", contact: "contact-world" };
@@ -11,8 +13,10 @@ function flattenChapters(children: ReactNode): ReactNode[] {
   return Children.toArray(children).flatMap(child => isValidElement<{ children: ReactNode }>(child) && child.type === Fragment ? flattenChapters(child.props.children) : [child]);
 }
 
-export default function HomeTunnel({ children, labels, instruction, world = "home", workStart, contactStart, initialChapter = 0 }: { children: ReactNode; labels: string[]; instruction: string; world?: TunnelWorld; workStart?: number; contactStart?: number; initialChapter?: number }) {
+export default function HomeTunnel({ children, labels, instruction, world = "home", workStart, contactStart, initialChapter = 0, showNavigation = true }: { children: ReactNode; labels: string[]; instruction: string; world?: TunnelWorld; workStart?: number; contactStart?: number; initialChapter?: number; showNavigation?: boolean }) {
   const chapters = flattenChapters(children);
+  const [ready, setReady] = useState(false);
+  const painted = useRef(false);
   const [mounted, setMounted] = useState(false);
   const [reduced, setReduced] = useState(false);
   const [active, setActive] = useState(0);
@@ -23,6 +27,10 @@ export default function HomeTunnel({ children, labels, instruction, world = "hom
   const announcedWorld = useRef("");
   const initialPositionSet = useRef(false);
   const chapterWorld = (index: number): TunnelWorld => contactStart !== undefined && index >= contactStart ? "contact" : workStart === undefined ? world : index >= workStart ? "web" : "home";
+
+  useEffect(() => {
+    if (ready) window.dispatchEvent(new Event("journey-ready"));
+  }, [ready]);
 
   function goTo(index: number) {
     if (index < 0 || index >= chapters.length) return;
@@ -58,6 +66,7 @@ export default function HomeTunnel({ children, labels, instruction, world = "hom
   useEffect(() => {
     if (!mounted || reduced) return;
     function paint(frame: JourneyFrame) {
+      if (!painted.current && Math.abs(frame.distance - travelDistance(window.scrollY, frame.height)) > 0.05) return;
       const index = Math.min(chapters.length - 1, Math.max(0, Math.floor((frame.distance + 0.7) / 2)));
       const finished = workStart === undefined && frame.distance > gateOrigin(chapters.length - 1) - 0.2;
       if (layer.current) layer.current.dataset.finished = String(finished);
@@ -91,6 +100,7 @@ export default function HomeTunnel({ children, labels, instruction, world = "hom
         element.setAttribute("aria-hidden", String(!interactive));
         element.dataset.depth = gate.depth.toFixed(3);
       });
+      if (!painted.current) { painted.current = true; setReady(true); }
     }
     const unsubscribe = subscribeJourneyFrame(paint);
 
@@ -160,20 +170,22 @@ export default function HomeTunnel({ children, labels, instruction, world = "hom
     return () => { window.removeEventListener("scroll", update); document.removeEventListener("click", navigate, true); delete document.body.dataset.journeyPage; };
   }, [mounted, reduced, workStart, contactStart]);
 
-  if (!mounted || reduced) return <div className={`home-tunnel-static ${world !== "home" ? "world-tunnel-static" : ""}`.trim()}>{workStart === undefined ? children : chapters.map((chapter, index) => <div key={index} id={index === contactStart ? "journey-contact-start" : index === workStart ? "journey-work-start" : undefined} className={worldClasses[chapterWorld(index)]}>{chapter}</div>)}</div>;
+  if (!mounted) return <LoadingScreen />;
+  if (reduced) return <div className={`home-tunnel-static ${world !== "home" ? "world-tunnel-static" : ""}`.trim()}>{workStart === undefined ? children : chapters.map((chapter, index) => <div key={index} id={index === contactStart ? "journey-contact-start" : index === workStart ? "journey-work-start" : undefined} className={worldClasses[chapterWorld(index)]}>{chapter}</div>)}</div>;
 
   return <>
     <div className="home-tunnel-runway" style={{ height: `${100 + (chapters.length - (workStart === undefined ? 0 : 1)) * 2 / 1.5 * 100}${workStart === undefined ? "svh" : "vh"}` }} aria-hidden="true" />
     {createPortal(<div ref={layer} className="home-tunnel-layer" data-world={world}>
-      <div className="home-tunnel-stage">{chapters.map((chapter, index) => <div className="home-tunnel-gate" key={index} ref={element => { gates.current[index] = element; }}>
+      <div className="home-tunnel-stage" style={{ visibility: ready ? "visible" : "hidden" }}>{chapters.map((chapter, index) => <div className="home-tunnel-gate" key={index} ref={element => { gates.current[index] = element; }}>
         <div className={`home-gate-content ${worldClasses[chapterWorld(index)]}${chapterWorld(index) !== "home" ? " tunnel-world-content" : ""}`}>{chapter}</div>
       </div>)}</div>
-      <nav className="home-tunnel-navigation" aria-label={instruction}>
+      {showNavigation && <nav className="home-tunnel-navigation" aria-label={instruction}>
         <span>{instruction}</span>
         <button type="button" aria-label={labels[Math.max(0, active - 1)]} disabled={active === 0} onClick={() => goTo(active - 1)}>↑</button>
         <div ref={navigation}>{labels.map((label, index) => <button type="button" key={index} onClick={() => goTo(index)} aria-label={label} aria-current={index === active ? "step" : undefined}>{String(index + 1).padStart(2, "0")}</button>)}</div>
         <button type="button" aria-label={labels[Math.min(chapters.length - 1, active + 1)]} disabled={active === chapters.length - 1} onClick={() => goTo(active + 1)}>↓</button>
-      </nav>
+      </nav>}
     </div>, document.body)}
+    {!ready && <LoadingScreen />}
   </>;
 }

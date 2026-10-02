@@ -100,7 +100,7 @@ function mountHomeContent(view, { world = 'home', count = 6, workStart, contactS
   const jsx = (type, props) => ({ type, props });
   class LinkElement { constructor(anchor) { this.anchor=anchor; } closest() { return this.anchor; } }
   vm.runInNewContext(compiled, {
-    exports, window: view.window, document: view.document, Element: LinkElement, CustomEvent, URL,
+    exports, window: view.window, document: view.document, Element: LinkElement, CustomEvent, URL, Event,
     require: id => {
       if (id === 'react') return {
         Children: { toArray: children => Array.isArray(children) ? children : [children] },
@@ -117,8 +117,9 @@ function mountHomeContent(view, { world = 'home', count = 6, workStart, contactS
         },
       };
       if (id === 'react/jsx-runtime') return { jsx, jsxs: jsx, Fragment: 'fragment' };
+      if (id === '@/components/LoadingScreen') return { __esModule: true, default: 'LoadingScreen' };
       if (id === 'react-dom') return { createPortal: child => child };
-      if (id === '@/lib/space-journey') return { gateOrigin, homeGateProjection, subscribeJourneyFrame };
+      if (id === '@/lib/space-journey') return { gateOrigin, homeGateProjection, subscribeJourneyFrame, travelDistance };
       throw new Error(`Unexpected import: ${id}`);
     },
   });
@@ -130,6 +131,7 @@ function mountHomeContent(view, { world = 'home', count = 6, workStart, contactS
   let buttons = [];
   let contents = [];
   let tree;
+  let initialTree;
   function ids(node) {
     if (!node || typeof node !== 'object') return [];
     const children = Array.isArray(node.props?.children) ? node.props.children : [node.props?.children];
@@ -149,6 +151,7 @@ function mountHomeContent(view, { world = 'home', count = 6, workStart, contactS
   function render() {
     stateIndex = refIndex = effectIndex = 0;
     tree = exports.default({ children: nested ? [chapters[0], jsx('fragment', {children: chapters.slice(1)})] : chapters, labels, instruction: 'Scroll to navigate', world, workStart, contactStart, initialChapter });
+    initialTree ??= tree;
     gates = []; buttons = []; contents = [];
     attach(tree);
     effects.forEach(effect => { if (effect.pending) { effect.pending = false; effect.cleanup = effect.callback(); } });
@@ -157,6 +160,7 @@ function mountHomeContent(view, { world = 'home', count = 6, workStart, contactS
   return {
     get gates() { return gates; },
     get tree() { return tree; },
+    get initialTree() { return initialTree; },
     get contents() { return contents; },
     chapterButton(index) { return buttons.filter(button => button.children === String(index + 1).padStart(2, '0'))[0]; },
     clickRoute(path, props={}) {
@@ -436,5 +440,18 @@ test('Contact and Work navigation jump within the journey while modified clicks 
   assert.equal(view.window.scrollY,7200);
   assert.equal(content.clickRoute('/').defaultPrevented,true);view.settle();
   assert.equal(view.window.scrollY,0);
+  content.unmount();view.unmount();
+});
+
+test('startup shows a loader until the correct first projection is ready',()=>{
+  const view=mountJourney(false,'/web');
+  const content=mountHomeContent(view,{count:16,workStart:6,contactStart:15,initialChapter:6});
+  assert.equal(content.initialTree.type,'LoadingScreen','the previous static layout is never rendered at startup');
+  function find(node,predicate){if(Array.isArray(node))return node.flatMap(child=>find(child,predicate));if(!node||typeof node!=='object')return[];return[...(predicate(node)?[node]:[]),...find(node.props?.children,predicate)];}
+  assert.equal(find(content.tree,node=>node.type==='LoadingScreen').length,1);
+  view.settle();content.rerender();
+  assert.equal(find(content.tree,node=>node.type==='LoadingScreen').length,0);
+  assert.equal(find(content.tree,node=>node.props.className==='home-tunnel-stage')[0].props.style.visibility,'visible');
+  assert.equal(content.gates[6].inert,false);
   content.unmount();view.unmount();
 });

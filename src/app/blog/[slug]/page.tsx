@@ -43,7 +43,8 @@ export default async function BlogPostPage({
     cache: "no-store",
   });
 
-  if (!res.ok) return notFound();
+  if (res.status === 404) return notFound();
+  if (!res.ok) throw new Error("The journal entry could not be loaded.");
 
   const post = await res.json();
 

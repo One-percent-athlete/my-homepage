@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useLanguage } from "@/app/context/LanguageContext";
+
+import { explorationProgress, getVisitedWorlds, recordWorldVisit } from "@/lib/world-visits";
 
 const names: Record<string, string[]> = {
   "/": ["HOME", "ホーム", "首页"], "/web": ["WORK", "開発", "作品"],
@@ -15,30 +17,34 @@ export default function HelmetHUD() {
   const pathname = usePathname();
   const { language } = useLanguage();
   const [journeyPage, setJourneyPage] = useState<string | null>(null);
-  const progress = useRef<HTMLSpanElement>(null);
-  const meter = useRef<HTMLDivElement>(null);
+  const [visited, setVisited] = useState<string[] | null>(null);
   useEffect(() => {
-    const world = (event: Event) => setJourneyPage((event as CustomEvent<string>).detail);
-    const update = () => {
-      const maximum = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-      const value = Math.min(100, Math.max(0, window.scrollY / maximum * 100));
-      if (progress.current) progress.current.textContent = `${Math.round(value)}%`;
-      if (meter.current) meter.current.style.setProperty("--hud-progress", `${value}%`);
+    const read = () => setVisited(getVisitedWorlds());
+    const visit = (route: string) => {
+      if (document.querySelector('[data-page-state]')) read();
+      else setVisited(recordWorldVisit(route));
     };
+    const world = (event: Event) => { const route = (event as CustomEvent<string>).detail; setJourneyPage(route); visit(route); };
+    const route = document.body.dataset.journeyPage ?? pathname;
     setJourneyPage(document.body.dataset.journeyPage ?? null);
+    visit(route);
+    const ready = () => visit(document.body.dataset.journeyPage ?? pathname);
+    window.addEventListener("journey-ready", ready);
+    window.addEventListener("world-ready", ready);
     window.addEventListener("journey-page", world);
-    window.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update, { passive: true });
-    update();
-    return () => { window.removeEventListener("journey-page", world); window.removeEventListener("scroll", update); window.removeEventListener("resize", update); };
+    window.addEventListener("world-visits", read);
+    window.addEventListener("storage", read);
+    return () => { window.removeEventListener("journey-ready", ready); window.removeEventListener("world-ready", ready); window.removeEventListener("journey-page", world); window.removeEventListener("world-visits", read); window.removeEventListener("storage", read); };
   }, [pathname]);
   if (pathname.startsWith("/mission-control") || pathname.startsWith("/blog/create") || pathname.startsWith("/demos/")) return null;
   const route = ["/", "/web", "/contact"].includes(pathname) ? journeyPage ?? pathname : pathname;
   const name = names[route] ?? names[Object.keys(names).find(path => path !== "/" && route.startsWith(`${path}/`)) ?? "/"];
   const index = { en: 0, ja: 1, zh: 2 }[language];
-  return <div className="helmet-hud" aria-hidden="true">
-    <div className="visor-outline" /><i className="visor-corner tl" /><i className="visor-corner tr" /><i className="visor-corner bl" /><i className="visor-corner br" />
-    <div className="visor-telemetry"><span className="hud-live" />{name[index]}<span className="hud-divider">/</span><span ref={progress}>0%</span><div className="hud-progress" ref={meter} /></div>
+  const progress = explorationProgress(visited ?? []);
+  const explored = { en: "Worlds explored", ja: "探索した世界", zh: "已探索的世界" }[language];
+  return <div className="helmet-hud">
+    <div className="visor-outline" aria-hidden="true" /><i aria-hidden="true" className="visor-corner tl" /><i aria-hidden="true" className="visor-corner tr" /><i className="visor-corner bl" /><i className="visor-corner br" />
+    <div className="visor-telemetry" role="status" aria-label={`${explored}: ${progress.count} / ${progress.total}`}><span className="hud-live" />{name[index]}<span className="hud-divider">/</span><span title={`${explored}: ${progress.count}/${progress.total}`}>{visited ? `${progress.percentage}%` : "…"}</span><small>{progress.count}/{progress.total}</small><div className="hud-progress" aria-hidden="true" style={{ "--hud-progress": `${progress.percentage}%` } as React.CSSProperties} /></div>
     <span className="visor-signature">37°N / RYU</span>
   </div>;
 }
