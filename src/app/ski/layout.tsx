@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import Script from "next/script";
 
 export const metadata: Metadata = {
   title: "Ski Lessons & Mountain Adventures | Professional Ski Instructor",
@@ -42,17 +41,5 @@ interface SkiLayoutProps {
 }
 
 export default function SkiLayout({ children }: SkiLayoutProps) {
-  return <>
-          {/*<!-- Google tag (gtag.js) --> */}
-          <Script async src="https://www.googletagmanager.com/gtag/js?id=G-EHNC14Q4CJ" />
-          <Script id="ga" strategy="afterInteractive">
-            {`
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-EHNC14Q4CJ');
-            `}
-          </Script>
-          {children}
-        </>;
+  return <>{children}</>;
 }
