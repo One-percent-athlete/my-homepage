@@ -85,7 +85,8 @@ export default function SpaceJourney() {
       // Atmosphere moves much more slowly than the portals and nearby particles.
 
 
-      backdrop.style.transform = `scale(${1.08 + Math.min(distance, 20) * 0.006}) translate3d(${Math.sin(distance * 0.09) * -1.8}%, ${Math.sin(distance * 0.07) * 1.2}%, 0)`;
+      const atmospherePace = pathname.startsWith("/ski") ? 0.18 : pathname.startsWith("/travel") ? 0.45 : 1;
+      backdrop.style.transform = `scale(${1.08 + Math.min(distance, 20) * 0.006 * atmospherePace}) translate3d(${Math.sin(distance * 0.09) * -1.8 * atmospherePace}%, ${Math.sin(distance * 0.07) * 1.2 * atmospherePace}%, 0)`;
       canvas.dataset.distance = distance.toFixed(3);
       canvas.dataset.motion = media.matches ? "reduced" : "scroll";
       canvas.dataset.scene = "threshold";
@@ -211,7 +212,7 @@ export default function SpaceJourney() {
 
   if (privatePage) return null;
   return <div className="space-journey" data-scene="threshold" aria-hidden="true">
-    <div ref={backdropRef} className="space-atmosphere" />
+    <div ref={backdropRef} className="space-atmosphere"><div className="world-air world-air-build"/><div className="world-air world-air-travel"/><div className="world-air world-air-summit"/></div>
     <canvas ref={canvasRef} className="space-portals" />
   </div>;
 }

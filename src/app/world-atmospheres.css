@@ -1,0 +1,41 @@
+/* The shared flight scene follows the current world, including in-page Home → Work travel. */
+.world-air{position:absolute;inset:0;opacity:0;transition:opacity .8s ease;pointer-events:none}
+.world-air-build{background:radial-gradient(ellipse at 50% 42%,#0b3148aa,transparent 65%),linear-gradient(#05101beb,#020912f5),repeating-linear-gradient(0deg,transparent 0 47px,#68d9ff16 48px),repeating-linear-gradient(90deg,transparent 0 47px,#68d9ff16 48px)}
+.world-air-build::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 79px,#73dfff17 80px),repeating-linear-gradient(90deg,transparent 0 79px,#73dfff17 80px);mask-image:radial-gradient(ellipse,#0009,transparent 75%)}
+.world-air-travel{background:linear-gradient(180deg,#071a35dd 0%,#6c523738 47%,#0c1723f2 100%),url('/images/space/patagonia-atmosphere.webp') center 48%/cover no-repeat}
+.world-air-travel::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 75% 30%,#edbb7226,transparent 55%)}
+.world-air-summit{background:linear-gradient(180deg,#102b42c9,#86b2c248 48%,#071824ee),url('/images/space/ski3-atmosphere.webp') center/cover no-repeat}
+.world-air-summit::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,#9cddf218,transparent 65%)}
+body[data-motion-world="build"] .world-air-build,body[data-motion-world="travel"] .world-air-travel,body[data-motion-world="summit"] .world-air-summit{opacity:1}
+body[data-motion-world="build"] .space-atmosphere,body[data-motion-world="travel"] .space-atmosphere,body[data-motion-world="summit"] .space-atmosphere{opacity:1}
+body[data-motion-world="travel"] .space-portals{opacity:.16}
+body[data-motion-world="summit"] .space-portals{opacity:.1}
+/* Work: sharp instrument surfaces, subtle grids and restrained cyan light. */
+.home-tunnel-layer .home-tunnel-stage .home-gate-content.web-world,.reading-layout .reading-chapters .home-tunnel-gate .home-gate-content.web-world{background:radial-gradient(ellipse at 90% 0%,#11334b80,transparent 60%),#04111bf5!important;border-color:#67ddff55}
+.web-world .build-console{border-color:#6edaff55;box-shadow:8px 8px 0 #64dfff08}
+.web-world .build-console-head,.web-world .build-feature>header{border-color:#70ddff3a}
+.web-world .build-story{background:#061c2be8;border-color:#65d9ff35}
+.web-world .web-final h2 em{color:#72e3f4}
+/* Travel: warm sunlight, photographic depth and open framing. */
+.travel-world .travel-log-shade{background:linear-gradient(90deg,#09121de8,transparent 85%)}
+.travel-world .travel-hero-copy .travel-kicker,.travel-world .travel-hero-copy h1 em{color:#f2c185}
+.travel-world .travel-hero-copy>p{color:#e3dbcf}
+.travel-world .travel-hero-copy>a{background:#f2c185;color:#251b11}
+.travel-world .route-selector{background:#17202be0;border-color:#f2c18555}
+.travel-world .route-tabs button.active{background:#f2c185;color:#251b11}
+.travel-world .route-tabs button,.travel-world .route-readout>span{color:#d1b99b}
+.travel-world .route-readout>svg,.travel-world .route-readout p{color:#f2c185}
+.travel-world .route-readout blockquote{color:#e1d6c8}
+.travel-world .travel-story-panel:not(.travel-story-details-panel):not(.travel-story-cta-panel){border-color:#f2c18535;box-shadow:0 28px 90px #060c1438}
+.travel-world .travel-story-copy h2{letter-spacing:-.035em}
+/* Ski: frosted panels, softer edges and a quiet blue-white palette. */
+.ski-world .ski-game-shade{background:linear-gradient(90deg,#10263780,transparent),linear-gradient(0deg,#0a1c2a66,transparent)}
+.ski-world .ski-kicker,.ski-world .ski-game-copy h1 em{color:#d2f3ff}
+.ski-world .ski-game-copy>p{color:#d0e4ed}
+.ski-world .ski-run-console{background:#102b3ad9;border-color:#c4edff50;box-shadow:0 10px 40px #07182418;border-radius:8px;overflow:hidden}
+.ski-world .ski-run-tabs button.active{background:#c0eaf6;color:#123045}
+.ski-world .ski-level i{background:#c0eaf6}
+.ski-world .ski-content-panel [class~="rounded-3xl"]{background:#102b3ade!important;border-color:#b9e2f044!important;box-shadow:0 12px 40px #04101b20!important}
+.ski-world .ski-hero-media{border-color:#c5eaff50;border-radius:8px;box-shadow:0 12px 50px #081c2c30}
+@media(max-width:699px){.world-air-travel{background-position:center,58% center}.world-air-summit{background-position:center,62% center}}
+@media(prefers-reduced-motion:reduce){.world-air{transition:none}.ski-world .ski-hero-media video{display:none}.world-air-travel,.world-air-summit{background-attachment:scroll}}
