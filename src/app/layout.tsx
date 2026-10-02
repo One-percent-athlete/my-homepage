@@ -21,7 +21,7 @@ import HelmetHUD from "@/components/HelmetHUD";
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.37x.jp/"),
   title: "Ryu Suzuki | Engineer, Creator & Global Explorer",
-  description: "Meet Ryu Suzuki—an independent engineer, creator and adventurer building memorable digital experiences with perspective from 80+ countries.",
+  description: "Ryu Suzuki builds business tools, booking systems, matching apps and websites for companies, ski schools and local experiences. Based in Japan, working across languages.",
   icons: {
     icon: "/favicon.ico",
     apple: "/onepercentlogo.png",
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   verification: { google: "C0k8OsoXitZWwJedeoF1dNc6Qhwwv1xOrToWZCmZzEw" },
   openGraph: {
     title: "Ryu Suzuki — Engineer, Creator & Global Explorer",
-    description: "I build digital worlds—then explore the real one.",
+    description: "Apps for everyday work. Websites for your next idea. Business tools, booking systems and matching apps by Ryu Suzuki.",
     url: "https://www.37x.jp/",
     siteName: "Ryu Suzuki",
     images: [{ url: "/og.png", width: 1200, height: 630, alt: "Ryu Suzuki — Engineer, Creator & Global Explorer" }],
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Ryu Suzuki — Engineer, Creator & Global Explorer",
-    description: "I build digital worlds—then explore the real one.",
+    description: "Apps for everyday work. Websites for your next idea. Business tools, booking systems and matching apps by Ryu Suzuki.",
     images: ["/og.png"],
   },
 };

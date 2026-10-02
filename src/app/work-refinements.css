@@ -90,3 +90,5 @@ body[data-reading-mode="read"] .toolkit-orbit-group li{width:100%;min-height:135
  .build-story>div{padding:15px}
  .build-story dd{font-size:13px;line-height:1.6}
 }
+.hero-approach{max-width:610px;margin-top:14px;color:#8faeba;font-size:15px;line-height:1.6}
+@media(max-width:699px){.home-gate-content .hero-approach{font-size:12px;line-height:1.5;margin-top:10px}.reading-layout .hero-approach{font-size:14px;line-height:1.6}}
