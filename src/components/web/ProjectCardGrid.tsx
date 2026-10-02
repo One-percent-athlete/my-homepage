@@ -301,6 +301,16 @@ export default function ProjectCardGrid({
     );
   };
 
+  if (count === 1 && currentProjects[0]) {
+    const project = currentProjects[0];
+    const demoLabel = {en:"INTERACTIVE DEMO",ja:"インタラクティブデモ",zh:"交互演示"}[language];
+    return <article className="build-feature">
+      <header><p>{sectionTitle}</p><span>{String(startIndex+1).padStart(2,"0")} / 06</span></header>
+      <div className="build-feature-body"><div className="build-feature-copy"><small>{demoLabel} · {project.category}</small><h2>{project.title}</h2><p>{project.description}</p><div className="build-feature-stack">{project.tech.map(tech=><span key={tech}>{tech}</span>)}</div><a href={project.live}>{ui.live} <FiExternalLink aria-hidden="true"/></a></div>
+      <div className="build-feature-summary"><FiExternalLink aria-hidden="true"/><strong>{project.category}</strong><p>{sectionSubtitle}</p><span>{demoLabel}</span></div></div>
+    </article>;
+  }
+
   return (
     <div ref={gridRef} className="relative tunnel-project-grid">
       {/* Section Header */}

@@ -4,8 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useLanguage } from "@/app/context/LanguageContext";
 
-const worlds = { "/travel": "travel", "/ski": "summit", "/blog": "journal", "/gallery": "archive", "/": "base", "/web": "build", "/contact": "contact" };
-const labels = { en: ["Entering the travel world", "Heading to the mountain", "Opening the journal", "Entering the gallery", "Returning to Home", "Entering the build lab", "Opening the contact channel"], ja: ["旅の世界へ", "雪山の世界へ", "ジャーナルを開く", "写真の世界へ", "ホームへ戻る", "開発ラボへ", "連絡先を開く"], zh: ["进入旅行世界", "前往雪山", "打开日志", "进入相册", "返回首页", "进入开发实验室", "打开联系频道"] };
+const worlds = { "/travel": "travel", "/ski": "summit", "/blog": "journal", "/gallery": "archive", "/": "base", "/web": "build", "/contact": "contact", "/between": "between" };
+const labels = { en: ["Entering the travel world", "Heading to the mountain", "Opening the journal", "Entering the gallery", "Returning to Home", "Entering the build lab", "Opening the contact channel", "Decoding the Between"], ja: ["旅の世界へ", "雪山の世界へ", "ジャーナルを開く", "写真の世界へ", "ホームへ戻る", "開発ラボへ", "連絡先を開く", "Betweenを解析中"], zh: ["进入旅行世界", "前往雪山", "打开日志", "进入相册", "返回首页", "进入开发实验室", "打开联系频道", "解析世界之间"] };
 
 export default function WorldTransition() {
   const router = useRouter();

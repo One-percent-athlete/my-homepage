@@ -6,14 +6,14 @@ import { gateOrigin, homeGateProjection, subscribeJourneyFrame, type JourneyFram
 
 import LoadingScreen from "@/components/LoadingScreen";
 
-type TunnelWorld = "home" | "web" | "travel" | "ski" | "contact";
-const worldClasses: Record<TunnelWorld, string> = { home: "mission-site", web: "web-world", travel: "travel-world", ski: "ski-world", contact: "contact-world" };
+type TunnelWorld = "home" | "web" | "travel" | "ski" | "contact" | "between";
+const worldClasses: Record<TunnelWorld, string> = { home: "mission-site", web: "web-world", travel: "travel-world", ski: "ski-world", contact: "contact-world", between: "between-world" };
 
 function flattenChapters(children: ReactNode): ReactNode[] {
   return Children.toArray(children).flatMap(child => isValidElement<{ children: ReactNode }>(child) && child.type === Fragment ? flattenChapters(child.props.children) : [child]);
 }
 
-export default function HomeTunnel({ children, labels, instruction, world = "home", workStart, contactStart, initialChapter = 0, showNavigation = true }: { children: ReactNode; labels: string[]; instruction: string; world?: TunnelWorld; workStart?: number; contactStart?: number; initialChapter?: number; showNavigation?: boolean }) {
+export default function HomeTunnel({ children, labels, instruction, world = "home", workStart, contactStart, initialChapter = 0, showNavigation = true, holdLastChapter = false }: { children: ReactNode; labels: string[]; instruction: string; world?: TunnelWorld; workStart?: number; contactStart?: number; initialChapter?: number; showNavigation?: boolean; holdLastChapter?: boolean }) {
   const chapters = flattenChapters(children);
   const [ready, setReady] = useState(false);
   const painted = useRef(false);
@@ -68,7 +68,7 @@ export default function HomeTunnel({ children, labels, instruction, world = "hom
     function paint(frame: JourneyFrame) {
       if (!painted.current && Math.abs(frame.distance - travelDistance(window.scrollY, frame.height)) > 0.05) return;
       const index = Math.min(chapters.length - 1, Math.max(0, Math.floor((frame.distance + 0.7) / 2)));
-      const finished = workStart === undefined && frame.distance > gateOrigin(chapters.length - 1) - 0.2;
+      const finished = !holdLastChapter && workStart === undefined && frame.distance > gateOrigin(chapters.length - 1) - 0.2;
       if (layer.current) layer.current.dataset.finished = String(finished);
       if (index !== activeRef.current) { activeRef.current = index; setActive(index); }
       if (workStart !== undefined) {
@@ -141,7 +141,7 @@ export default function HomeTunnel({ children, labels, instruction, world = "hom
     document.addEventListener("click", onAnchor, true);
     onHash();
     return () => { unsubscribe(); window.removeEventListener("hashchange", onHash); document.removeEventListener("click", onAnchor, true); delete document.body.dataset.journeyPage; };
-  }, [mounted, reduced, chapters.length, workStart, contactStart]);
+  }, [mounted, reduced, chapters.length, workStart, contactStart, holdLastChapter]);
 
   useEffect(() => {
     if (!mounted || !reduced || workStart === undefined) return;
@@ -174,7 +174,7 @@ export default function HomeTunnel({ children, labels, instruction, world = "hom
   if (reduced) return <div className={`home-tunnel-static ${world !== "home" ? "world-tunnel-static" : ""}`.trim()}>{workStart === undefined ? children : chapters.map((chapter, index) => <div key={index} id={index === contactStart ? "journey-contact-start" : index === workStart ? "journey-work-start" : undefined} className={worldClasses[chapterWorld(index)]}>{chapter}</div>)}</div>;
 
   return <>
-    <div className="home-tunnel-runway" style={{ height: `${100 + (chapters.length - (workStart === undefined ? 0 : 1)) * 2 / 1.5 * 100}${workStart === undefined ? "svh" : "vh"}` }} aria-hidden="true" />
+    <div className="home-tunnel-runway" style={{ height: `${100 + (chapters.length - (workStart === undefined && !holdLastChapter ? 0 : 1)) * 2 / 1.5 * 100}${workStart === undefined && !holdLastChapter ? "svh" : "vh"}` }} aria-hidden="true" />
     {createPortal(<div ref={layer} className="home-tunnel-layer" data-world={world}>
       <div className="home-tunnel-stage" style={{ visibility: ready ? "visible" : "hidden" }}>{chapters.map((chapter, index) => <div className="home-tunnel-gate" key={index} ref={element => { gates.current[index] = element; }}>
         <div className={`home-gate-content ${worldClasses[chapterWorld(index)]}${chapterWorld(index) !== "home" ? " tunnel-world-content" : ""}`}>{chapter}</div>

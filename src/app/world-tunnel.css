@@ -13,6 +13,7 @@
 .world-transition[data-world="summit"]{--portal-color:#bcecff;background:#06131cf5}
 .world-transition[data-world="journal"]{--portal-color:#d6b9ff}
 .world-transition[data-world="archive"]{--portal-color:#bafa54}
+.world-transition[data-world="between"]{--portal-color:#ff67d4}
 .world-transition-frame{position:absolute;width:45vmin;height:45vmin;border:1px solid var(--portal-color);box-shadow:0 0 50px color-mix(in srgb,var(--portal-color) 30%,transparent);animation:world-door .65s cubic-bezier(.3,.05,.65,1) both}
 .world-transition-frame.second{animation-delay:.08s}
 .world-transition p{position:relative;font:600 12px monospace;letter-spacing:.08em;padding:18px;background:#03101ad9;color:var(--portal-color)}

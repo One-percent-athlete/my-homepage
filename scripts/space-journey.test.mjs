@@ -87,7 +87,7 @@ test('live scrolling settles, reverses, and stops scheduling after unmount', () 
 
 // Render the real HomeTunnel component with lightweight React/DOM adapters.
 // This verifies that native scroll events update live content, not only math.
-function mountHomeContent(view, { world = 'home', count = 6, workStart, contactStart, initialChapter = 0, nested = false } = {}) {
+function mountHomeContent(view, { world = 'home', count = 6, workStart, contactStart, initialChapter = 0, nested = false, holdLastChapter = false } = {}) {
   const states = [];
   const refs = [];
   const effects = [];
@@ -150,7 +150,7 @@ function mountHomeContent(view, { world = 'home', count = 6, workStart, contactS
   }
   function render() {
     stateIndex = refIndex = effectIndex = 0;
-    tree = exports.default({ children: nested ? [chapters[0], jsx('fragment', {children: chapters.slice(1)})] : chapters, labels, instruction: 'Scroll to navigate', world, workStart, contactStart, initialChapter });
+    tree = exports.default({ children: nested ? [chapters[0], jsx('fragment', {children: chapters.slice(1)})] : chapters, labels, instruction: 'Scroll to navigate', world, workStart, contactStart, initialChapter, holdLastChapter });
     initialTree ??= tree;
     gates = []; buttons = []; contents = [];
     attach(tree);
@@ -455,3 +455,17 @@ test('startup shows a loader until the correct first projection is ready',()=>{
   assert.equal(content.gates[6].inert,false);
   content.unmount();view.unmount();
 });
+
+ test('Between shares the projected squares and holds its final contact action',()=>{
+  const view=mountJourney(false,'/between');
+  const content=mountHomeContent(view,{world:'between',count:5,holdLastChapter:true});
+  view.settle();
+  assert.ok(content.contents.every(value=>value.includes('between-world')));
+  assert.equal(content.tree.props.children[0].props.style.height, String(100+4*2/1.5*100)+'vh');
+  content.chapterButton(4).onClick();view.settle();
+  assert.equal(content.gates[4].inert,false);
+  const before=view.window.scrollY;
+  view.input('wheel',{deltaY:1200});view.settle();
+  assert.equal(view.window.scrollY,before,'extra input cannot scroll the final action away');
+  content.unmount();view.unmount();
+ });

@@ -46,7 +46,7 @@ function mountTransition({ reduced = false } = {}) {
 }
 
 test('world links show a transition before routing to the selected destination', () => {
-  for (const destination of ['/travel', '/ski', '/blog', '/gallery']) {
+  for (const destination of ['/travel', '/ski', '/blog', '/gallery', '/between']) {
     const view = mountTransition();
     view.advance(180);
     assert.equal(view.click(destination).defaultPrevented, true);

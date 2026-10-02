@@ -1,6 +1,5 @@
 "use client";
 
-import { motion, type Variants, AnimatePresence } from "framer-motion";
 import {
   SiPython,
   SiJavascript,
@@ -13,7 +12,7 @@ import {
   SiNodedotjs,
 } from "react-icons/si";
 import { useLanguage } from "@/app/context/LanguageContext";
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 
 // Define skills per language with proficiency levels and colors
 const skillsData = {
@@ -241,32 +240,6 @@ const skillsData = {
   ],
 };
 
-const cardVariants: Variants = {
-  hidden: { 
-    y: 30, 
-    opacity: 0,
-    scale: 0.9
-  },
-  visible: { 
-    y: 0, 
-    opacity: 1, 
-    scale: 1,
-    transition: { 
-      duration: 0.5,
-      ease: "easeOut"
-    } 
-  },
-  hover: {
-    y: -8,
-    scale: 1.02,
-    transition: {
-      duration: 0.2,
-      ease: "easeOut"
-    }
-  }
-};
-
-// Update the component to accept props
 interface SkillCardGridProps {
   sectionTitle?: string;
   sectionSubtitle?: string;
@@ -274,162 +247,16 @@ interface SkillCardGridProps {
   count?: number;
 }
 
-export default function SkillCardGrid({ 
-  sectionTitle = "Technical Skills", 
-  sectionSubtitle = "Technologies I work with to bring ideas to life",
-  startIndex = 0,
-  count = 9,
-}: SkillCardGridProps) {
+export default function SkillCardGrid({ sectionTitle = "Technical Skills", sectionSubtitle = "Technologies I work with to bring ideas to life", startIndex = 0, count = 9 }: SkillCardGridProps) {
   const { language } = useLanguage();
   const skills = skillsData[language].slice(startIndex, startIndex + count);
-  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
-  const [isVisible, setIsVisible] = useState(false);
-  const gridRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    if (gridRef.current) {
-      observer.observe(gridRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
-
-  return (
-    <div ref={gridRef} className="relative tunnel-skill-grid">
-
-      {/* Section title with animation - Now using props */}
-      <motion.div
-        className="text-center mb-12"
-        initial={{ opacity: 0, y: -20 }}
-        animate={isVisible ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.6 }}
-      >
-        <h2 className="text-4xl md:text-5xl font-bold text-teal-400 mb-4">
-          {sectionTitle}
-        </h2>
-        <div className="w-24 h-1 bg-gradient-to-r from-teal-400 to-cyan-500 mx-auto rounded-full" />
-        <p className="text-neutral-400 mt-4 max-w-2xl mx-auto">
-          {sectionSubtitle}
-        </p>
-      </motion.div>
-
-      <motion.div
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10"
-        initial="hidden"
-        animate={isVisible ? "visible" : "hidden"}
-        variants={{
-          visible: { 
-            transition: { 
-              staggerChildren: 0.15,
-              delayChildren: 0.2
-            } 
-          },
-        }}
-      >
-        {skills.map((skill, index) => (
-          <motion.div
-            key={index}
-            className="relative group"
-            variants={cardVariants}
-            onHoverStart={() => setHoveredCard(index)}
-            onHoverEnd={() => setHoveredCard(null)}
-            whileHover="hover"
-          >
-            {/* Animated gradient border */}
-            <div className={`absolute -inset-0.5 bg-gradient-to-r ${skill.color} rounded-2xl opacity-0 group-hover:opacity-100 blur transition duration-300`} />
-            
-            {/* Multi-layer glow effect */}
-            <div 
-              className="absolute -inset-1 rounded-2xl opacity-0 group-hover:opacity-100 transition duration-500 blur-xl"
-              style={{ backgroundColor: skill.glow }}
-            />
-
-            {/* Main card */}
-            <div className="relative bg-gradient-to-br from-neutral-900 to-neutral-800 p-6 rounded-xl border border-neutral-700 shadow-2xl h-full flex flex-col">
-              {/* Header with icon and title */}
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex items-center space-x-3">
-                  <motion.div
-                    className={`text-3xl bg-gradient-to-r ${skill.color}`}
-                    whileHover={{ scale: 1.2, rotate: 5 }}
-                    transition={{ type: "spring", stiffness: 300 }}
-                  >
-                    <skill.icon />
-                  </motion.div>
-                  <h3 className="text-xl font-bold text-white">{skill.title}</h3>
-                </div>
-                
-                {/* Proficiency badge */}
-                <motion.div 
-                  className="px-2 py-1 rounded-full text-xs font-bold bg-neutral-700 text-white"
-                  whileHover={{ scale: 1.1 }}
-                >
-                  {skill.level}%
-                </motion.div>
-              </div>
-
-              {/* Description */}
-              <p className="text-neutral-300 text-sm mb-4 flex-grow">
-                {skill.description}
-              </p>
-
-              {/* Animated progress bar */}
-              <div className="w-full bg-neutral-700 rounded-full h-2 overflow-hidden">
-                <motion.div
-                  className={`h-full bg-gradient-to-r ${skill.color} rounded-full`}
-                  initial={{ width: 0 }}
-                  animate={isVisible ? { width: `${skill.level}%` } : { width: 0 }}
-                  transition={{ 
-                    duration: 1.5, 
-                    delay: 0.5 + index * 0.1,
-                    ease: "easeOut" 
-                  }}
-                />
-              </div>
-
-              {/* Hover effect particles */}
-              <AnimatePresence>
-                {hoveredCard === index && (
-                  <>
-                    {[...Array(3)].map((_, i) => (
-                      <motion.div
-                        key={i}
-                        className="absolute w-1 h-1 bg-white rounded-full pointer-events-none"
-                        initial={{ 
-                          scale: 0, 
-                          opacity: 1,
-                          x: 20,
-                          y: 20
-                        }}
-                        animate={{ 
-                          scale: [0, 1, 0],
-                          opacity: [1, 0.5, 0],
-                          x: [20, Math.random() * 100 - 50],
-                          y: [20, Math.random() * 100 - 50]
-                        }}
-                        exit={{ scale: 0, opacity: 0 }}
-                        transition={{ 
-                          duration: 1.5, 
-                          delay: i * 0.2,
-                        }}
-                      />
-                    ))}
-                  </>
-                )}
-              </AnimatePresence>
-            </div>
-          </motion.div>
-        ))}
-      </motion.div>
-    </div>
-  );
+  const [selected, setSelected] = useState(0);
+  const active = skills[selected] ?? skills[0];
+  const hint = {en:"Select a tool to inspect its role",ja:"ツールを選んで役割を見る",zh:"选择工具查看它的作用"}[language];
+  return <div className="capability-matrix">
+    <header><h2>{sectionTitle}</h2><p>{sectionSubtitle}</p></header>
+    <div className="capability-tiles" aria-label={sectionTitle}>{skills.map((skill,index)=><button type="button" key={skill.title} className={selected===index?"is-selected":""} aria-pressed={selected===index} aria-controls="capability-readout" onClick={()=>setSelected(index)}><small>{String(index+1).padStart(2,"0")}</small><skill.icon aria-hidden="true"/><h3>{skill.title}</h3></button>)}</div>
+    {active && <div id="capability-readout" className="capability-readout" aria-live="polite"><active.icon aria-hidden="true"/><div><strong>{active.title}</strong><p>{active.description}</p></div></div>}
+    <p className="capability-hint">{hint}</p>
+  </div>;
 }

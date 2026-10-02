@@ -1,0 +1,55 @@
+/* Compact instrument tiles share one readable detail panel. */
+.home-tunnel-layer .home-tunnel-stage .home-gate-content.tunnel-world-content{background:#030c19f5!important}
+.capability-matrix{width:100%;max-width:1100px;margin:auto;color:#e8f5fa}
+.capability-matrix header{margin-bottom:22px}
+.capability-matrix h2{font-size:38px;line-height:1.08;letter-spacing:-.035em}
+.capability-matrix header p{margin-top:10px;color:#a5becb;font-size:14px}
+.capability-tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.capability-tiles button{position:relative;display:flex;align-items:center;gap:16px;min-height:95px;padding:18px 22px;background:#081a26c9;border:1px solid #a0dfff30;color:#a7c5d4;text-align:left;transition:background .18s,border-color .18s,color .18s;cursor:pointer}
+.capability-tiles button small{position:absolute;right:10px;top:8px;font:9px monospace;color:#7393a4}
+.capability-tiles button>svg{width:27px;height:27px;flex-shrink:0}
+.capability-tiles h3{font-size:17px;line-height:1.2;font-weight:600}
+.capability-tiles button:hover,.capability-tiles button.is-selected{color:#c9faff;border-color:#52e8ff;background:linear-gradient(120deg,#114452b0,#081d2d)}
+.capability-tiles button.is-selected::after{content:"";position:absolute;inset:auto 0 0;height:2px;background:#52e8ff}
+.capability-readout{display:flex;gap:18px;align-items:center;min-height:92px;padding:18px 22px;margin-top:14px;border:1px solid #52e8ff45;background:#071822}
+.capability-readout>svg{width:30px;height:30px;color:#52e8ff;flex-shrink:0}
+.capability-readout strong{font-size:16px}.capability-readout p{font-size:14px;line-height:1.5;color:#adc4cf;margin-top:4px}
+.capability-hint{margin-top:10px;font:10px monospace;color:#93aebe}
+.build-feature{height:100%;display:flex;flex-direction:column;color:#e8f5fa}
+.home-gate-content.web-world>.web-deep-section.projects{display:flex;flex-direction:column}
+.tunnel-world-content .projects>.build-feature{flex:1;height:auto;min-height:0}
+.build-feature>header{display:flex;justify-content:space-between;gap:15px;align-items:center;padding-bottom:18px;border-bottom:1px solid #9bdfff35;font:12px monospace;color:#99c4d4}
+.build-feature-body{display:grid;grid-template-columns:1.4fr .6fr;gap:40px;align-items:center;flex:1;min-height:0;padding-top:24px}
+.build-feature-copy>small{font:10px monospace;letter-spacing:.08em;color:#52e8ff}
+.build-feature-copy h2{font-size:54px;line-height:1.05;letter-spacing:-.045em;margin:18px 0}
+.build-feature-copy>p{font-size:18px;line-height:1.6;color:#afc8d4;max-width:650px}
+.build-feature-stack{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0}
+.build-feature-stack span{padding:7px 10px;border:1px solid #9bdfff30;font:11px monospace;color:#bbd2dc}
+.build-feature-copy>a{display:inline-flex;align-items:center;gap:12px;min-height:44px;padding:12px 20px;background:#52e8ff;color:#05202a;font-size:14px;font-weight:700}
+.build-feature-summary{padding:30px;border:1px solid #52e8ff45;background:#07203080;display:flex;flex-direction:column;gap:20px}
+.build-feature-summary>svg{width:40px;height:40px;color:#52e8ff}.build-feature-summary strong{font-size:28px}.build-feature-summary p{font-size:15px;line-height:1.6;color:#afc8d4}.build-feature-summary>span{font:9px monospace;color:#52e8ff;letter-spacing:.08em}
+:is(.capability-tiles button,.build-feature a,.between-world button,.between-world a):focus-visible{outline:2px solid #c5f7ff;outline-offset:4px}
+/* Between uses the same projected planes with its own pink instrument color. */
+.home-gate-content.between-world{--between:#ff67d4}
+.home-gate-content.between-world>section{overflow:auto;scrollbar-width:thin;display:flex;flex-direction:column;justify-content:safe center;padding:32px}
+.tunnel-world-content .between-heading{display:block;margin-bottom:24px}.tunnel-world-content .between-heading h2{font-size:42px;line-height:1.1;margin:12px 0}.tunnel-world-content .between-heading>span{font-size:12px;color:#ad9bb6}
+.tunnel-world-content .between-arrival h1{font-size:76px;line-height:1}.tunnel-world-content .between-arrival>svg{margin:20px 0}.tunnel-world-content .between-arrival>span{font-size:17px}
+.tunnel-world-content .constellation-map{width:min(430px,70%);flex-shrink:0}.tunnel-world-content .constellation-node{width:90px;height:90px}.tunnel-world-content .constellation-message{width:240px}.tunnel-world-content .constellation-message p{font-size:15px}
+.tunnel-world-content .protocol-console>section{min-height:300px;padding:28px}.tunnel-world-content .protocol-console section strong{font-size:34px}.tunnel-world-content .protocol-console section p{font-size:15px}.tunnel-world-content .protocol-console>div button{padding:12px;font-size:13px}
+.tunnel-world-content .artifact-lab{min-height:320px}.tunnel-world-content .artifact-lab article{padding:32px}.tunnel-world-content .artifact-lab h3{font-size:40px}.tunnel-world-content .artifact-lab article p{font-size:17px}
+.tunnel-world-content .between-final h2{font-size:58px;line-height:1.05}.tunnel-world-content .between-final>span{font-size:17px;line-height:1.5}
+.tunnel-world-content .between-final :is(h2,span){width:100%;max-width:100%;min-width:0;overflow-wrap:break-word}
+.home-tunnel-static .capabilities,.home-tunnel-static .projects{height:auto;min-height:0}
+.home-tunnel-static .capability-matrix,.home-tunnel-static .build-feature{max-width:1100px;margin:auto}
+@media(max-width:699px){
+ .capability-matrix header{margin-bottom:18px}.capability-matrix h2{font-size:27px}.capability-matrix header p{font-size:12px;line-height:1.5}
+ .capability-tiles{gap:8px}.capability-tiles button{flex-direction:column;justify-content:center;gap:10px;padding:18px 5px 12px;min-height:96px;text-align:center}.capability-tiles h3{font-size:12px}.capability-tiles button>svg{width:24px;height:24px}.capability-tiles button small{font-size:8px;right:6px;top:5px}
+ .capability-readout{gap:12px;padding:14px;min-height:100px}.capability-readout strong{font-size:14px}.capability-readout p{font-size:12px}.capability-hint{font-size:9px}
+ .build-feature>header{font-size:10px;padding-bottom:12px}.build-feature-body{grid-template-columns:1fr;gap:18px;padding-top:18px;align-content:center}.build-feature-copy h2{font-size:34px;margin:14px 0}.build-feature-copy>p{font-size:14px;line-height:1.6}.build-feature-copy>small{font-size:9px}.build-feature-stack{margin:18px 0;gap:6px}.build-feature-stack span{font-size:10px}.build-feature-summary{display:none}
+ .home-gate-content.between-world>section{padding:22px}.tunnel-world-content .between-heading h2{font-size:28px}.tunnel-world-content .between-heading{margin-bottom:20px}.tunnel-world-content .between-heading>span{display:block;font-size:10px}
+ .tunnel-world-content .between-arrival h1{font-size:48px}.tunnel-world-content .between-arrival>span{font-size:14px}.tunnel-world-content .between-arrival>p{font-size:8px}
+ .tunnel-world-content .constellation-map{width:85%;margin:15px auto}.tunnel-world-content .constellation-node{width:64px;height:64px;gap:5px}.tunnel-world-content .constellation-node svg{width:18px}.tunnel-world-content .constellation-node span{font-size:6px}.tunnel-world-content .constellation-core{width:65px;height:65px}.tunnel-world-content .constellation-message{width:150px;top:72%}.tunnel-world-content .constellation-message p{font-size:11px}.tunnel-world-content .constellation-message strong{font-size:6px}
+ .tunnel-world-content .protocol-console>div{grid-template-columns:repeat(5,minmax(0,1fr))}.tunnel-world-content .protocol-console>div button{display:flex;justify-content:center;padding:12px 4px;font-size:0;min-height:44px;border-right:1px solid #ffffff1a}.tunnel-world-content .protocol-console>div button span{font-size:12px}.tunnel-world-content .protocol-console>section{padding:18px;min-height:0}.tunnel-world-content .protocol-console section strong{font-size:25px;margin:12px 0}.tunnel-world-content .protocol-console section p{font-size:12px}.tunnel-world-content .protocol-console section button{margin-top:14px}
+ .tunnel-world-content .artifact-lab{min-height:0}.tunnel-world-content .artifact-lab article{padding:22px}.tunnel-world-content .artifact-lab h3{font-size:30px}.tunnel-world-content .artifact-lab article p{font-size:14px}.tunnel-world-content .between-final h2{font-size:36px}.tunnel-world-content .between-final>span{font-size:14px}
+}
+@media(prefers-reduced-motion:reduce){.capability-tiles button{transition:none}.between-world :is(.between-arrival>svg,.between-stars){animation:none}}
