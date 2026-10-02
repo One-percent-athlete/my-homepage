@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
-import { depthOpacity, sceneDepth, travelDistance } from "@/lib/space-journey";
+import { depthOpacity, sceneDepth, travelDistance, homeGateProjection, publishJourneyFrame, isTunnelRoute } from "@/lib/space-journey";
 
 // Seeded positions keep the star field stable across route changes and back-scroll.
 const stars = Array.from({ length: 150 }, (_, index) => {
@@ -46,11 +46,19 @@ export default function SpaceJourney() {
       const centerX = width / 2;
       const centerY = height / 2;
       const extent = Math.max(width * 0.94, height * 0.9);
+      const journeyFrame = { distance, width, height, reduced: media.matches };
 
       // Draw far-to-near, with entry/exit fades so recycled gates never pop in.
-      const gates = Array.from({ length: 12 }, (_, index) => sceneDepth(1.1 + index * 2, distance, 0.2, 24.2)).sort((a, b) => b - a);
+      const gates = Array.from({ length: isTunnelRoute(pathname) ? 18 : 12 }, (_, index) => ({ index, depth: sceneDepth(1.1 + index * 2, distance, 0.2, 24.2) })).sort((a, b) => b.depth - a.depth);
       if (portal.complete && portal.naturalWidth) {
-        for (const depth of gates) {
+        for (const { index, depth } of gates) {
+          if (isTunnelRoute(pathname) && !media.matches) {
+            const gate = homeGateProjection(index, journeyFrame);
+            if (!gate.opacity) continue;
+            context.globalAlpha = gate.opacity * Math.min(0.9, 0.22 + 0.8 / Math.max(0.2, gate.depth));
+            context.drawImage(portal, gate.centerX - gate.width / 2, gate.centerY - gate.height / 2, gate.width, gate.height);
+            continue;
+          }
           const gateWidth = extent / depth;
           const gateHeight = gateWidth * portal.naturalHeight / portal.naturalWidth;
           context.globalAlpha = depthOpacity(depth, 0.2, 24.2) * Math.min(0.72, 0.17 + 0.62 / depth);
@@ -79,6 +87,7 @@ export default function SpaceJourney() {
       canvas.dataset.distance = distance.toFixed(3);
       canvas.dataset.motion = media.matches ? "reduced" : "scroll";
       canvas.dataset.scene = "threshold";
+      publishJourneyFrame(journeyFrame);
     }
 
     function tick(time: number) {
@@ -121,7 +130,7 @@ export default function SpaceJourney() {
     // Native scroll handles the page. Only unused input at the bottom advances
     // the camera, so there is no scroll trap or second animation inside menus.
     function advanceAtBottom(delta: number, event: Event) {
-      if (media.matches || delta <= 0 || document.hidden) return;
+      if (isTunnelRoute(pathname) || media.matches || delta <= 0 || document.hidden) return;
       const root = document.documentElement;
       const bottom = Math.max(0, root.scrollHeight - window.innerHeight);
       if (window.scrollY < bottom - 1 || document.querySelector('[aria-modal="true"]')) return;

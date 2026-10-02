@@ -270,14 +270,18 @@ const cardVariants: Variants = {
 interface SkillCardGridProps {
   sectionTitle?: string;
   sectionSubtitle?: string;
+  startIndex?: number;
+  count?: number;
 }
 
 export default function SkillCardGrid({ 
   sectionTitle = "Technical Skills", 
-  sectionSubtitle = "Technologies I work with to bring ideas to life" 
+  sectionSubtitle = "Technologies I work with to bring ideas to life",
+  startIndex = 0,
+  count = 9,
 }: SkillCardGridProps) {
   const { language } = useLanguage();
-  const skills = skillsData[language];
+  const skills = skillsData[language].slice(startIndex, startIndex + count);
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
   const [isVisible, setIsVisible] = useState(false);
   const gridRef = useRef<HTMLDivElement>(null);
@@ -300,7 +304,7 @@ export default function SkillCardGrid({
   }, []);
 
   return (
-    <div ref={gridRef} className="relative">
+    <div ref={gridRef} className="relative tunnel-skill-grid">
 
       {/* Section title with animation - Now using props */}
       <motion.div

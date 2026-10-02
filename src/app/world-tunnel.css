@@ -1,0 +1,250 @@
+/* World pages reuse the homepage's camera and projected content planes. */
+.home-tunnel-navigation>div{max-width:min(560px,calc(100vw - 280px));overflow-x:auto;scrollbar-width:none}
+.home-tunnel-navigation>div button{flex-shrink:0}
+.other-worlds{display:flex;flex-direction:column;justify-content:center;gap:18px}
+.other-worlds h2{font-size:48px;line-height:1.05;letter-spacing:-.04em;color:#eaf6ff}
+.other-worlds>p:not(.world-kicker){color:#9cb6c7;font-size:16px}
+.world-portal-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.world-portal{display:flex;flex-direction:column;gap:12px;padding:22px;min-height:170px;background-size:cover;background-position:center;border:1px solid #9bc9ff55;color:#d8f2ff;transition:border-color .2s,filter .2s}
+.world-portal:hover,.world-portal:focus-visible{border-color:#5cecff;filter:brightness(1.2)}
+.world-portal h3{font-size:23px;line-height:1.2}
+.world-portal span{display:flex;align-items:center;gap:12px;font:600 10px monospace;margin-top:auto}
+.world-transition{position:fixed;inset:0;z-index:1000;pointer-events:auto;display:grid;place-items:center;overflow:hidden;background:#02101af2;color:#c8eeff;--portal-color:#ffb66e;animation:world-arrival .3s ease both}
+.world-transition[data-world="summit"]{--portal-color:#bcecff;background:#06131cf5}
+.world-transition[data-world="journal"]{--portal-color:#d6b9ff}
+.world-transition[data-world="archive"]{--portal-color:#bafa54}
+.world-transition-frame{position:absolute;width:45vmin;height:45vmin;border:1px solid var(--portal-color);box-shadow:0 0 50px color-mix(in srgb,var(--portal-color) 30%,transparent);animation:world-door .65s cubic-bezier(.3,.05,.65,1) both}
+.world-transition-frame.second{animation-delay:.08s}
+.world-transition p{position:relative;font:600 12px monospace;letter-spacing:.08em;padding:18px;background:#03101ad9;color:var(--portal-color)}
+@keyframes world-door{from{transform:scale(.2) rotate(-12deg);opacity:.2}to{transform:scale(5) rotate(0);opacity:0}}
+@keyframes world-arrival{from{opacity:0}to{opacity:1}}
+.travel-destination-layout .travel-story-panel{position:relative!important;top:auto!important}
+.travel-destination-layout>.travel-destinations{margin-block:60px}
+.travel-destination-layout>.tunnel-flags{text-align:center;padding:70px 20px}
+.travel-destination-layout>.tunnel-flags h2{font-size:clamp(28px,5vw,52px);color:#ffb66e;margin-bottom:24px}
+.ski-world>.ski-destination-layout{max-width:none}
+.ski-content-panel{max-width:1180px;margin:70px auto;padding:0 20px}
+.home-tunnel-static>.mission-site,.home-tunnel-static>.web-world{padding:0;min-height:0;background:transparent!important}
+.home-tunnel-static .other-worlds{max-width:1100px;margin:60px auto;padding:40px}
+@media(max-width:699px){.other-worlds{gap:12px}.other-worlds h2{font-size:29px}.other-worlds>p:not(.world-kicker){font-size:12px}.world-portal-grid{gap:9px}.world-portal{padding:12px;min-height:155px;gap:9px}.world-portal h3{font-size:17px}.world-portal span{font-size:9px}}
+.home-gate-content.tunnel-world-content{position:absolute;inset:12% 9%;min-height:0;overflow:hidden;background:#030c19ed!important;box-shadow:0 0 28px #02081380;--font-geist-mono:"SFMono-Regular",Consolas,monospace}
+.tunnel-world-content>section,.tunnel-world-content>.tunnel-chapter,.tunnel-world-content>.ski-game-hero{position:relative;width:100%!important;height:100%;min-height:0!important;margin:0!important;padding:30px;border:0;border-radius:0;box-sizing:border-box;background-color:transparent!important}
+.tunnel-world-content>.tunnel-chapter{padding:0}
+.tunnel-world-content .tunnel-chapter>section{position:relative;width:100%;height:100%;min-height:0;padding:28px;margin:0;border-radius:0;background-attachment:scroll;overflow:auto;scrollbar-width:thin;scrollbar-color:#9bc9ff55 transparent}
+.tunnel-world-content .tunnel-chapter h2{font-size:42px;line-height:1.1}
+.tunnel-world-content .tunnel-chapter h3{font-size:23px;line-height:1.2}
+.tunnel-world-content .tunnel-chapter p{font-size:16px;line-height:1.5}
+.tunnel-world-content .tunnel-chapter .grid{gap:18px}
+.tunnel-world-content .tunnel-chapter :is(.mb-16,.mb-12){margin-bottom:24px}
+.tunnel-world-content .tunnel-chapter :is(.mt-16,.mt-12){margin-top:24px}
+.tunnel-world-content .tunnel-chapter :is(.mb-10,.mb-8,.mb-6){margin-bottom:16px}
+.tunnel-world-content .tunnel-chapter :is(.p-8,.p-6){padding:20px}
+.tunnel-world-content .tunnel-chapter :is(.px-16,.px-8,.px-6){padding-inline:20px}
+.tunnel-world-content .tunnel-chapter :is(.py-6,.py-5,.py-4){padding-block:12px}
+.tunnel-world-content .tunnel-chapter :is(a,button){font-size:14px}
+.tunnel-world-content .tunnel-chapter :is(.space-y-4,.space-y-6)>:not([hidden])~:not([hidden]){margin-top:10px}
+.tunnel-world-content :is(.cursor-none,.cursor-none *){cursor:auto!important}
+.tunnel-world-content :is(a,button,[role="button"]){cursor:pointer!important}
+
+/* Work: the build console, toolbelt and cards stay interactive inside their gates. */
+.home-gate-content.web-world>.web-lab-hero{grid-template-columns:1.1fr .9fr;align-items:center;gap:30px}
+.tunnel-world-content .web-lab-copy h1{font-size:58px;line-height:1;margin:18px 0}
+.tunnel-world-content .web-lab-copy>p{font-size:17px;line-height:1.55}
+.tunnel-world-content .web-lab-actions{gap:16px;flex-wrap:wrap;margin-top:24px}
+.tunnel-world-content .web-lab-actions a{font-size:10px}
+.tunnel-world-content .build-console{box-shadow:none}
+.tunnel-world-content .build-output{padding:22px}
+.tunnel-world-content .build-output h2{font-size:32px}
+.tunnel-world-content .build-output>p{font-size:14px}
+.tunnel-world-content .terminal-output{margin-top:16px}
+.home-gate-content.web-world>.web-toolbelt{display:flex;flex-direction:column;justify-content:center}
+.home-gate-content.web-world>.web-deep-section{overflow:auto;scrollbar-width:thin;background:transparent!important}
+.tunnel-world-content .section-chip{margin-bottom:16px}
+.tunnel-world-content :is(.tunnel-skill-grid,.tunnel-project-grid)>div:first-child{margin-bottom:20px}
+.tunnel-world-content :is(.tunnel-skill-grid,.tunnel-project-grid)>div:first-child h2{font-size:38px;margin-bottom:10px}
+.tunnel-world-content :is(.tunnel-skill-grid,.tunnel-project-grid)>div:first-child p{font-size:14px;margin-top:10px}
+.tunnel-world-content :is(.tunnel-skill-grid,.tunnel-project-grid)>.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.tunnel-world-content .tunnel-skill-grid>.grid>div>div:last-child{padding:15px}
+.tunnel-world-content .tunnel-skill-grid h3{font-size:17px}
+.tunnel-world-content .tunnel-skill-grid p{font-size:12px;margin-bottom:12px}
+.tunnel-world-content .tunnel-skill-grid .mb-4{margin-bottom:10px}
+.tunnel-world-content .tunnel-project-grid>.grid>div{min-height:400px}
+.tunnel-world-content .tunnel-project-grid .face{padding:18px;overflow:auto;scrollbar-width:thin}
+.tunnel-world-content .tunnel-project-grid .face h3{font-size:20px}
+.tunnel-world-content .tunnel-project-grid .face p{font-size:13px}
+.tunnel-world-content .tunnel-project-grid .face .mb-6{margin-bottom:14px}
+.home-gate-content.web-world>.web-final{justify-content:center;background:transparent!important}
+.tunnel-world-content .web-final h2{font-size:66px}
+
+/* Travel: each photograph is a separate gate rather than a sticky photo stack. */
+.home-gate-content.travel-world>.travel-log-hero{display:grid;grid-template-columns:1.2fr .8fr;align-items:center;gap:32px;overflow:hidden}
+.tunnel-world-content .travel-hero-copy{max-width:100%;padding:0}
+.tunnel-world-content .travel-hero-copy h1{font-size:62px;line-height:1}
+.tunnel-world-content .travel-hero-copy>p{font-size:17px;line-height:1.55}
+.tunnel-world-content .route-selector{position:relative;inset:auto;width:100%}
+.home-gate-content.tunnel-world-content.travel-world>.travel-story-panel{position:relative;top:auto;width:100%;height:100%;min-height:0;margin:0;padding:40px;overflow:hidden;display:flex;align-items:center;border:0;border-radius:0}
+.tunnel-world-content .travel-parallax-background{inset:0!important;transform:none!important}
+.tunnel-world-content .travel-story-copy{padding:0;width:100%}
+.tunnel-world-content .travel-story-copy h2{font-size:72px}
+.tunnel-world-content .travel-story-copy p{font-size:20px}
+.tunnel-world-content .travel-story-count{right:24px;bottom:20px}
+.tunnel-world-content .travel-story-edge{display:none}
+.tunnel-world-content .travel-story-details-panel>div.relative,.tunnel-world-content .travel-story-cta-panel>div.relative{width:100%;max-width:100%}
+.tunnel-world-content .travel-story-details-panel h2,.tunnel-world-content .travel-story-cta-panel h2{font-size:42px;margin-bottom:24px}
+.tunnel-world-content .travel-story-details-panel .grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.tunnel-world-content .travel-story-details-panel .grid>div{min-height:100px;padding:14px}
+.tunnel-world-content .travel-story-details-panel .grid h4{font-size:15px}
+.tunnel-world-content .travel-story-cta-panel p{font-size:20px;margin-bottom:26px}
+.tunnel-world-content .travel-story-cta-panel a{padding:14px 28px;font-size:16px}
+.tunnel-world-content .tunnel-destinations .grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.tunnel-world-content .tunnel-destinations .h-64{height:180px}
+.tunnel-world-content .tunnel-destinations .p-6{padding:18px}
+.home-gate-content.travel-world>.tunnel-flags{display:flex;flex-direction:column;justify-content:center;gap:28px;text-align:center}
+.tunnel-world-content .tunnel-flags h2{font-size:48px;color:#ffb66e}
+
+/* Ski: retain video, run selection and every lesson option, using smaller panels. */
+.home-gate-content.ski-world>.ski-game-hero{display:grid;grid-template-columns:1.05fr .95fr;grid-template-rows:190px 1fr;align-items:center;gap:20px 30px;padding:30px}
+.tunnel-world-content .ski-game-copy{grid-column:1;grid-row:1 / span 2;max-width:none;padding:0}
+.tunnel-world-content .ski-game-copy h1{font-size:56px;line-height:1}
+.tunnel-world-content .ski-game-copy>p{font-size:17px;line-height:1.55}
+.tunnel-world-content .ski-hero-media{position:relative;grid-column:2;grid-row:1;height:190px;border-radius:0}
+.tunnel-world-content .ski-run-console{position:relative;grid-column:2;grid-row:2;inset:auto;width:100%;align-self:start;box-shadow:none}
+.tunnel-world-content .ski-run-output{padding:16px 20px}
+.tunnel-world-content .ski-run-output h2{font-size:26px}
+.tunnel-world-content .ski-stats{margin-top:12px}
+.tunnel-world-content .wind-status{left:30px;bottom:12px;font-size:6px}
+.tunnel-world-content .tunnel-ski-introduction section>div.relative>div:first-child p{font-size:24px;line-height:1.5}
+.tunnel-world-content .tunnel-ski-introduction .grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+.tunnel-world-content .tunnel-ski-expertise .grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.tunnel-world-content .tunnel-ski-expertise li{font-size:14px}
+.tunnel-world-content .tunnel-ski-packages .grid{grid-template-columns:1fr;max-width:540px}
+.tunnel-world-content .tunnel-ski-packages .grid .p-8{padding:22px}
+.tunnel-world-content .tunnel-ski-packages li{font-size:15px}
+.tunnel-world-content .tunnel-ski-packages .grid h3{font-size:28px}
+.tunnel-world-content .tunnel-ski-booking .grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+.tunnel-world-content .tunnel-ski-testimonials .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.tunnel-world-content .tunnel-ski-testimonials blockquote{font-size:18px;line-height:1.6}
+
+@media(max-width:699px){
+  .tunnel-world-content>section,.tunnel-world-content>.ski-game-hero,.tunnel-world-content .tunnel-chapter>section{padding:18px}
+  .tunnel-world-content .tunnel-chapter h2{font-size:27px}
+  .tunnel-world-content .tunnel-chapter h3{font-size:18px}
+  .tunnel-world-content .tunnel-chapter p{font-size:12px}
+  .tunnel-world-content .tunnel-chapter .grid{gap:10px}
+  .tunnel-world-content .tunnel-chapter :is(.mb-16,.mb-12,.mb-10,.mb-8,.mb-6){margin-bottom:12px}
+  .tunnel-world-content .tunnel-chapter :is(.mt-16,.mt-12){margin-top:14px}
+  .tunnel-world-content .tunnel-chapter :is(.p-8,.p-6){padding:12px}
+  .tunnel-world-content .tunnel-chapter :is(.px-16,.px-8,.px-6){padding-inline:14px}
+  .tunnel-world-content .tunnel-chapter :is(.py-6,.py-5,.py-4){padding-block:9px}
+  .tunnel-world-content .tunnel-chapter :is(a,button){font-size:11px}
+  .tunnel-world-content .tunnel-chapter :is(.space-y-4,.space-y-6)>:not([hidden])~:not([hidden]){margin-top:6px}
+  .home-gate-content.web-world>.web-lab-hero{grid-template-columns:1fr;gap:18px;align-content:center}
+  .tunnel-world-content .web-lab-copy h1{font-size:32px;margin:12px 0}
+  .tunnel-world-content .web-lab-copy>p{font-size:12px;line-height:1.45}
+  .tunnel-world-content .world-kicker{font-size:8px}
+  .tunnel-world-content .web-lab-actions{gap:12px;margin-top:12px}
+  .tunnel-world-content .web-lab-actions a{font-size:8px;min-height:32px;padding:8px 10px}
+  .tunnel-world-content .build-console-head{padding:9px 10px;font-size:7px}
+  .tunnel-world-content .build-mode-tabs button{padding:8px;font-size:8px}
+  .tunnel-world-content .build-output{padding:12px}
+  .tunnel-world-content .build-output>svg{width:22px;height:22px;float:right}
+  .tunnel-world-content .build-output>span{margin:0 0 6px}
+  .tunnel-world-content .build-output h2{font-size:22px;margin-bottom:8px}
+  .tunnel-world-content .build-output>p{font-size:11px;line-height:1.4}
+  .tunnel-world-content .terminal-output{gap:4px;margin-top:10px}
+  .tunnel-world-content .terminal-output code{padding:5px 8px;font-size:8px}
+  .tunnel-world-content .console-next{padding:9px 12px;font-size:8px}
+  .tunnel-world-content :is(.tunnel-skill-grid,.tunnel-project-grid)>div:first-child{margin-bottom:12px}
+  .tunnel-world-content :is(.tunnel-skill-grid,.tunnel-project-grid)>div:first-child h2{font-size:26px}
+  .tunnel-world-content :is(.tunnel-skill-grid,.tunnel-project-grid)>div:first-child p{font-size:11px}
+  .tunnel-world-content .section-chip{font-size:7px;margin-bottom:10px;padding:5px 7px}
+  .tunnel-world-content .tunnel-skill-grid>.grid{grid-template-columns:1fr;gap:12px}
+  .tunnel-world-content .tunnel-skill-grid>.grid>div>div:last-child{padding:14px}
+  .tunnel-world-content .tunnel-skill-grid h3{font-size:17px}
+  .tunnel-world-content .tunnel-skill-grid p{font-size:12px;margin-bottom:10px;line-height:1.4}
+  .tunnel-world-content .tunnel-skill-grid .text-3xl{font-size:24px}
+  .tunnel-world-content .tunnel-skill-grid .text-xs{font-size:10px;padding:3px 6px}
+  .tunnel-world-content .tunnel-skill-grid .space-x-3>:not([hidden])~:not([hidden]){margin-left:5px}
+  .tunnel-world-content .tunnel-project-grid>.grid{grid-template-columns:1fr;gap:9px}
+  .tunnel-world-content .tunnel-project-grid>.grid>div{min-height:130px;height:130px}
+  .tunnel-world-content .tunnel-project-grid .face{padding:10px}
+  .tunnel-world-content .tunnel-project-grid .face h3{font-size:14px;margin-bottom:6px}
+  .tunnel-world-content .tunnel-project-grid .face p{font-size:10px;line-height:1.35;margin-bottom:8px}
+  .tunnel-world-content .tunnel-project-grid .face>div:first-child{margin-bottom:6px}
+  .tunnel-world-content .tunnel-project-grid .face>div:first-child>div{display:none}
+  .tunnel-world-content .tunnel-project-grid .front .flex-grow>.flex{display:none}
+  .tunnel-world-content .tunnel-project-grid .face a,.tunnel-world-content .tunnel-project-grid .face span{font-size:9px}
+  .tunnel-world-content .tunnel-project-grid .face a{padding:6px}
+  .tunnel-world-content .tunnel-project-grid .face>div:last-child{padding-top:6px;margin-top:0}
+  .tunnel-world-content .web-final h2{font-size:38px}
+  .home-gate-content.travel-world>.travel-log-hero{grid-template-columns:1fr;gap:20px;align-content:center}
+  .tunnel-world-content .travel-hero-copy h1{font-size:34px;margin:14px 0}
+  .tunnel-world-content .travel-hero-copy>p{font-size:13px;line-height:1.5}
+  .tunnel-world-content .travel-hero-copy>a{margin-top:12px;min-height:32px;font-size:9px;padding:8px 12px}
+  .tunnel-world-content .travel-kicker{font-size:8px}
+  .tunnel-world-content .route-tabs button{min-height:40px;font-size:8px}
+  .tunnel-world-content .route-readout{padding:14px}
+  .tunnel-world-content .route-readout h2{font-size:25px}
+  .tunnel-world-content .route-readout blockquote{margin-top:10px;font-size:13px}
+  .home-gate-content.tunnel-world-content.travel-world>.travel-story-panel{padding:24px}
+  .tunnel-world-content .travel-story-copy h2{font-size:42px}
+  .tunnel-world-content .travel-story-copy p{font-size:15px}
+  .tunnel-world-content .travel-story-details-panel h2,.tunnel-world-content .travel-story-cta-panel h2{font-size:28px;margin-bottom:18px}
+  .tunnel-world-content .travel-story-details-panel .grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+  .tunnel-world-content .travel-story-details-panel .grid>div{min-height:85px;padding:8px}
+  .tunnel-world-content .travel-story-details-panel .grid>div>div:nth-of-type(2){font-size:22px;margin-bottom:7px}
+  .tunnel-world-content .travel-story-details-panel .grid h4{font-size:10px;line-height:1.3}
+  .tunnel-world-content .travel-story-cta-panel p{font-size:15px;margin-bottom:22px}
+  .tunnel-world-content .travel-story-cta-panel a{font-size:12px;padding:12px 18px}
+  .tunnel-world-content .tunnel-destinations .grid{grid-template-columns:1fr;gap:9px}
+  .tunnel-world-content .tunnel-destinations .grid>div{display:grid;grid-template-columns:90px 1fr}
+  .tunnel-world-content .tunnel-destinations .h-64{height:100%;min-height:104px}
+  .tunnel-world-content .tunnel-destinations .grid>div>.p-6{padding:10px}
+  .tunnel-world-content .tunnel-destinations h3{font-size:17px;margin-bottom:5px}
+  .tunnel-world-content .tunnel-destinations .grid p{font-size:10px;line-height:1.4}
+  .tunnel-world-content .tunnel-destinations button{margin-top:6px;padding:5px 8px;font-size:9px}
+  .tunnel-world-content .tunnel-flags h2{font-size:34px}
+  .home-gate-content.ski-world>.ski-game-hero{grid-template-columns:1fr;grid-template-rows:auto auto;gap:14px;align-content:center;padding:18px}
+  .tunnel-world-content .ski-game-copy,.tunnel-world-content .ski-hero-media,.tunnel-world-content .ski-run-console{grid-column:1;grid-row:auto}
+  .tunnel-world-content .ski-game-copy h1{font-size:32px;margin:12px 0}
+  .tunnel-world-content .ski-game-copy>p{font-size:12px;line-height:1.45}
+  .tunnel-world-content .ski-game-copy>a{margin-top:10px;min-height:30px;padding:7px 10px;font-size:9px}
+  .tunnel-world-content .ski-kicker{font-size:8px}
+  .tunnel-world-content .ski-hero-media{position:absolute;inset:0;height:100%;opacity:.28;pointer-events:none;z-index:0}
+  .tunnel-world-content .ski-console-head{padding:8px 10px;font-size:6px}
+  .tunnel-world-content .ski-run-tabs button{min-height:37px;font-size:6px}
+  .tunnel-world-content .ski-run-output{padding:10px 12px}
+  .tunnel-world-content .ski-run-output h2{font-size:20px;margin:5px 0}
+  .tunnel-world-content .ski-run-output>p{font-size:10px;line-height:1.4}
+  .tunnel-world-content .ski-stats{margin-top:9px;gap:6px}
+  .tunnel-world-content .ski-stats div{padding:5px}
+  .tunnel-world-content .ski-stats strong{font-size:11px}
+  .tunnel-world-content .ski-run-console>a{padding:9px 12px;font-size:8px}
+  .tunnel-world-content .wind-status{display:none}
+  .tunnel-world-content .tunnel-ski-introduction section>div.relative>div:first-child p{font-size:17px;line-height:1.5}
+  .tunnel-world-content .tunnel-ski-introduction .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tunnel-world-content .tunnel-ski-introduction .grid .text-3xl{font-size:24px}
+  .tunnel-world-content .tunnel-ski-expertise .grid{grid-template-columns:1fr}
+  .tunnel-world-content .tunnel-ski-expertise .grid>div .p-8{display:grid;grid-template-columns:30px 1fr;gap:6px 10px;padding:10px}
+  .tunnel-world-content .tunnel-ski-expertise .grid h3{text-align:left;margin:0}
+  .tunnel-world-content .tunnel-ski-expertise .grid ul{grid-column:2}
+  .tunnel-world-content .tunnel-ski-expertise .text-4xl{font-size:24px;margin:0;grid-row:1 / span 2}
+  .tunnel-world-content .tunnel-ski-expertise li{font-size:11px;gap:6px}
+  .tunnel-world-content .tunnel-ski-packages .grid .p-8{padding:14px}
+  .tunnel-world-content .tunnel-ski-packages .grid h3{font-size:24px}
+  .tunnel-world-content .tunnel-ski-packages li{font-size:12px}
+  .tunnel-world-content .tunnel-ski-packages .text-4xl{font-size:28px}
+  .tunnel-world-content .tunnel-ski-booking .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tunnel-world-content .tunnel-ski-booking .w-16{width:44px;height:44px}
+  .tunnel-world-content .tunnel-ski-testimonials .grid{grid-template-columns:1fr}
+  .tunnel-world-content .tunnel-ski-testimonials blockquote{font-size:13px;line-height:1.5;margin-bottom:10px}
+  .tunnel-world-content .tunnel-ski-testimonials .text-3xl{font-size:22px;margin-bottom:5px}
+  .tunnel-world-content .tunnel-ski-testimonials footer{font-size:12px}
+  .home-tunnel-navigation>div{max-width:calc(100vw - 118px);overflow-x:auto;scrollbar-width:none}
+  .home-tunnel-navigation>div button{flex-shrink:0}
+}
+@media(prefers-reduced-motion:reduce){
+  .world-tunnel-static>.travel-story-panel{position:relative;top:auto;margin:70px auto}
+  .world-tunnel-static>.tunnel-chapter{margin-block:60px}
+  .world-tunnel-static>.ski-game-hero{width:min(1180px,88%);margin:50px auto}
+}

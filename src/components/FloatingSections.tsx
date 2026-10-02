@@ -4,12 +4,14 @@ import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { sectionFlight } from "@/lib/section-flight";
 
-const selector = ".mission-site > section, .web-world > section, .travel-world > section, .travel-story-stack > section, .ski-game-hero, [data-flight-panel]";
+const selector = ".mission-site:not(.home-gate-content) > section, .web-world > section, .travel-world > section, .travel-story-stack > section, .ski-game-hero, [data-flight-panel]";
 
 export default function FloatingSections() {
   const pathname = usePathname();
 
   useEffect(() => {
+    // Tunnel pages already move as a single projected square and content plane.
+    if (["/", "/web", "/travel", "/ski"].includes(pathname)) return;
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
     let frame = 0;
     let disposed = false;

@@ -94,6 +94,7 @@ const content = {
 
 interface SkiPackagesProps {
   language: keyof typeof content;
+  packageIndex?: number;
 }
 
 const containerVariants: Variants = {
@@ -151,7 +152,7 @@ const cardVariants: Variants = {
   }
 };
 
-export default function SkiPackages({ language }: SkiPackagesProps) {
+export default function SkiPackages({ language, packageIndex }: SkiPackagesProps) {
   const { sections, packages, heroButton } = content[language];
 
   return (
@@ -205,7 +206,7 @@ export default function SkiPackages({ language }: SkiPackagesProps) {
           className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl mx-auto"
           variants={containerVariants}
         >
-          {packages.map((pkg, i) => (
+          {packages.filter((_, index) => packageIndex === undefined || packageIndex === index).map((pkg, i) => (
             <motion.div 
               key={i} 
               className="group relative"
@@ -302,7 +303,7 @@ export default function SkiPackages({ language }: SkiPackagesProps) {
         </motion.div>
 
         {/* Bottom CTA */}
-        <motion.div
+        {(packageIndex === undefined || packageIndex === packages.length - 1) && <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -319,15 +320,15 @@ export default function SkiPackages({ language }: SkiPackagesProps) {
           </motion.p>
           
           <motion.a
-            href="/packages"
+            href="/contact"
             className="inline-flex items-center gap-3 bg-white/20 backdrop-blur-sm text-white font-bold text-lg py-4 px-8 rounded-2xl shadow-2xl hover:shadow-3xl border border-white/30 hover:bg-white/30 transition-all duration-300 group"
             whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.95 }}
           >
             <span>
-              {language === 'en' && 'View All Packages'}
-              {language === 'ja' && 'すべてのパッケージを見る'}
-              {language === 'zh' && '查看所有套餐'}
+              {language === 'en' && 'Discuss Lesson Options'}
+              {language === 'ja' && 'レッスンについて相談する'}
+              {language === 'zh' && '咨询课程选择'}
             </span>
             <motion.span
               animate={{ x: [0, 5, 0] }}
@@ -336,7 +337,7 @@ export default function SkiPackages({ language }: SkiPackagesProps) {
               →
             </motion.span>
           </motion.a>
-        </motion.div>
+        </motion.div>}
       </div>
     </motion.section>
   );

@@ -13,6 +13,14 @@ const copy = {
 const routes = ["/web", "/travel", "/ski", "/blog", "/gallery"];
 export default function PublicHeader() {
   const pathname = usePathname();
+  const [journeyPage, setJourneyPage] = useState<string | null>(null);
+  useEffect(() => {
+    const update = (event: Event) => setJourneyPage((event as CustomEvent<string>).detail);
+    window.addEventListener("journey-page", update);
+    setJourneyPage(document.body.dataset.journeyPage ?? null);
+    return () => window.removeEventListener("journey-page", update);
+  }, [pathname]);
+  const activePage = pathname === "/" || pathname === "/web" ? journeyPage ?? pathname : pathname;
   const { language, setLanguage } = useLanguage();
   const [open, setOpen] = useState(false);
   const header = useRef<HTMLElement>(null);
@@ -27,10 +35,10 @@ export default function PublicHeader() {
   }, [open]);
   if (pathname.startsWith("/mission-control") || pathname.startsWith("/blog/create") || pathname.startsWith("/demos/")) return null;
   return <header ref={header} className="public-header">
-    <Link href="/" className="wordmark" aria-label={t.home} onClick={() => setOpen(false)}><span>R</span> RYU / 37°N</Link>
+    <Link href="/" className="wordmark" aria-label={t.home} aria-current={activePage === "/" ? "page" : undefined} onClick={() => setOpen(false)}><span>R</span> RYU / 37°N</Link>
     <div className="public-header-controls">
       <nav id="public-navigation" className={`public-navigation${open ? " is-open" : ""}`} aria-label={t.nav}>
-        {routes.map((href, index) => <Link key={href} href={href} onClick={() => setOpen(false)} aria-current={pathname === href || pathname.startsWith(`${href}/`) ? "page" : undefined}>{t.links[index]}</Link>)}
+        {routes.map((href, index) => <Link key={href} href={href} onClick={() => setOpen(false)} aria-current={activePage === href || activePage.startsWith(`${href}/`) ? "page" : undefined}>{t.links[index]}</Link>)}
         <Link href="/contact" className="public-contact-link" onClick={() => setOpen(false)} aria-current={pathname === "/contact" ? "page" : undefined}>{t.contact}<ArrowUpRight size={15} aria-hidden="true" /></Link>
       </nav>
       <label className="header-language"><span className="sr-only">{t.language}</span><select value={language} onChange={event => setLanguage(event.target.value as "en" | "ja" | "zh")}><option value="en">EN</option><option value="ja">日本語</option><option value="zh">中文</option></select></label>

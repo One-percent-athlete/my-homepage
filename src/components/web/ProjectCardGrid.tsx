@@ -251,18 +251,22 @@ const cardVariants: Variants = {
 interface ProjectCardGridProps {
   sectionTitle?: string;
   sectionSubtitle?: string;
+  startIndex?: number;
+  count?: number;
 }
 
 export default function ProjectCardGrid({ 
   sectionTitle = "Featured Projects", 
-  sectionSubtitle = "A showcase of my recent work and creative solutions" 
+  sectionSubtitle = "A showcase of my recent work and creative solutions",
+  startIndex = 0,
+  count = 6,
 }: ProjectCardGridProps) {
   const { language } = useLanguage();
   const currentProjects = projects[language].map((project, index) => ({
     ...project,
     live: demoLinks[index],
     github: null,
-  }));
+  })).slice(startIndex, startIndex + count);
   const ui = {
     en:{live:"Live Demo",details:"Project Details",description:"Description",stack:"Technology Stack",category:"Category",status:"Status",view:"View Project",soon:"Coming soon",private:"Private code"},
     ja:{live:"デモを見る",details:"プロジェクト詳細",description:"説明",stack:"使用技術",category:"カテゴリー",status:"状態",view:"プロジェクトを見る",soon:"近日公開",private:"非公開コード"},
@@ -298,7 +302,7 @@ export default function ProjectCardGrid({
   };
 
   return (
-    <div ref={gridRef} className="relative">
+    <div ref={gridRef} className="relative tunnel-project-grid">
       {/* Section Header */}
       <motion.div
         className="text-center mb-16"

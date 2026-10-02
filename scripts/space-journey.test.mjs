@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { sceneDepth, travelDistance, depthOpacity } from '../src/lib/space-journey.ts';
+import { sceneDepth, travelDistance, depthOpacity, homeGateProjection, publishJourneyFrame, subscribeJourneyFrame, gateOrigin, isTunnelRoute } from '../src/lib/space-journey.ts';
 import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
 import ts from 'typescript';
@@ -35,7 +35,7 @@ function mountJourney(reduced = false, route = '/') {
   media.matches = reduced;
   document.hidden = false;
   document.documentElement = { scrollHeight: 2700 };
-  document.body = {};
+  document.body = { dataset: {} };
   document.querySelector = () => null;
   const draws = [];
   const drawing = { setTransform() {}, clearRect() { draws.length = 0; }, drawImage(...args) { draws.push(args); }, beginPath() {}, arc() {}, fill() {} };
@@ -57,14 +57,14 @@ function mountJourney(reduced = false, route = '/') {
       if (id === 'react') return { useRef: () => ({ current: refs.shift() }), useEffect: fn => effects.push(fn) };
       if (id === 'react/jsx-runtime') return { jsx: () => null, jsxs: () => null };
       if (id === 'next/navigation') return { usePathname: () => route };
-      if (id === '@/lib/space-journey') return { sceneDepth, travelDistance, depthOpacity };
+      if (id === '@/lib/space-journey') return { sceneDepth, travelDistance, depthOpacity, homeGateProjection, publishJourneyFrame, isTunnelRoute };
       throw new Error(`Unexpected import: ${id}`);
     },
   });
   exports.default();
   const cleanup = effects.map(effect => effect());
   return {
-    canvas, media, pending, draws,
+    canvas, media, pending, draws, window, document,
     input(type, props = {}) { const event = new Event(type); Object.assign(event, props); window.dispatchEvent(event); },
     scroll(y) { window.scrollY = y; window.dispatchEvent(new Event('scroll')); },
     settle() { for (let i = 0; pending.size && i < 200; i++) { const callbacks = [...pending.values()]; pending.clear(); now += 16; callbacks.forEach(fn => fn(now)); } assert.equal(pending.size, 0, 'animation must stop when idle'); },
@@ -85,8 +85,195 @@ test('live scrolling settles, reverses, and stops scheduling after unmount', () 
   assert.equal(view.pending.size, 0);
 });
 
-test('portal sprites are centered on the visible canvas', () => {
+// Render the real HomeTunnel component with lightweight React/DOM adapters.
+// This verifies that native scroll events update live content, not only math.
+function mountHomeContent(view, { world = 'home', count = 6, workStart, initialChapter = 0, nested = false } = {}) {
+  const states = [];
+  const refs = [];
+  const effects = [];
+  let stateIndex = 0;
+  let refIndex = 0;
+  let effectIndex = 0;
+  const exports = {};
+  const source = readFileSync(new URL('../src/components/HomeTunnel.tsx', import.meta.url), 'utf8');
+  const compiled = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX } }).outputText;
+  const jsx = (type, props) => ({ type, props });
+  vm.runInNewContext(compiled, {
+    exports, window: view.window, document: view.document, Element: class {}, CustomEvent, URL,
+    require: id => {
+      if (id === 'react') return {
+        Children: { toArray: children => Array.isArray(children) ? children : [children] },
+        Fragment: "fragment", isValidElement: child => Boolean(child && child.props),
+        useRef: initial => { const i = refIndex++; return refs[i] ??= { current: initial }; },
+        useState: initial => { const i = stateIndex++; if (!(i in states)) states[i] = initial; return [states[i], value => { states[i] = value; }]; },
+        useEffect: (callback, deps) => {
+          const i = effectIndex++;
+          const previous = effects[i];
+          if (!previous || deps.some((dep, index) => dep !== previous.deps[index])) {
+            previous?.cleanup?.();
+            effects[i] = { callback, deps, pending: true };
+          }
+        },
+      };
+      if (id === 'react/jsx-runtime') return { jsx, jsxs: jsx, Fragment: 'fragment' };
+      if (id === 'react-dom') return { createPortal: child => child };
+      if (id === '@/lib/space-journey') return { gateOrigin, homeGateProjection, subscribeJourneyFrame };
+      throw new Error(`Unexpected import: ${id}`);
+    },
+  });
+  view.window.location = { hash: '', href: 'http://localhost:3000/' };
+  view.window.scrollTo = ({ top }) => view.scroll(top);
+  const labels = Array.from({ length: count }, (_, index) => ['Identity', 'Facts', 'Missions', 'Loadout', 'Field note', 'Contact'][index] ?? `Chapter ${index + 1}`);
+  const chapters = labels.map((label, index) => jsx('section', { id: ['about', 'facts', 'missions', 'loadout', 'field', 'contact'][index] ?? `chapter-${index + 1}`, children: label }));
+  let gates = [];
+  let buttons = [];
+  let contents = [];
+  let tree;
+  function ids(node) {
+    if (!node || typeof node !== 'object') return [];
+    const children = Array.isArray(node.props?.children) ? node.props.children : [node.props?.children];
+    return [...(node.props?.id ? [{ id: node.props.id }] : []), ...children.flatMap(ids)];
+  }
+  function attach(node) {
+    if (Array.isArray(node)) { node.forEach(attach); return; }
+    if (!node || typeof node !== 'object') return;
+    const element = { style: {}, dataset: {}, attributes: {}, inert: false, querySelectorAll: () => ids(node), setAttribute(name, value) { this.attributes[name] = value; } };
+    if (node.props?.className === 'home-tunnel-gate') gates.push(element);
+    if (node.props?.className?.includes('home-gate-content')) contents.push(node.props.className);
+    if (node.type === 'button') buttons.push(node.props);
+    if (typeof node.props?.ref === 'function') node.props.ref(element);
+    else if (node.props?.ref) node.props.ref.current = element;
+    attach(node.props?.children);
+  }
+  function render() {
+    stateIndex = refIndex = effectIndex = 0;
+    tree = exports.default({ children: nested ? [chapters[0], jsx('fragment', {children: chapters.slice(1)})] : chapters, labels, instruction: 'Scroll to navigate', world, workStart, initialChapter });
+    gates = []; buttons = []; contents = [];
+    attach(tree);
+    effects.forEach(effect => { if (effect.pending) { effect.pending = false; effect.cleanup = effect.callback(); } });
+  }
+  render(); render();
+  return {
+    get gates() { return gates; },
+    get tree() { return tree; },
+    get contents() { return contents; },
+    chapterButton(index) { return buttons.filter(button => button.children === String(index + 1).padStart(2, '0'))[0]; },
+    rerender: render,
+    unmount() { effects.forEach(effect => effect.cleanup?.()); },
+  };
+}
+
+test('native scroll grows live section content with the exact square, then restores on reverse', () => {
   const view = mountJourney();
+  const content = mountHomeContent(view);
+  const first = content.gates[0];
+  const originalTransform = first.style.transform;
+  const originalCenter = [first.style.left, first.style.top];
+  const scale = () => Number(first.style.transform.match(/scale\(([^)]+)\)/)[1]);
+  const startingScale = scale();
+  assert.equal(first.inert, false);
+  const runway = content.tree.props.children[0];
+  assert.equal(runway.props.style.height, '900svh', 'real document height lets native wheel/touch scrolling advance the camera');
+  view.scroll(200); view.settle();
+  assert.ok(scale() > startingScale, 'section really grows after native scroll');
+  assert.deepEqual([first.style.left, first.style.top], originalCenter, 'section stays centered, with no upward motion');
+  const [, x, y, width, height] = view.draws.at(-1);
+  assert.ok(Math.abs(width - scale() * 1280) < 0.001, 'content projection equals the rendered square width');
+  assert.ok(Math.abs(x + width / 2 - parseFloat(first.style.left)) < 0.001);
+  assert.ok(Math.abs(y + height / 2 - parseFloat(first.style.top)) < 0.001);
+  view.scroll(1200); view.settle();
+  assert.equal(first.style.visibility, 'hidden', 'passed content disappears instead of staying fixed on screen');
+  assert.equal(content.gates[1].inert, false, 'the next section becomes interactive');
+  view.scroll(0); view.settle();
+  assert.equal(first.style.transform, originalTransform);
+  content.unmount(); view.unmount();
+});
+
+test('chapter controls advance the native camera to the requested section', () => {
+  const view = mountJourney();
+  view.window.scrollTo = options => view.scroll(options.top);
+  const content = mountHomeContent(view);
+  content.chapterButton(2).onClick(); view.settle();
+  assert.equal(view.window.scrollY, 2400);
+  assert.equal(content.gates[2].inert, false);
+  assert.equal(content.gates[0].style.visibility, 'hidden');
+  content.unmount(); view.unmount();
+});
+
+test('reduced motion keeps all sections in the normal readable document', () => {
+  const view = mountJourney(true);
+  const content = mountHomeContent(view);
+  assert.equal(content.tree.props.className, 'home-tunnel-static');
+  assert.equal(content.gates.length, 0);
+  content.unmount(); view.unmount();
+});
+
+test('unmounted section contents stop receiving camera updates', () => {
+  const view = mountJourney();
+  const content = mountHomeContent(view);
+  const first = content.gates[0];
+  const transform = first.style.transform;
+  content.unmount();
+  view.scroll(250); view.settle();
+  assert.equal(first.style.transform, transform);
+  view.unmount();
+});
+
+test('mobile squares and section contents share the same portrait projection', () => {
+  const view = mountJourney();
+  view.window.innerWidth = 390;
+  view.window.innerHeight = 844;
+  view.input('resize');
+  const content = mountHomeContent(view);
+  const first = content.gates[0];
+  assert.equal(first.style.width, '420px');
+  assert.ok(parseFloat(first.style.height) > parseFloat(first.style.width));
+  const scale = () => Number(first.style.transform.match(/scale\(([^)]+)\)/)[1]);
+  const originalScale = scale();
+  view.scroll(150); view.settle();
+  assert.ok(scale() > originalScale);
+  const [, , , width] = view.draws.at(-1);
+  assert.ok(Math.abs(width - scale() * 420) < 0.001);
+  content.unmount(); view.unmount();
+});
+
+test('Work shares the exact square projection and reaches its final chapter', () => {
+  for (const [world, count] of [['web', 8]]) {
+    const view = mountJourney(false, `/${world}`);
+    view.window.scrollTo = options => view.scroll(options.top);
+    const content = mountHomeContent(view, { world, count });
+    assert.equal(content.gates.length, count);
+    assert.ok(content.contents.every(className => className.includes(`${world}-world`) && className.includes('tunnel-world-content')));
+    const first = content.gates[0];
+    const original = first.style.transform;
+    view.scroll(200); view.settle();
+    assert.notEqual(first.style.transform, original, `${world} responds to scrolling`);
+    const scale = Number(first.style.transform.match(/scale\(([^)]+)\)/)[1]);
+    const [, x, y, width, height] = view.draws.at(-1);
+    assert.ok(Math.abs(width - scale * 1280) < 0.001, `${world} content matches its square`);
+    assert.ok(Math.abs(x + width / 2 - parseFloat(first.style.left)) < 0.001);
+    assert.ok(Math.abs(y + height / 2 - parseFloat(first.style.top)) < 0.001);
+    content.chapterButton(count - 1).onClick(); view.settle();
+    assert.equal(content.gates[count - 1].inert, false, `${world}'s final section can be used`);
+    assert.equal(first.style.visibility, 'hidden');
+    view.scroll(0); view.settle();
+    assert.equal(first.style.transform, original);
+    content.unmount(); view.unmount();
+  }
+});
+
+test('world pages retain the static reading layout for reduced motion', () => {
+  for (const world of ['web']) {
+    const view = mountJourney(true, `/${world}`);
+    const content = mountHomeContent(view, { world, count: 9 });
+    assert.equal(content.tree.props.className, 'home-tunnel-static world-tunnel-static');
+    assert.equal(content.gates.length, 0);
+    content.unmount(); view.unmount();
+  }
+});
+
+test('portal sprites are centered on the visible canvas', () => {
+  const view = mountJourney(false, '/gallery');
   for (const [, x, y, width, height] of view.draws) {
     assert.ok(Math.abs(x + width / 2 - 600) < 0.0001);
     assert.ok(Math.abs(y + height / 2 - 450) < 0.0001);
@@ -95,8 +282,8 @@ test('portal sprites are centered on the visible canvas', () => {
   view.unmount();
 });
 
-test('wheel input advances beyond the footer, stays idle afterward, and never doubles normal scroll', () => {
-  const view = mountJourney();
+test('wheel input advances beyond non-tunnel pages and never doubles normal scroll', () => {
+  const view = mountJourney(false, '/gallery');
   view.input('wheel', { deltaY: 900, deltaX: 0, deltaMode: 0 }); view.settle();
   assert.equal(view.canvas.dataset.distance, '0.000');
   view.scroll(1800); view.settle();
@@ -112,8 +299,8 @@ test('wheel input advances beyond the footer, stays idle afterward, and never do
   assert.equal(view.pending.size, 0);
 });
 
-test('touch and keyboard continue at the bottom and reduced motion disables extra travel', () => {
-  const view = mountJourney();
+test('touch and keyboard continue at non-tunnel bottom and reduced motion disables extra travel', () => {
+  const view = mountJourney(false, '/gallery');
   view.scroll(1800); view.settle();
   view.input('touchstart', { touches: [{ clientY: 700 }] });
   view.input('touchmove', { touches: [{ clientY: 400 }] }); view.settle();
@@ -160,4 +347,39 @@ test('public destinations share the homepage scene and respect reduced motion', 
     assert.equal(view.canvas.dataset.distance, '0.000');
     view.unmount();
   }
+});
+
+test('combined journey changes the active header world on forward and reverse scroll', () => {
+  const view = mountJourney();
+  const changes = [];
+  view.window.addEventListener('journey-page', event => changes.push(event.detail));
+  const content = mountHomeContent(view, {count:15,workStart:6,nested:true});
+  assert.equal(content.gates.length,15);
+  assert.equal(view.document.body.dataset.journeyPage,'/');
+  assert.ok(content.contents[0].includes('mission-site'));
+  assert.ok(content.contents[6].includes('web-world'));
+  view.scroll(7200); view.settle();
+  assert.equal(view.document.body.dataset.journeyPage,'/web');
+  assert.equal(content.gates[6].inert,false);
+  view.scroll(6000); view.settle();
+  assert.equal(view.document.body.dataset.journeyPage,'/');
+  assert.deepEqual(changes,['/','/web','/']);
+  view.scroll(16800); view.settle();
+  assert.equal(content.gates[14].inert,false);
+  const finalTransform=content.gates[14].style.transform;
+  view.input('wheel',{deltaY:900,deltaX:0,deltaMode:0}); view.settle();
+  assert.equal(content.gates[14].style.transform,finalTransform,'the last portals cannot be scrolled away');
+  content.unmount();view.unmount();
+});
+
+test('direct Work entry starts at Work while keeping Home available behind it', () => {
+  const view=mountJourney(false,'/web');
+  const content=mountHomeContent(view,{count:15,workStart:6,initialChapter:6});
+  view.settle();
+  assert.equal(view.window.scrollY,7200);
+  assert.equal(view.document.body.dataset.journeyPage,'/web');
+  assert.equal(content.gates[6].inert,false);
+  view.scroll(0);view.settle();
+  assert.equal(view.document.body.dataset.journeyPage,'/');
+  content.unmount();view.unmount();
 });

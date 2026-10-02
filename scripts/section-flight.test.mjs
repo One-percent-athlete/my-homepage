@@ -69,7 +69,7 @@ test('component responds to reduced motion and cleans up scroll work', () => {
     cancelAnimationFrame: id => queue.delete(id),
     require: id => {
       if (id === 'react') return { useEffect: fn => { cleanup = fn(); } };
-      if (id === 'next/navigation') return { usePathname: () => '/' };
+      if (id === 'next/navigation') return { usePathname: () => '/blog' };
       if (id === '@/lib/section-flight') return { sectionFlight };
       throw new Error(id);
     },
