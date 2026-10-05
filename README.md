@@ -20,7 +20,25 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Learn More
+## Gallery images
+
+Blog covers can also appear in the gallery. Run `npm run gallery:migrate` once
+against the configured database before deploying this feature. This adds an
+optional `show_in_gallery` flag; existing posts remain blog-only. Sign in to
+Mission Control and open **Manage posts and photos** to edit a post, replace
+its cover, or enable **Show this cover image in gallery**. Saving replaces that
+post's gallery photo; unchecking the option removes it without deleting the post.
+Blog images stay on Cloudinary and are delivered at thumbnail/lightbox sizes.
+The gallery loads them in batches of 24, with a link back to each blog story.
+
+Keep original JPEGs in `public/gallery`. After adding or replacing photos, run
+`npm run gallery:optimize` and commit the generated WebP files in
+`public/gallery/thumbnails` and `public/gallery/lightbox`. The generator uses
+Next.js's bundled Sharp processor, preserves orientation and aspect ratio,
+and caps the longest edge at 1,200 px for thumbnails and 2,400 px for lightbox
+images. Originals are preserved; the gallery serves only the smaller variants.
+
+## Next.js resources
 
 To learn more about Next.js, take a look at the following resources:
 

@@ -1,9 +1,102 @@
 "use client";
-import { useEffect,useState } from "react";import Image from "next/image";import { Camera,ChevronLeft,ChevronRight,Maximize2,X } from "lucide-react";import FloatingButtons from "@/components/FloatingButtons";import { useLanguage } from "@/app/context/LanguageContext";import styles from "./Gallery.module.css";
-const files=["0.jpg","1.jpg","2.jpg","3.jpg","4.jpg","6.jpg","7.jpg","8.jpg","9.jpg","10.jpg","11.jpg","12.jpg","13.jpg","14.jpg"];
-const copy={en:{world:"WORLD 05 · THE VISUAL ARCHIVE",line1:"Collected light.",line2:"Unfinished stories.",hint:"Select any frame to enter it.",frame:"FRAME",close:"Close image",items:[["Transit","Between one place and the next"],["Altitude","A different scale of quiet"],["Human lines","Where stories cross"],["Open road","The long way is often better"],["Blue hour","When the city exhales"],["Edge of land","Nothing beyond but weather"],["Field study","Details worth stopping for"],["Unknown street","Get lost on purpose"],["High country","Earned perspective"],["Local light","A place remembers its colors"],["Still water","Silence with depth"],["Night signal","Life after sundown"],["Far side","Proof that I was curious"],["Return route","Never quite the same person"]]},ja:{world:"WORLD 05 · ビジュアルアーカイブ",line1:"集めた光。",line2:"まだ終わらない物語。",hint:"フレームを選んで、その景色へ。",frame:"フレーム",close:"画像を閉じる",items:[["移動の途中","場所と場所のあいだ"],["高地","静けさの尺度が変わる"],["人の線","物語が交差する場所"],["一本道","遠回りの方がいいこともある"],["ブルーアワー","街が息を吐く時間"],["大地の端","この先にあるのは天気だけ"],["フィールド観察","立ち止まる価値のある細部"],["知らない通り","あえて迷ってみる"],["高原","自分で得た視点"],["土地の光","場所は色を覚えている"],["静かな水","深さのある静寂"],["夜の信号","日没後の生命"],["遠い側","好奇心を持った証"],["帰り道","同じ自分では帰らない"]]},zh:{world:"WORLD 05 · 视觉档案",line1:"收集的光。",line2:"未完的故事。",hint:"选择一幅画面，进入其中。",frame:"画面",close:"关闭图片",items:[["途中","一个地方与下一个地方之间"],["高处","另一种尺度的安静"],["人的线条","故事交汇之处"],["漫长公路","绕远的路往往更好"],["蓝调时刻","城市呼气的时候"],["陆地边缘","前方只剩天气"],["现场观察","值得停下来的细节"],["陌生街道","故意迷一次路"],["高地","亲自赢得的视角"],["当地光线","一个地方会记住自己的颜色"],["静水","有深度的沉默"],["夜间信号","日落之后的生命"],["遥远一侧","我曾好奇过的证明"],["返程","回来时已不再完全相同"]]}};
-export default function GalleryPage(){
-  const {language}=useLanguage();const t=copy[language];const [selected,setSelected]=useState<number|null>(null);
-  useEffect(()=>{if(selected===null)return;const previous=document.body.style.overflow;document.body.style.overflow="hidden";const onKey=(event:KeyboardEvent)=>{if(event.key==="Escape")setSelected(null);if(event.key==="ArrowLeft")setSelected(value=>value===null?null:(value-1+files.length)%files.length);if(event.key==="ArrowRight")setSelected(value=>value===null?null:(value+1)%files.length)};document.addEventListener("keydown",onKey);return()=>{document.body.style.overflow=previous;document.removeEventListener("keydown",onKey)}},[selected]);
-  return <main className={styles.archive}><FloatingButtons/><header className={styles.hero}><p><Camera size={15}/> {t.world}</p><h1>{t.line1}<br/><em>{t.line2}</em></h1><span>{t.hint}</span></header><section className={styles.grid}>{files.map((file,index)=>{const [title,note]=t.items[index];return <button key={file} className={styles.frame} onClick={()=>setSelected(index)}><span className={styles.number}>{String(index+1).padStart(2,"0")}</span><div className={styles.image}><Image src={`/gallery/${file}`} alt={title} fill sizes="(max-width:700px) 100vw, 33vw"/></div><div className={styles.caption}><div><h2>{title}</h2><p>{note}</p></div><Maximize2 size={17}/></div></button>})}</section>{selected!==null&&<div className={styles.lightbox} role="dialog" aria-modal="true" aria-label={t.items[selected][0]} onClick={()=>setSelected(null)}><button className={styles.close} onClick={()=>setSelected(null)} aria-label={t.close}><X/></button><button className={styles.previous} onClick={event=>{event.stopPropagation();setSelected((selected-1+files.length)%files.length)}} aria-label="Previous image"><ChevronLeft/></button><div className={styles.lightboxImage} onClick={event=>event.stopPropagation()}><Image src={`/gallery/${files[selected]}`} alt={t.items[selected][0]} fill sizes="100vw"/><div><span>{t.frame} {String(selected+1).padStart(2,"0")}</span><h2>{t.items[selected][0]}</h2><p>{t.items[selected][1]}</p></div></div><button className={styles.next} onClick={event=>{event.stopPropagation();setSelected((selected+1)%files.length)}} aria-label="Next image"><ChevronRight/></button></div>}</main>
+
+import { useCallback, useEffect, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { Camera, ChevronLeft, ChevronRight, Maximize2, X } from "lucide-react";
+import FloatingButtons from "@/components/FloatingButtons";
+import { useLanguage } from "@/app/context/LanguageContext";
+import type { GalleryBlogImage } from "@/lib/gallery-images";
+import { copy } from "./gallery-copy";
+import styles from "./Gallery.module.css";
+
+const files = ["0", "1", "2", "3", "4", "6", "7", "8", "9", "10", "11", "12", "13", "14"];
+const messages = {
+  en: { journal: "From the journal", read: "Read the story →", loading: "Loading blog photos…", more: "Load more photos", error: "Blog photos could not be loaded. Your archive is still available.", retry: "Try again", previous: "Previous image", next: "Next image" },
+  ja: { journal: "ジャーナルから", read: "記事を読む →", loading: "ブログの写真を読み込み中…", more: "写真をもっと見る", error: "ブログの写真を読み込めませんでした。アーカイブは引き続きご覧いただけます。", retry: "再試行", previous: "前の画像", next: "次の画像" },
+  zh: { journal: "来自日志", read: "阅读故事 →", loading: "正在加载博客照片…", more: "加载更多照片", error: "无法加载博客照片。原有相册仍可浏览。", retry: "重试", previous: "上一张", next: "下一张" },
+};
+
+function thumbnailSizes(index: number) {
+  const fraction = [7, 5, 4, 7, 5][index % 5] / 12;
+  const gap = 12 * (1 - fraction) + 2;
+  return `(max-width:760px) calc(100vw - 34px), (max-width:1500px) calc(${88 * fraction}vw - ${gap}px), calc(${100 * fraction}vw - ${180 * fraction + gap}px)`;
+}
+
+export default function GalleryPage() {
+  const { language } = useLanguage();
+  const t = copy[language];
+  const m = messages[language];
+  const [selected, setSelected] = useState<number | null>(null);
+  const [blogImages, setBlogImages] = useState<GalleryBlogImage[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [nextOffset, setNextOffset] = useState<number | null>(null);
+  const [requestedOffset, setRequestedOffset] = useState(0);
+  const frames = [
+    ...files.map((file, index) => ({ id: `archive-${file}`, title: t.items[index][0], note: t.items[index][1], thumbnail: `/gallery/thumbnails/${file}.webp`, full: `/gallery/lightbox/${file}.webp`, slug: null as string | null })),
+    ...blogImages.map(photo => ({ ...photo, note: m.journal })),
+  ];
+  const active = selected === null ? null : frames[selected];
+
+  const loadPhotos = useCallback(async (offset: number, signal?: AbortSignal) => {
+    setLoading(true); setError(false); setRequestedOffset(offset);
+    try {
+      const response = await fetch(`/api/gallery?offset=${offset}`, { cache: "no-store", signal });
+      if (!response.ok) throw new Error("Gallery unavailable");
+      const data: { images: GalleryBlogImage[]; nextOffset: number | null } = await response.json();
+      if (signal?.aborted) return;
+      setBlogImages(previous => offset === 0 ? data.images : [...previous, ...data.images.filter(image => !previous.some(old => old.id === image.id))]);
+      setNextOffset(data.nextOffset);
+    } catch {
+      if (!signal?.aborted) setError(true);
+    } finally {
+      if (!signal?.aborted) setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    void loadPhotos(0, controller.signal);
+    return () => controller.abort();
+  }, [loadPhotos]);
+
+  useEffect(() => {
+    if (selected === null) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setSelected(null);
+      if (event.key === "ArrowLeft") setSelected(value => value === null ? null : (value - 1 + frames.length) % frames.length);
+      if (event.key === "ArrowRight") setSelected(value => value === null ? null : (value + 1) % frames.length);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => { document.body.style.overflow = previous; document.removeEventListener("keydown", onKey); };
+  }, [selected, frames.length]);
+
+  return <main className={styles.archive}>
+    <FloatingButtons />
+    <header className={styles.hero}><p><Camera size={15} /> {t.world}</p><h1>{t.line1}<br /><em>{t.line2}</em></h1><span>{t.hint}</span></header>
+    <section className={styles.grid}>
+      {frames.map((frame, index) => <button key={frame.id} className={styles.frame} onClick={() => setSelected(index)}>
+        <span className={styles.number}>{String(index + 1).padStart(2, "0")}</span>
+        <div className={styles.image}><Image src={frame.thumbnail} alt={frame.title} fill sizes={thumbnailSizes(index)} priority={index === 0} /></div>
+        <div className={styles.caption}><div><h2>{frame.title}</h2><p>{frame.note}</p></div><Maximize2 size={17} /></div>
+      </button>)}
+    </section>
+    <div className={styles.status}>
+      {loading && <p role="status">{m.loading}</p>}
+      {error && <><p role="alert">{m.error}</p><button onClick={() => void loadPhotos(requestedOffset)} disabled={loading}>{m.retry}</button></>}
+      {!error && nextOffset !== null && <button onClick={() => void loadPhotos(nextOffset)} disabled={loading}>{m.more}</button>}
+    </div>
+    {active && selected !== null && <div className={styles.lightbox} role="dialog" aria-modal="true" aria-label={active.title} onClick={() => setSelected(null)}>
+      <button className={styles.close} onClick={() => setSelected(null)} aria-label={t.close}><X /></button>
+      <button className={styles.previous} onClick={event => { event.stopPropagation(); setSelected((selected - 1 + frames.length) % frames.length); }} aria-label={m.previous}><ChevronLeft /></button>
+      <div className={styles.lightboxImage} onClick={event => event.stopPropagation()}>
+        <Image key={active.id} src={active.full} alt={active.title} fill sizes="(max-width:760px) calc(100vw - 20px), (max-width:1222px) 90vw, 1100px" loading="eager" />
+        <div><span>{t.frame} {String(selected + 1).padStart(2, "0")}</span><h2>{active.title}</h2><p>{active.note}</p>{active.slug && <Link href={`/blog/${active.slug}`}>{m.read}</Link>}</div>
+      </div>
+      <button className={styles.next} onClick={event => { event.stopPropagation(); setSelected((selected + 1) % frames.length); }} aria-label={m.next}><ChevronRight /></button>
+    </div>}
+  </main>;
 }

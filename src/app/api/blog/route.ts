@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { posts } from "@/db/schema";
 import { ADMIN_COOKIE, verifyAdminSession } from "@/lib/admin-auth";
+import { isDuplicateSlug, validateBlogInput } from "@/lib/blog-input";
 
 export async function GET() {
   const allPosts = await db.select().from(posts).orderBy(posts.createdAt);
@@ -16,27 +17,18 @@ export async function POST(req: NextRequest) {
     if (!cookieAuthorized && !legacyAuthorized) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const { title, slug, content, coverImage, videoUrl, category } = await req.json();
-
-    if (typeof title !== "string" || title.trim().length < 3 || title.length > 180 || typeof slug !== "string" || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) || typeof content !== "string" || content.length < 10 || content.length > 100000) {
-      return NextResponse.json({ error: "Invalid post" }, { status: 400 });
-    }
+    const input = validateBlogInput(await req.json());
+    if (input.error) return NextResponse.json({ error: input.error }, { status: 400 });
 
     const [newPost] = await db
       .insert(posts)
-      .values({
-        title,
-        slug,
-        content,
-        coverImage,
-        videoUrl,
-        category,
-      })
+      .values(input.data!)
       .returning();
-      console.log("Incoming body:", { title, slug, content, coverImage, videoUrl, category });
 
     return NextResponse.json(newPost, { status: 201 });
   } catch (error) {
+    if (isDuplicateSlug(error)) return NextResponse.json({ error: "That slug is already used by another post." }, { status: 409 });
+    if (error instanceof SyntaxError) return NextResponse.json({ error: "Invalid post" }, { status: 400 });
     console.error(error);
     return NextResponse.json({ error: "Failed to create post" }, { status: 500 });
   }

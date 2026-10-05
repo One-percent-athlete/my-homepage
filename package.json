@@ -6,6 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "gallery:optimize": "node scripts/optimize-gallery.mjs",
+    "gallery:migrate": "node --env-file=.env --env-file=.env.local scripts/migrate-gallery.mjs",
     "lint": "eslint"
   },
   "dependencies": {

@@ -7,6 +7,7 @@ export const posts = pgTable("posts", {
   slug: varchar("slug", { length: 255 }).notNull().unique(),
   content: text("content").notNull(),
   coverImage: text("cover_image"),
+  showInGallery: boolean("show_in_gallery").default(false).notNull(),
   videoUrl: text("video_url"),
   category: varchar("category", { length: 50 }).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),

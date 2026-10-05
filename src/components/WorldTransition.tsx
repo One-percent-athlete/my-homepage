@@ -40,7 +40,7 @@ export default function WorldTransition() {
       if (busy.current) return;
       busy.current = true;
       setDestination(url.pathname as keyof typeof worlds);
-      timer.current = setTimeout(() => router.push(url.pathname), 450);
+      timer.current = setTimeout(() => router.push(url.pathname), url.pathname === "/gallery" ? 150 : 450);
       recovery.current = setTimeout(() => { busy.current = false; setDestination(null); }, 8000);
     };
     document.addEventListener("click", navigate, true);
