@@ -33,6 +33,20 @@
 .contact-qr-grid{display:flex;flex-wrap:wrap;gap:12px;padding-top:12px}
 .contact-qr{display:flex;flex-direction:column;align-items:center;gap:8px;font-size:12px;padding:12px;background:#0b1718;border:1px solid #ffffff24}
 .contact-qr img{width:112px;height:112px}
+.contact-focus-bar{display:none}
+@media(max-width:699px){
+  body[data-contact-editing="true"] :is(.visor-telemetry,.reading-mode-switch,.visor-signature,.public-header,.public-footer,.world-dock,.home-tunnel-navigation){visibility:hidden;pointer-events:none}
+  body[data-contact-editing="true"] .home-tunnel-stage{clip-path:none}
+  body[data-contact-editing="true"] .home-tunnel-layer .home-tunnel-gate:has(#contact){left:0!important;top:var(--contact-viewport-top,0px)!important;width:100%!important;height:var(--contact-viewport-height,100dvh)!important;transform:none!important;opacity:1!important}
+  body[data-contact-editing="true"] .home-tunnel-layer .home-gate-content:has(#contact){inset:0!important;width:100%;height:100%}
+  body[data-contact-editing="true"] .home-tunnel-layer #contact{height:100%;overflow-y:auto!important;overscroll-behavior-y:contain;padding:0 16px 32px!important;scroll-padding-top:88px}
+  body[data-contact-editing="true"] #contact>.contact-focus-bar{display:flex;position:sticky;top:0;z-index:20;justify-content:space-between;align-items:center;gap:12px;min-height:64px;margin:0 -16px 16px;padding:10px 16px;background:#061421;border-bottom:1px solid #9beaff40;text-align:left}
+  .contact-focus-bar span{display:grid;gap:4px}.contact-focus-bar small{font:11px monospace;color:#9abac9}.contact-focus-bar strong{font-size:15px;color:#d5edf6}
+  .contact-focus-bar button{min-width:60px;min-height:44px;padding:8px 12px;color:#d5edf6;border:1px solid #9beaff55;border-radius:4px;background:#9beaff12}
+  body[data-contact-editing="true"] .home-tunnel-layer #contact>:is(h1,p),body[data-contact-editing="true"] .home-tunnel-layer #contact .contact-secondary{display:none}
+  body[data-contact-editing="true"] .home-tunnel-layer #contact .contact-primary-form{padding:16px!important}
+  body[data-contact-editing="true"] .home-tunnel-layer #contact input,body[data-contact-editing="true"] .home-tunnel-layer #contact textarea{font-size:16px}
+}
 /* Keep mobile browsers from zooming a projected form field on focus. */
 @media(max-width:699px){#contact input,#contact textarea,#contact select{font-size:16px}}
 @media(max-width:1100px){.public-header-controls,.public-navigation{gap:15px}.public-header{padding-inline:24px}}

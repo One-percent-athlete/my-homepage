@@ -104,6 +104,63 @@ export default function Contact({ embedded = false }: { embedded?: boolean }) {
   const Container = embedded ? "section" : "main";
   const { language } = useLanguage();
   const t = contactCopy[language];
+  const [editingField, setEditingField] = useState<string | null>(null);
+  useEffect(() => {
+    const contact = document.getElementById("contact");
+    if (!contact) return;
+    const mobile = window.matchMedia("(max-width: 699px)");
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let frame = 0;
+    const focusedField = () => {
+      const field = document.activeElement;
+      return field instanceof HTMLElement && contact.contains(field) && field.matches('input:not([tabindex="-1"]),textarea,select') ? field : null;
+    };
+    const clearEditing = () => {
+      delete document.body.dataset.contactEditing;
+      document.body.style.removeProperty("--contact-viewport-height");
+      document.body.style.removeProperty("--contact-viewport-top");
+      setEditingField(null);
+    };
+    const revealField = () => {
+      const field = focusedField();
+      if (!mobile.matches || !field) return;
+      document.body.dataset.contactEditing = "true";
+      const viewport = window.visualViewport;
+      document.body.style.setProperty("--contact-viewport-height", `${viewport?.height ?? window.innerHeight}px`);
+      document.body.style.setProperty("--contact-viewport-top", `${viewport?.offsetTop ?? 0}px`);
+      setEditingField(field.id);
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        if (!focusedField()) return;
+        if (contact.closest(".home-tunnel-layer")) {
+          const label = contact.querySelector<HTMLLabelElement>(`label[for="${field.id}"]`);
+          const bar = contact.querySelector(".contact-focus-bar");
+          const top = (bar?.getBoundingClientRect().bottom ?? contact.getBoundingClientRect().top) + 16;
+          contact.scrollTop += (label ?? field).getBoundingClientRect().top - top;
+        } else field.scrollIntoView({ block: "center", behavior: "instant" });
+      });
+    };
+    const focus = () => { if (focusedField()) { clearTimeout(timer); revealField(); } else blur(); };
+    const blur = () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => { if (!focusedField()) clearEditing(); }, 350);
+    };
+    contact.addEventListener("focusin", focus);
+    contact.addEventListener("focusout", blur);
+    window.addEventListener("resize", revealField);
+    window.visualViewport?.addEventListener("resize", revealField);
+    window.visualViewport?.addEventListener("scroll", revealField);
+    return () => {
+      clearTimeout(timer); cancelAnimationFrame(frame); clearEditing();
+      contact.removeEventListener("focusin", focus); contact.removeEventListener("focusout", blur);
+      window.removeEventListener("resize", revealField);
+      window.visualViewport?.removeEventListener("resize", revealField);
+      window.visualViewport?.removeEventListener("scroll", revealField);
+    };
+  }, []);
+  const fields = ["contact-name", "contact-email", "contact-message", "contact-phone"];
+  const fieldLabels = [t.name, t.email, t.message, t.phonePlaceholder];
+  const editingIndex = fields.indexOf(editingField ?? "");
   useEffect(() => {
     const revealMessaging = () => {
       if (window.location.hash === "#messaging-apps") {
@@ -172,6 +229,10 @@ export default function Contact({ embedded = false }: { embedded?: boolean }) {
       className="contact-world contact-refresh relative pb-12 px-6 text-center overflow-hidden text-white"
     >
       {!embedded && <FloatingButtons />}
+      <div className="contact-focus-bar">
+        <span><small>{language === "ja" ? "お問い合わせ" : language === "zh" ? "联系我" : "Contact"} · {editingIndex + 1} / 4</small><strong>{fieldLabels[editingIndex]}</strong></span>
+        <button type="button" onClick={() => { if (document.activeElement instanceof HTMLElement) document.activeElement.blur(); setEditingField(null); delete document.body.dataset.contactEditing; document.body.style.removeProperty("--contact-viewport-height"); document.body.style.removeProperty("--contact-viewport-top"); }}>{language === "ja" ? "完了" : language === "zh" ? "完成" : "Done"}</button>
+      </div>
       {/* Title & Subtitle */}
       <motion.h1
         initial={{ opacity: 0, y: -40 }}

@@ -94,6 +94,7 @@ export default function HomeTunnel({ children, labels, instruction, world = "hom
     if (!mounted || staticMode) return;
     let latestFrame: JourneyFrame | null = null;
     let editingFrame: JourneyFrame | null = null;
+    let resumeDistance: number | null = null;
     let blurTimer: ReturnType<typeof setTimeout> | undefined;
     const editingContact = () => document.activeElement instanceof Element && !!document.activeElement.closest('#contact input, #contact textarea, #contact select');
     function paint(frame: JourneyFrame) {
@@ -101,6 +102,10 @@ export default function HomeTunnel({ children, labels, instruction, world = "hom
       // Keyboard resizing and the browser's focus scroll must not fly the form
       // into another chapter or make the focused input inert.
       if (editingFrame) return;
+      if (resumeDistance !== null) {
+        if (Math.abs(frame.distance - resumeDistance) > 0.01) return;
+        resumeDistance = null;
+      }
       if (!painted.current && Math.abs(frame.distance - travelDistance(window.scrollY, frame.height)) > 0.05) return;
       const index = Math.min(chapters.length - 1, Math.max(0, Math.floor((frame.distance + 0.7) / 2)));
       const finished = !holdLastChapter && workStart === undefined && frame.distance > gateOrigin(chapters.length - 1) - 0.2;
@@ -149,11 +154,13 @@ export default function HomeTunnel({ children, labels, instruction, world = "hom
       clearTimeout(blurTimer);
       if (editingContact() && !editingFrame) editingFrame = latestFrame;
     };
-    const releaseEditing = () => {
+    const releaseEditing = (waitForCamera = true) => {
       clearTimeout(blurTimer);
+      if (!waitForCamera) resumeDistance = null;
       if (!editingFrame) return;
       const frame = editingFrame;
       editingFrame = null;
+      resumeDistance = waitForCamera ? frame.distance : null;
       window.scrollTo({ top: frame.distance / 1.5 * (latestFrame?.height ?? frame.height), behavior: "instant" });
     };
     const onBlur = () => {
@@ -181,7 +188,7 @@ export default function HomeTunnel({ children, labels, instruction, world = "hom
     const onAnchor = (event: MouseEvent) => {
       if (event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return;
       const routeLink = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>("a[href]") : null;
-      if (routeLink) releaseEditing();
+      if (routeLink) releaseEditing(false);
       if (skiStart !== undefined && routeLink && !routeLink.hasAttribute("download") && (!routeLink.target || routeLink.target === "_self")) {
         const url = new URL(routeLink.href,window.location.href);
         if (url.origin === window.location.origin && ["/travel","/ski"].includes(url.pathname) && !url.hash && !url.search) {event.preventDefault();window.scrollTo({top:(url.pathname === "/ski" ? skiStart : 0)*2/1.5*window.innerHeight,behavior:"instant"});return;}
