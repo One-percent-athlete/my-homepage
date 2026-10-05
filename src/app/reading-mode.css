@@ -31,7 +31,7 @@ body[data-reading-mode="read"]:has(.home-tunnel) .space-atmosphere{transform:non
 body[data-reading-mode="read"]:has(.home-tunnel) .space-portals{opacity:.4}
 @media(max-width:699px){
  .reading-mode-switch{top:112px;font-size:11px}.reading-mode-switch button{min-height:40px;padding:8px 13px}
- .reading-layout{padding:170px 70px 115px 12px}.reading-chapters{gap:26px}
+ .reading-layout{padding:170px 12px 115px}.reading-chapters{gap:26px}
  .reading-layout .home-gate-content>section{padding:22px}
  .reading-layout .mission-hero,.reading-layout .web-lab-hero{grid-template-columns:1fr}
  .reading-layout .hero-portrait{height:300px}.reading-layout .hero-copy h1,.reading-layout .web-lab-copy h1{font-size:34px}

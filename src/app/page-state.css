@@ -23,7 +23,7 @@ body:has(.world-dock.permanent):not(:has(.home-tunnel)){padding-left:14px;paddin
   .world-dock.permanent{right:5px;width:54px}
   .world-dock.permanent .dock-tabs a{gap:3px;min-height:47px;padding:6px 2px}
   .world-dock.permanent .dock-tabs strong{max-width:46px;font-size:8px}
-  .home-tunnel-stage{clip-path:inset(110px 68px 92px 12px)}
-  body:has(.world-dock.permanent):not(:has(.home-tunnel)){padding-left:8px;padding-right:70px}
+  .home-tunnel-stage{clip-path:inset(110px 8px 92px 8px)}
+  body:has(.world-dock.permanent):not(:has(.home-tunnel)){padding-left:8px;padding-right:8px}
 }
 @media(prefers-reduced-motion:reduce){.loading-orbit{animation:none;border-color:#b1ecff}.world-dock.permanent{transition:none}}
